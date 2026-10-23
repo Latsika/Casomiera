@@ -58,3 +58,15 @@
 - Only then, with approval, refresh the repository snapshot.
 - Never copy repository instructions over the owner's global file.
 - If the local global file is unavailable, report that limitation.
+
+## Firmware handover — 2026-10-23
+
+- Both owner-confirmed Heltec Wireless Tracker V2 ESP32-S3 boards passed
+  the TEST 0.1 USB test, demonstrated by owner-provided terminal screenshots.
+- Firmware uses PlatformIO Arduino with board `esp32-s3-devkitc-1`,
+  115200 baud, and USB CDC enabled in `firmware/platformio.ini`.
+- Tested Windows ports: first board COM3, second board COM5.
+  Recheck ports after reconnection; close monitors before uploading.
+- TEST 0.1 only prints USB messages; it does not control the display or LED.
+- LoRa, GNSS, sensors, timing accuracy, and cable operation remain unverified.
+- Physical A/B station labels were recommended but are not confirmed.
