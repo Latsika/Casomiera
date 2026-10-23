@@ -39,3 +39,22 @@
 - Obtain approval for each documentation edit.
 - Commit only agreed files.
 - Identify the remote and branch before pushing.
+
+## Session synchronization checks
+- At the start of each project session, check for differences between
+  the local repository and origin/master. Report unavailable checks.
+- Review incoming and outgoing AGENTS.md changes with the owner.
+- Obtain approval before applying, committing, or pushing changes.
+- Preserve unrelated local changes and resolve conflicts with the owner.
+
+## Protected global instructions
+- Treat ~/.codex/AGENTS.md as the authoritative global instructions.
+- Project agents must not modify that file.
+- GLOBAL-AGENTS.md is a reference snapshot, not a second source of authority.
+- At session start, compare the snapshot with the local global file.
+- Report differences; never synchronize global settings automatically.
+- Proposed global changes must be approved and applied to the owner's
+  PC first, outside project work.
+- Only then, with approval, refresh the repository snapshot.
+- Never copy repository instructions over the owner's global file.
+- If the local global file is unavailable, report that limitation.
