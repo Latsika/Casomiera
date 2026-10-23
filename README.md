@@ -104,6 +104,37 @@ Outdoor timing must use synchronized event timestamps, not radio arrival times.
 The cable design is intended to use a shared timing clock and a protected
 signal interface; its circuit and delay handling remain to be established.
 
+## Application measurement modes — agreed requirements
+
+The application must support two independent measurement modes:
+
+- Automatic: electronic timing using optical gates, with the previously
+  approved physical STOP-button option retained.
+- Manual: the existing configurable number of judges and time calculation.
+
+Electronic measurements must remain separate from judge measurements.
+The operator must be able to switch modes within an open competition
+without losing saved results or restarting the application.
+
+If electronics fail during an active measurement, the operator manually
+cancels that measurement. A replacement run may then use either mode,
+depending on hardware availability. There is no automatic fallback or
+transfer of partial times between modes.
+
+## v11 integration review — 2026-10-23
+
+Static code inspection confirmed existing manual timing, cancellation,
+result storage, JSON backup, exports, and LIVE timing presentation.
+Electronic communication and automatic measurement are not implemented.
+
+The recommended extension adds an explicit measurement mode and attempt
+lifecycle, binds each active measurement to its participant, and rejects
+late or duplicate device messages. Results, backups, exports, and LIVE
+views must distinguish automatic measurements from judge measurements.
+Existing records should remain readable as manual measurements.
+
+This review did not include browser execution or new hardware tests.
+
 ## Firmware USB test — verified 2026-10-23
 
 The owner successfully built and uploaded TEST 0.1 using VS Code and
