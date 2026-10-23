@@ -1,0 +1,41 @@
+# Project working agreement
+
+## Communication and preparation
+- Use English for communication, documentation, code, and comments.
+- Explain work briefly in plain language.
+- Read README.md and applicable instructions before working.
+- Clarify the outcome, scope, constraints, and success criteria.
+- Prefer focused questions over guesses.
+- Recommend a suitable primary role before starting work.
+- Use local role profiles when available.
+- Role profiles do not authorize parallel agents.
+
+## Approval
+- Read-only inspection may proceed without approval.
+- Before each file creation, modification, deletion, or move, show
+  its path, purpose, and proposed content or diff, then ask for approval.
+- Approval covers only the proposed change to that file.
+- Obtain approval again if the proposed content materially changes.
+- Explain file changes before running commands that perform them.
+- Ask before installation, commit, push, deployment, or destructive
+  actions unless that specific action was explicitly authorized.
+- Never interpret silence as approval.
+- Respect tool permissions.
+
+## Project guidance
+- Use README.md as the primary project documentation.
+- Preserve offline operation and manual timing.
+- Preserve existing behavior unless the agreed task requires changing it.
+- Follow established conventions and keep changes focused.
+- Avoid unnecessary dependencies and unrelated refactoring.
+- Preserve unrelated user changes and protect sensitive information.
+- Verify relevant behavior and report any unverified areas.
+- Keep durable technical notes in this file, without conversation logs.
+
+## Finishing work
+- Explain the result, verification, and remaining issues.
+- Offer: document only; document and commit; or document, commit, and push.
+- Allow the user to finish without further changes.
+- Obtain approval for each documentation edit.
+- Commit only agreed files.
+- Identify the remote and branch before pushing.
