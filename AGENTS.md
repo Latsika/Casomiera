@@ -71,3 +71,20 @@
 - TEST 0.1 only prints USB messages; it does not control the display or LED.
 - LoRa, GNSS, sensors, timing accuracy, and cable operation remain unverified.
 - Physical A/B station labels were recommended but are not confirmed.
+
+## Firmware handover — 2026-10-28
+
+- The USB timing prototype supersedes TEST 0.1. The owner uploaded it
+  to both boards and supplied passing serial test responses.
+- Both boards passed prepare/start/stop/status, repeated-start rejection,
+  mismatched-attempt rejection, busy rejection, and cancellation tests.
+- Commands: STATUS, ARM <id>, TEST_START <id>, TEST_STOP <id>, CANCEL <id>.
+  Use 115200 baud and LF line endings. No periodic messages are printed.
+- Responses use V1 and a per-boot ID, not a permanent hardware ID.
+  Durations are in microseconds; running STATUS is not a live stopwatch.
+- Use new attempt IDs for new attempts. Physical A/B labels and current
+  COM ports remain unconfirmed.
+- Accuracy, restart/disconnection recovery, LoRa, GNSS, physical inputs,
+  cable operation, and browser integration remain unverified.
+- Next recommended work: verify peripheral pin assignments and plan
+  physical button tests before connecting sensors.

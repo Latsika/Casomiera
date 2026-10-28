@@ -3,12 +3,12 @@
 An offline competition management and timing application for DHZ Ruskov.
 The project also includes a planned electronic timing extension.
 
-Status reviewed: 2026-10-23.
+Status reviewed: 2026-10-28.
 
 ## Project files
 
 - `Casomiera_v11_OSTRA.html`: current production-designated application.
-- `firmware/`: PlatformIO Arduino firmware; currently USB communication TEST 0.1.
+- `firmware/`: PlatformIO Arduino firmware; USB timing prototype tested on both boards.
 - `Časomiera pre súťaže.pdf`: initial development history, 112 pages.
 - `Pokračovanie časomiery.pdf`: subsequent development history, 49 pages.
 
@@ -155,16 +155,49 @@ Close any running serial monitor before uploading.
 When multiple ports are available, explicitly select the intended port
 for both upload and monitoring.
 
+## Firmware USB timing prototype — verified 2026-10-28
+
+The owner uploaded the timing prototype to both Heltec boards and provided
+serial responses confirming these tests on each board:
+
+- Prepare, start, stop, and read the completed attempt time.
+- Reject a repeated start without restarting the measurement.
+- Reject a stop with a different attempt ID.
+- Reject preparation of another attempt while timing is running.
+- Cancel an attempt, clear its time, and reject a subsequent stop.
+
+Commands are case-sensitive, sent at 115200 baud, and terminated by LF:
+
+- `STATUS`
+- `ARM <id>`
+- `TEST_START <id>`
+- `TEST_STOP <id>`
+- `CANCEL <id>`
+
+Responses begin with `V1 <boot-id>`. The boot ID is generated at startup
+and is not a permanent board identifier. Attempt IDs contain 1–40 ASCII
+letters, digits, hyphens, or underscores. Use a new ID for each new attempt.
+
+Elapsed times are reported in microseconds using the board's local timer.
+During a running attempt, STATUS does not report live elapsed time.
+The firmware no longer prints periodic startup messages; send STATUS
+to check communication. The display and LED are not controlled.
+
+These tests verify command handling on individual boards. They do not
+demonstrate timing accuracy, synchronization between boards, LoRa, GNSS,
+physical buttons, optical sensors, cable operation, or browser integration.
+No restart or disconnection recovery tests were performed.
+
 ## Open hardware work
 
 - Verify remaining hardware details and peripheral pin assignments.
-- Extend the working PlatformIO Arduino USB test into timing firmware.
+- Extend the tested USB timing prototype with physical timing inputs.
 - Begin with test buttons before integrating optical sensors.
 - Define GNSS synchronization, LoRa messaging, and loss-of-signal behavior.
 - Design and validate the cable interface.
 - Select affordable retroreflective sensors and matching reflectors.
 - Design input protection, power, connectors, and mounting.
-- Define the USB protocol and application integration.
+- Extend and validate the prototype USB protocol and implement application integration.
 - Validate timing accuracy, reliability, and recovery from failures.
 
 A target accuracy of 0.01 seconds has not been demonstrated.
