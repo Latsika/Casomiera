@@ -1,7 +1,8 @@
 # Project working agreement
 
 ## Communication and preparation
-- Use English for communication, documentation, code, and comments.
+- Use Slovak for communication with the owner in the Casomiera project.
+- Use English for documentation, code, and comments.
 - Explain work briefly in plain language.
 - Read README.md and applicable instructions before working.
 - Clarify the outcome, scope, constraints, and success criteria.
