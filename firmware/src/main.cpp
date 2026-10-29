@@ -12,6 +12,8 @@ enum class AttemptState {
 
 constexpr size_t MAX_LINE_LENGTH = 96;
 constexpr size_t MAX_ATTEMPT_ID_LENGTH = 40;
+constexpr uint8_t BUTTON_PIN = 6;
+constexpr int64_t BUTTON_DEBOUNCE_US = 30000;
 
 AttemptState attemptState = AttemptState::Idle;
 String attemptId;
@@ -20,6 +22,18 @@ char bootId[17];
 bool discardLine = false;
 int64_t startedAtUs = 0;
 int64_t elapsedUs = 0;
+
+int buttonRawLevel = HIGH;
+int buttonStableLevel = HIGH;
+int64_t buttonChangedAtUs = 0;
+bool buttonReady = false;
+
+void resetButtonInput() {
+    buttonRawLevel = digitalRead(BUTTON_PIN);
+    buttonStableLevel = buttonRawLevel;
+    buttonChangedAtUs = esp_timer_get_time();
+    buttonReady = false;
+}
 
 const char* stateName() {
     switch (attemptState) {
@@ -114,6 +128,7 @@ void processCommand(const String& line) {
         startedAtUs = 0;
         elapsedUs = 0;
         attemptState = AttemptState::Armed;
+        resetButtonInput();
         sendMessage("READY " + id);
         return;
     }
@@ -166,8 +181,43 @@ void processCommand(const String& line) {
     sendError(id, "INVALID_STATE");
 }
 
+void pollButton() {
+    const int level = digitalRead(BUTTON_PIN);
+    const int64_t nowUs = esp_timer_get_time();
+
+    if (level != buttonRawLevel) {
+        buttonRawLevel = level;
+        buttonChangedAtUs = nowUs;
+    }
+
+    if (nowUs - buttonChangedAtUs < BUTTON_DEBOUNCE_US) {
+        return;
+    }
+
+    if (buttonRawLevel == HIGH) {
+        buttonStableLevel = HIGH;
+        buttonReady = true;
+        return;
+    }
+
+    if (buttonStableLevel == LOW || !buttonReady) {
+        return;
+    }
+
+    buttonStableLevel = LOW;
+    buttonReady = false;
+
+    if (attemptState == AttemptState::Armed) {
+        processCommand("TEST_START " + attemptId);
+    } else if (attemptState == AttemptState::Running) {
+        processCommand("TEST_STOP " + attemptId);
+    }
+}
+
 void setup() {
     Serial.begin(115200);
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    resetButtonInput();
 
     snprintf(
         bootId,
@@ -181,6 +231,8 @@ void setup() {
 }
 
 void loop() {
+    pollButton();
+
     // Limit each pass so input processing does not monopolize the loop.
     for (size_t count = 0; count < 64 && Serial.available(); ++count) {
         const char character = static_cast<char>(Serial.read());
