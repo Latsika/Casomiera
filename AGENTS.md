@@ -98,3 +98,12 @@
 - Use a new attempt ID and reject delayed messages from cancelled attempts.
 - Design radio traffic to support this workflow within applicable
   radio transmission limits.
+
+## Measurement recovery requirement — 2026-10-29
+
+- Preserve measured event timestamps and results when delivery or
+  acknowledgement fails; allow the same data to be sent again.
+- Apply this requirement to the final firmware and the timing HTML
+  application. An acknowledgement timeout alone must not discard a time
+  or automatically require a replacement attempt.
+- The retention, retransmission, and recovery method remains to be agreed.
