@@ -88,3 +88,13 @@
   cable operation, and browser integration remain unverified.
 - Next recommended work: verify peripheral pin assignments and plan
   physical button tests before connecting sensors.
+
+## Attempt reset requirement — 2026-10-29
+
+- The 30-second SEND interval belongs to the standalone LoRa test.
+  Remove this fixed test restriction from the final timing firmware.
+- After cancellation or a false start, the operator must be able to
+  prepare a new attempt immediately, without a fixed 30-second wait.
+- Use a new attempt ID and reject delayed messages from cancelled attempts.
+- Design radio traffic to support this workflow within applicable
+  radio transmission limits.
