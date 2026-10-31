@@ -181,3 +181,20 @@
 - Next: verify the new board and compare outdoor GNSS on both stations,
   then implement and validate UTC-to-PPS association.
 - Do not store the support email draft; the owner requested manual copying.
+
+## GNSS antenna clarification and retest — 2026-10-31
+
+- Owner identified A's earlier reception problem: removing the display
+  for soldering also removed the GNSS antenna in its plastic enclosure.
+  Do not interpret the earlier results as evidence of a defective board.
+- Later outdoor STATUS outputs showed RMC status A and valid time/date
+  on both boards, with zero checksum errors and oversized lines.
+- A: PPS 226 to 250 over 24 seconds of GNSS time.
+  B: PPS 257 to 277 over 20 seconds of GNSS time.
+- This supersedes the unresolved-cause assessment and the requirement
+  to wait for a replacement board before further GNSS investigation.
+- Project work remains paused until the owner requests continuation.
+- Next development step: implement and validate UTC-to-PPS association
+  before combined A=START, B=STOP timing and application mode work.
+- SYNC=UNVERIFIED remains intentional. Inter-board synchronization
+  and measurement accuracy have not been demonstrated.

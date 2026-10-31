@@ -311,3 +311,21 @@ or unimplemented. Indoor cable operation without GNSS remains required.
 Resume by identifying the new board, verifying its USB and outdoor GNSS
 operation, then validating UTC-to-PPS association on both timing stations.
 The support email draft is intentionally not stored in the repository.
+
+## GNSS antenna clarification and retest — 2026-10-31
+
+The owner identified the cause of A's earlier reception problem:
+removing the display for soldering also removed the GNSS antenna
+housed in the display's plastic enclosure. The earlier results do
+not establish a board fault.
+
+Subsequent owner-provided outdoor STATUS outputs showed valid RMC
+time/date (status A) on both boards, with no checksum errors or
+oversized lines. A recorded 24 PPS pulses over 24 seconds of GNSS
+time; B recorded 20 over 20 seconds.
+
+This supersedes the unresolved-cause assessment above. A replacement
+board is no longer a prerequisite for further GNSS investigation.
+Project work remains paused until the owner requests continuation.
+UTC-to-PPS association, inter-board synchronization, and measurement
+accuracy remain unverified; SYNC=UNVERIFIED remains intentional.
