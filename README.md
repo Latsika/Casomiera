@@ -90,14 +90,13 @@ The approved target system has:
 - USB communication between the finish station and the competition PC.
 - Battery or external power; final power design remains open.
 
-The approved measurement modes are:
+The electronic timing system must support both a combined A+B station
+setup and independent single-board timing, as specified below.
 
-1. Gate A starts timing; gate B stops timing.
-2. Gate A starts timing; a physical STOP button stops timing.
-
-After a valid start, further interruptions of gate A must not affect that attempt.
-The STOP-button mode supports a judge stopping timing for the last team member.
-Automatic identification or counting of team members is not part of these modes.
+After a valid start, further START input events must not affect that
+attempt. A physical STOP button supports stopping timing for the last
+team member. Automatic identification or counting of team members
+is not part of these requirements.
 
 The firmware must timestamp events independently of browser execution.
 Outdoor timing must use synchronized event timestamps, not radio arrival times.
@@ -106,20 +105,44 @@ signal interface; its circuit and delay handling remain to be established.
 
 ## Application measurement modes — agreed requirements
 
-The application must support two independent measurement modes:
+The application must provide three selectable measurement modes:
 
-- Automatic: electronic timing using optical gates, with the previously
-  approved physical STOP-button option retained.
-- Manual: the existing configurable number of judges and time calculation.
+1. Manual: preserve judge timing, manual time entry, the existing
+   configurable judge count, and official-time calculation.
+2. Combined automatic A+B: station A records START from an optical gate
+   or physical button; station B records STOP from an optical gate
+   or physical button. Both stations measure one participant's attempt.
+3. Independent automatic stations: each board measures a complete
+   attempt using its own optical gate or physical button for START
+   and a separate physical button for STOP. A and B connect directly
+   to the same PC through separate USB connections and support two
+   participants being timed concurrently and independently.
+
+The application configures the operating mode and selected START/STOP
+sources. In independent mode, each station must have its own participant,
+attempt ID, state, and result. Starting, stopping, or cancelling one
+station's attempt must not affect the other station's attempt.
+
+Each independent station calculates elapsed time using its own local
+clock. LoRa and GNSS synchronization are not required for this mode.
+Combined wireless timing retains the requirement for synchronized
+event timestamps rather than radio arrival times.
 
 Electronic measurements must remain separate from judge measurements.
-The operator must be able to switch modes within an open competition
-without losing saved results or restarting the application.
+Switching modes within an open competition must preserve saved results
+and must not require restarting the application.
 
-If electronics fail during an active measurement, the operator manually
-cancels that measurement. A replacement run may then use either mode,
-depending on hardware availability. There is no automatic fallback or
-transfer of partial times between modes.
+Recommended switching rule: complete or explicitly cancel active
+attempts before changing the operating mode.
+
+An acknowledgement timeout alone must not discard measured timestamps
+or results. Preserve them for retransmission and recovery. If the operator
+explicitly cancels an active attempt, a replacement attempt may use
+another mode. Do not automatically transfer partial measurements
+between modes.
+
+These three modes are requirements for future implementation.
+The current firmware and HTML application do not yet implement them.
 
 ## v11 integration review — 2026-10-23
 
@@ -227,3 +250,64 @@ Use this README for project purpose, operation, requirements, and current status
 Use AGENTS.md for agent instructions, durable technical notes, and handover.
 Keep documentation and code in English; communicate with the owner in Slovak.
 Obtain approval before each individual file change.
+
+## LoRa test — owner confirmation recorded 2026-10-31
+
+- The owner confirmed successful A-to-B test packet delivery and
+  B-to-A acknowledgements at approximately 80 metres, with station B
+  inside a neighbour's house.
+- Station B's display showed the received test packet count.
+- This confirmation supersedes earlier statements that standalone
+  LoRa communication and the receiver display remain unverified.
+- Timing integration, the intended 200–300 metre range, and
+  measurement accuracy remain unverified.
+
+## Button verification and GNSS diagnostics — 2026-10-31
+
+The owner confirmed repeated external-button presses on both stations.
+Holding a button produced no additional events; another event required
+release and a new press. Buttons connect GPIO6 to GND using INPUT_PULLUP.
+These tests verify button detection, not timing accuracy.
+
+Both stations registered pulses on GPIO36. This does not yet establish
+GNSS lock, UTC-to-PPS association, or synchronization between stations.
+
+The LoRa test firmware now includes receive-only GNSS diagnostics at
+115200 baud on GPIO33. STATUS reports checksum-verified RMC message
+counts, raw UTC/date/status fields, message age, and diagnostic errors.
+SYNC remains UNVERIFIED. This is not combined A+B timing.
+
+Next verification: obtain fresh RMC messages on both boards outdoors,
+then establish and verify the association between UTC and PPS.
+Avoid SEND during GNSS diagnostics because radio acknowledgement
+waiting can delay UART processing.
+
+## Project hold and outdoor GNSS results — 2026-10-31
+
+Work is on hold at the owner's request until a new Heltec board is
+available. Continue with combined A=START, B=STOP timing before
+implementing the three application measurement modes.
+
+Completed verification:
+- USB timing commands previously passed on both boards.
+- LoRa delivery, acknowledgements, and the B display passed at
+  approximately 80 metres, with B inside a neighbouring house.
+- External buttons passed repeated-press and held-button tests on A and B.
+- The latest diagnostic firmware built and uploaded successfully to both
+  boards. It supports STATUS and a 10-second GNSS_SCAN of GGA/GSA/GSV.
+
+Outdoor GNSS comparison:
+- B obtained valid RMC time/date, increasing PPS counts, and a 3D fix.
+  GGA reported 19 satellites used initially and 30 in a later test.
+- A received checksum-valid messages but reported no satellites,
+  no fix, empty UTC/date, RMC status V, and a PPS count remaining at 2.
+- A remained affected outside the breadboard and after repositioning
+  under open sky. The cause is unresolved; hardware failure is not proven.
+
+Combined timing, UTC-to-PPS association, timing accuracy, cable operation,
+optical gates, and HTML electronic-timing integration remain unverified
+or unimplemented. Indoor cable operation without GNSS remains required.
+
+Resume by identifying the new board, verifying its USB and outdoor GNSS
+operation, then validating UTC-to-PPS association on both timing stations.
+The support email draft is intentionally not stored in the repository.

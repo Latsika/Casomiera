@@ -107,3 +107,77 @@
   application. An acknowledgement timeout alone must not discard a time
   or automatically require a replacement attempt.
 - The retention, retransmission, and recovery method remains to be agreed.
+
+## LoRa test — owner confirmation recorded 2026-10-31
+
+- The owner confirmed successful A-to-B test packet delivery and
+  B-to-A acknowledgements at approximately 80 metres, with station B
+  inside a neighbour's house.
+- Station B's display showed the received test packet count.
+- This confirmation supersedes earlier statements that standalone
+  LoRa communication and the receiver display remain unverified.
+- Timing integration, the intended 200–300 metre range, and
+  measurement accuracy remain unverified.
+
+## Three measurement modes — requirements recorded 2026-10-31
+
+- Preserve manual judge timing, manual entry, and existing calculations.
+- Combined automatic mode: A records START by optical gate or physical
+  button; B records STOP by optical gate or physical button.
+- Independent automatic mode: each board records its own START by
+  optical gate or physical button and STOP by a separate physical button.
+- In independent mode, both boards connect to the same PC through
+  separate USB connections and can time two participants concurrently.
+- Configure modes and input sources through the timing application.
+- Keep each independent station's participant, attempt ID, state,
+  cancellation, and result separate.
+- Independent timing uses each board's local clock; it does not require
+  LoRa or GNSS synchronization.
+- Retain synchronized timestamps for combined wireless timing.
+- Ignore further START events after a valid start.
+- Preserve saved results when switching modes and retain measured
+  timestamps/results when delivery or acknowledgement fails.
+- Recommended rule: allow mode changes only when no attempt is active.
+- Separate START/STOP inputs, electrical interfaces, firmware support,
+  application integration, and accuracy remain to be implemented
+  or verified. These requirements are not completed functionality.
+
+## Button and GNSS diagnostic handover — 2026-10-31
+
+- The owner confirmed repeated presses and held-button handling on A and B:
+  one event per press, with release required before another event.
+- External buttons use GPIO6 to GND with INPUT_PULLUP.
+- GPIO36 pulse detection was observed on both boards; UTC-to-PPS
+  association, synchronization, and timing accuracy remain unverified.
+- lora_test.cpp adds receive-only GNSS UART diagnostics on GPIO33 at
+  115200 baud. STATUS reports checksum-verified RMC counts, raw UTC,
+  date and status, message age, checksum errors, and oversized lines.
+- SYNC=UNVERIFIED is intentional. Do not treat RMC validity or PPS
+  presence alone as proof of synchronization.
+- Verify fresh GNSS messages outdoors on both boards before implementing
+  UTC-to-PPS association. Avoid SEND during this diagnostic test because
+  existing radio acknowledgement waiting delays UART processing.
+- Combined A-to-B timing and application integration remain unimplemented.
+
+## Work on hold — handover 2026-10-31
+
+- Owner paused project work pending availability of a new Heltec board.
+- Resume combined A=START, B=STOP work before splitting application modes.
+- Current lora_A/lora_B firmware includes button, PPS, RMC, and 10-second
+  GNSS_SCAN diagnostics. Both environments built and uploaded successfully.
+- Last verified mapping: A COM3, MAC 44:1B:F6:F8:E9:A4;
+  B COM5, MAC 44:1B:F6:F8:EA:AC. Recheck ports and board roles on return.
+- Both external buttons passed repeated-press and held-button handling.
+- Outdoor B: valid RMC time/date, increasing PPS, 3D fix, and GGA reporting
+  up to 30 satellites used in the observed tests.
+- Outdoor A: checksum-valid GNSS messages, all reported GSV groups at
+  zero satellites, GGA quality 0, RMC V, empty UTC/date, PPS count stuck at 2.
+- Removing A from the breadboard and changing its outdoor position did
+  not resolve the issue. Do not label the board defective without evidence.
+- No GNSS configuration/reset commands were sent by our diagnostic code.
+- SYNC=UNVERIFIED remains intentional; UTC-to-PPS association and combined
+  timing are not implemented. Preserve indoor cable operation requirements.
+- Builds retain a compiler warning about volatile counter increment.
+- Next: verify the new board and compare outdoor GNSS on both stations,
+  then implement and validate UTC-to-PPS association.
+- Do not store the support email draft; the owner requested manual copying.
