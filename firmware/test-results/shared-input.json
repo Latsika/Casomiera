@@ -1,0 +1,598 @@
+{
+  "createdAt": "2026-10-31T14:52:20.418906+00:00",
+  "test": "shared GPIO6 open-drain edge, GNSS preceding-PPS candidate association",
+  "criterionUs": 1000,
+  "passed": true,
+  "maximumAbsoluteDifferenceUs": 6,
+  "minimumDifferenceUs": -6,
+  "maximumDifferenceUs": 3,
+  "stations": {
+    "A": {
+      "boardId": "441bf6f8e9a4",
+      "firmwareHash": "70a2142b72c6a22ba97c82bc2d8d300ad5700d569202035e586e2b9b6e011226"
+    },
+    "B": {
+      "boardId": "441bf6f8eaac",
+      "firmwareHash": "375da3d2c47e60f16c6251763c967dd268e10a1caa8900865159af08256bba81"
+    }
+  },
+  "limitations": "Observed relative agreement only; not an absolute UTC or complete optical-gate accuracy certification.",
+  "samples": [
+    {
+      "number": 1,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "1",
+        "LOCAL_US": "253705745",
+        "UTC_US": "1793458326304904",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "1",
+        "LOCAL_US": "219861743",
+        "UTC_US": "1793458326304905",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    },
+    {
+      "number": 2,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "2",
+        "LOCAL_US": "253938435",
+        "UTC_US": "1793458326537592",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "2",
+        "LOCAL_US": "220094431",
+        "UTC_US": "1793458326537591",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 1
+    },
+    {
+      "number": 3,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "3",
+        "LOCAL_US": "254309368",
+        "UTC_US": "1793458326908522",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "3",
+        "LOCAL_US": "220465363",
+        "UTC_US": "1793458326908520",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 2
+    },
+    {
+      "number": 4,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "4",
+        "LOCAL_US": "254900422",
+        "UTC_US": "1793458327499578",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "4",
+        "LOCAL_US": "221056418",
+        "UTC_US": "1793458327499579",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    },
+    {
+      "number": 5,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "5",
+        "LOCAL_US": "255731325",
+        "UTC_US": "1793458328330475",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "5",
+        "LOCAL_US": "221887321",
+        "UTC_US": "1793458328330476",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    },
+    {
+      "number": 6,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "6",
+        "LOCAL_US": "256802724",
+        "UTC_US": "1793458329401868",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "6",
+        "LOCAL_US": "222958718",
+        "UTC_US": "1793458329401868",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 0
+    },
+    {
+      "number": 7,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "7",
+        "LOCAL_US": "257033745",
+        "UTC_US": "1793458329632887",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "7",
+        "LOCAL_US": "223189738",
+        "UTC_US": "1793458329632887",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 0
+    },
+    {
+      "number": 8,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "8",
+        "LOCAL_US": "257420105",
+        "UTC_US": "1793458330019245",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "8",
+        "LOCAL_US": "223576096",
+        "UTC_US": "1793458330019243",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 2
+    },
+    {
+      "number": 9,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "9",
+        "LOCAL_US": "258011964",
+        "UTC_US": "1793458330611099",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "9",
+        "LOCAL_US": "224167956",
+        "UTC_US": "1793458330611105",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -6
+    },
+    {
+      "number": 10,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "10",
+        "LOCAL_US": "258844932",
+        "UTC_US": "1793458331444065",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "10",
+        "LOCAL_US": "225000922",
+        "UTC_US": "1793458331444063",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 2
+    },
+    {
+      "number": 11,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "11",
+        "LOCAL_US": "259901317",
+        "UTC_US": "1793458332500443",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "11",
+        "LOCAL_US": "226057305",
+        "UTC_US": "1793458332500441",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 2
+    },
+    {
+      "number": 12,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "12",
+        "LOCAL_US": "260133026",
+        "UTC_US": "1793458332732151",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "12",
+        "LOCAL_US": "226289013",
+        "UTC_US": "1793458332732148",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 3
+    },
+    {
+      "number": 13,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "13",
+        "LOCAL_US": "260507436",
+        "UTC_US": "1793458333106557",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "13",
+        "LOCAL_US": "226663424",
+        "UTC_US": "1793458333106561",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -4
+    },
+    {
+      "number": 14,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "14",
+        "LOCAL_US": "261099352",
+        "UTC_US": "1793458333698469",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "14",
+        "LOCAL_US": "227255339",
+        "UTC_US": "1793458333698475",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -6
+    },
+    {
+      "number": 15,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "15",
+        "LOCAL_US": "261930045",
+        "UTC_US": "1793458334529159",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "15",
+        "LOCAL_US": "228086030",
+        "UTC_US": "1793458334529158",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 1
+    },
+    {
+      "number": 16,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "16",
+        "LOCAL_US": "263002199",
+        "UTC_US": "1793458335601308",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "16",
+        "LOCAL_US": "229158184",
+        "UTC_US": "1793458335601309",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    },
+    {
+      "number": 17,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "17",
+        "LOCAL_US": "263233158",
+        "UTC_US": "1793458335832266",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "17",
+        "LOCAL_US": "229389141",
+        "UTC_US": "1793458335832265",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 1
+    },
+    {
+      "number": 18,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "18",
+        "LOCAL_US": "263603543",
+        "UTC_US": "1793458336202648",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "18",
+        "LOCAL_US": "229759527",
+        "UTC_US": "1793458336202648",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 0
+    },
+    {
+      "number": 19,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "19",
+        "LOCAL_US": "264198305",
+        "UTC_US": "1793458336797406",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "19",
+        "LOCAL_US": "230354285",
+        "UTC_US": "1793458336797403",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 3
+    },
+    {
+      "number": 20,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "20",
+        "LOCAL_US": "265030156",
+        "UTC_US": "1793458337629251",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "20",
+        "LOCAL_US": "231186138",
+        "UTC_US": "1793458337629255",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -4
+    },
+    {
+      "number": 21,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "21",
+        "LOCAL_US": "266100953",
+        "UTC_US": "1793458338700042",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "21",
+        "LOCAL_US": "232256932",
+        "UTC_US": "1793458338700042",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": 0
+    },
+    {
+      "number": 22,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "22",
+        "LOCAL_US": "266332474",
+        "UTC_US": "1793458338931561",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "22",
+        "LOCAL_US": "232488453",
+        "UTC_US": "1793458338931562",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    },
+    {
+      "number": 23,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "23",
+        "LOCAL_US": "266705128",
+        "UTC_US": "1793458339304214",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "23",
+        "LOCAL_US": "232861108",
+        "UTC_US": "1793458339304218",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -4
+    },
+    {
+      "number": 24,
+      "a": {
+        "STATION": "A",
+        "BOOT": "9373d46a",
+        "NUMBER": "24",
+        "LOCAL_US": "267280957",
+        "UTC_US": "1793458339880041",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "b": {
+        "STATION": "B",
+        "BOOT": "a4a729e7",
+        "NUMBER": "24",
+        "LOCAL_US": "233436934",
+        "UTC_US": "1793458339880042",
+        "CLOCK_GENERATION": "0",
+        "VALID": "1",
+        "ACCURACY": "UNVERIFIED"
+      },
+      "differenceUs": -1
+    }
+  ]
+}

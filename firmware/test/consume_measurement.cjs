@@ -1,0 +1,13 @@
+"use strict";
+const fs = require("node:fs");
+const assert = require("node:assert/strict");
+const { AutomaticRun } = require("../web/automatic-timing.js");
+const input = JSON.parse(fs.readFileSync(0, "utf8"));
+const run = new AutomaticRun();
+run.prepare({ key: "isolated-hardware-test" }, 1, "hardware-verification", input.id);
+for (const message of input.messages) run.accept(message);
+assert.equal(run.current.phase, "finished");
+const elapsed = BigInt(input.stop.utcUs) - BigInt(input.start.utcUs);
+assert.equal(run.current.elapsedUs, elapsed.toString());
+assert.equal(run.current.elapsedMs, Number((elapsed + 500n) / 1000n));
+process.stdout.write(JSON.stringify({ elapsedUs: run.current.elapsedUs, elapsedMs: run.current.elapsedMs }));

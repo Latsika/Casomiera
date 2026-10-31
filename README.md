@@ -3,12 +3,12 @@
 An offline competition management and timing application for DHZ Ruskov.
 The project also includes a planned electronic timing extension.
 
-Status reviewed: 2026-10-28.
+Status reviewed: 2026-10-31.
 
 ## Project files
 
 - `Casomiera_v11_OSTRA.html`: current production-designated application.
-- `firmware/`: PlatformIO Arduino firmware; USB timing prototype tested on both boards.
+- `firmware/`: PlatformIO Arduino firmware, USB diagnostics and combined GNSS timing prototype; see current verification status below.
 - `Časomiera pre súťaže.pdf`: initial development history, 112 pages.
 - `Pokračovanie časomiery.pdf`: subsequent development history, 49 pages.
 
@@ -68,7 +68,9 @@ They have not yet been verified in a browser during this project review.
 
 ## Electronic timing — planned extension
 
-Electronic timing is not implemented in the current v11 application.
+The current v11 application supports manual timing and combined automatic A+B
+button timing. See the latest implementation and verification section below.
+Independent automatic stations and GNSS-free cable timing remain planned.
 
 Two Heltec boards were received by the owner on 2026-10-20.
 The owner confirmed Heltec Wireless Tracker V2 boards with ESP32-S3.
@@ -141,8 +143,9 @@ explicitly cancels an active attempt, a replacement attempt may use
 another mode. Do not automatically transfer partial measurements
 between modes.
 
-These three modes are requirements for future implementation.
-The current firmware and HTML application do not yet implement them.
+Manual and combined automatic button timing are implemented as described in
+the latest verification section below. Independent two-participant automatic
+timing remains a requirement for future implementation.
 
 ## v11 integration review — 2026-10-23
 
@@ -329,3 +332,183 @@ board is no longer a prerequisite for further GNSS investigation.
 Project work remains paused until the owner requests continuation.
 UTC-to-PPS association, inter-board synchronization, and measurement
 accuracy remain unverified; SYNC=UNVERIFIED remains intentional.
+
+## Combined GNSS timing implementation and verification — 2026-10-31
+
+The owner resumed development and authorized firmware, application, documentation,
+commit and push work. This section supersedes earlier statements that combined
+timing and HTML integration are unimplemented or waiting for a replacement board.
+
+### Current completion status: hardware connection required
+
+The latest source builds successfully for both stations, and its application tests
+pass. Its final upload was attempted but could not run because Windows no longer
+listed either USB board (COM3/COM5). The final radio-budget revision is therefore
+**not uploaded or physically verified**. Do not describe the latest source as a
+completed, fully verified 1 ms competition system.
+Build/source hashes and report provenance are recorded in
+[verification-status.json](firmware/test-results/verification-status.json).
+
+The recorded physical results below are from earlier intermediate builds: the
+latest shared-input report and the earlier complete/radio reports do not refer to
+the same firmware hashes. They establish prior observed electrical agreement and
+working protocol paths, not final-build acceptance. Earlier tests reached 5–8 us
+relative agreement; the latest shared-input report records its own exact result.
+
+Next: reconnect both boards, verify their MAC/port mapping, keep the common-input
+wires for testing, upload the current source and rerun shared-input, end-to-end and
+radio-workflow tests. Then regenerate the embedded HTML verification report and
+run the application/browser tests. Good GNSS reception is required for physical
+tests. Do not bypass the HTML board/build guard to use an unverified binary.
+
+### Implemented behavior
+
+- The existing standalone HTML application has manual judge timing and a selectable
+  automatic combined A=START, B=STOP mode. Independent two-participant automatic
+  timing remains future work.
+- Combined mode supports both stations on separate USB ports, or A over LoRa with
+  only B connected to the browser over USB. Use desktop Chrome or Edge.
+- GPIO6 to GND is the button input on each station. An interrupt records the first
+  falling edge; 30 ms stable-low qualification and stable release suppress bounce
+  and held-button repeats without adding 30 ms to the timestamp.
+- Five consecutive valid integer-second RMC/PPS observations establish tracking.
+  PPS configuration is read automatically, including retries after cold startup.
+  Invalid dates, discontinuities, stale references and long UART processing gaps
+  prevent new clock-valid measurements. Local timer scaling uses measured PPS
+  periods, and radio/USB/browser arrival times do not determine the result.
+- Events retain integer microsecond timestamps. The application subtracts them
+  with integer arithmetic and rounds once to milliseconds for the result display.
+- A participant, competition and fresh attempt ID are bound before arming. Late
+  messages and duplicate START events cannot replace the captured START.
+- Switching measurement modes requires saving or explicitly cancelling the pending
+  attempt. An operator cancellation also permits manual fallback when a station is
+  unavailable; device cancellation is retained and retried after reconnection.
+- Automatic times are stored separately from judge measurements, with raw event
+  timestamps, source, firmware verification context and attempt ID in JSON. Results,
+  CSV/PDF output and LIVE timing distinguish automatic measurements.
+- Measured events are retained in board RAM until explicit archival. GET recovery
+  returns the original data after a delivery failure or USB reconnection. The
+  application saves pending data and cancelled-attempt history locally and in its
+  JSON snapshot. A failed acknowledgement does not discard a measurement.
+
+### Normal operation
+
+1. Keep the GNSS antenna/display enclosure installed and provide good sky reception.
+   Each station has its own GPIO6-to-GND button. Do not join GPIO6 between stations
+   during normal A=START/B=STOP operation.
+2. Close PlatformIO serial monitors. Open `Casomiera_v11_OSTRA.html` in Chrome/Edge
+   and create/load the competition and its JSON backup as before.
+3. Select **Automatické meranie A+B**. Choose **Obe stanice cez USB**, or
+   **A cez LoRa, B cez USB**. Connect the indicated station(s) using the browser's
+   USB chooser. Firmware identity is checked, so reversed station selection is
+   rejected. Last verified mapping: A COM3, B COM5; recheck after reconnection.
+4. Wait for the clock and board/build verification checks, select the participant,
+   and choose **Pripraviť automatický pokus**. Wait for both station acknowledgements.
+5. Press A's physical START button and B's physical STOP button. Enter penalty
+   seconds, including zero, then save the result using the existing save action.
+6. If delivery fails, reconnect and use **Obnoviť zachytené údaje**. Do not create a
+   replacement attempt solely because an acknowledgement or USB connection failed.
+   Explicit cancellation keeps the captured data in history and permits a new mode.
+
+Manual operation, manual entry, judge-count settings, median/average/minimum/maximum
+calculations and existing saved results remain available. Their existing browser
+stopwatch behavior is preserved; the electronic input verification below is not a
+claim of 1 ms accuracy for human-operated browser stopwatches.
+
+### Verification and its limits
+
+- Both latest environments build successfully. Earlier builds were uploaded;
+  the final upload is pending reconnection, as described above.
+- The latest intermediate GPIO6 common-input test passed: **24 impulses**, maximum
+  absolute A/B difference **6 microseconds** (0.006 ms), against
+  a 1000-microsecond acceptance threshold. See
+  [shared-input.json](firmware/test-results/shared-input.json) for individual samples,
+  board MAC identifiers and exact ELF firmware hashes.
+- Four complete electrical-input/LoRa/USB/application calculations passed, including
+  repeated-START rejection and identical record retrieval after reopening finish USB.
+  See [end-to-end.json](firmware/test-results/end-to-end.json).
+- Three radio prepare/GET/cancel/re-prepare cycles passed without a fixed 30-second
+  delay. The new archived-ARM replay and absent-attempt cancellation assertions still
+  require the final hardware run.
+  See [radio-workflow.json](firmware/test-results/radio-workflow.json).
+- Deterministic clock/ledger self-tests run on both boards. Node tests cover attempt
+  binding, invalid events, late/duplicate messages, cancellation and retention.
+- Isolated headless Chrome tests cover saved electronic results, replay of actual
+  hardware records, JSON restore, offline cancellation/manual fallback, firmware
+  verification guards, LoRa routing, exports and preserved manual median/settings.
+- The HTML embeds the physical verification report and checks board IDs and firmware
+  hashes before preparing an automatic attempt. A different/rebuilt firmware requires
+  another physical test and regeneration of the embedded verification data.
+
+This is observed relative agreement on the tested electrical inputs and firmware,
+not an absolute UTC calibration or a certification of the entire competition system.
+Optical gates, their electrical interfaces/delays, long-term temperature behavior,
+the intended 200–300 metre range and GNSS-free indoor cable timing remain unverified
+or unimplemented. The existing raw `SYNC=UNVERIFIED` diagnostic is intentional:
+the preceding-PPS UTC association is a candidate validated for relative agreement
+on this pair, not a separately traceable absolute UTC reference.
+
+Board event retention is RAM-only and does not survive loss of power or reset.
+The browser retains copies already received, but cannot recover an event that was
+never delivered before a board lost power. Each board holds up to 32 unarchived
+attempts and refuses to overwrite them when full. Do not reflash/reset an active
+station as a communication-recovery step.
+
+### Radio and diagnostic details
+
+The tested 868.1 MHz, 125 kHz, SF7 and chip-power settings are retained. Automatic
+messages use nonblocking transmission and coordinator boot/sequence tokens.
+The old fixed 30-second SEND restriction applies only to the standalone test.
+A conservative airtime ledger reserves blocks of at most one second from a
+36-second allowance in NVS. Credit expires after 60 seconds; the allowance resets
+only after a full quiet hour beyond the latest possible use of the last reservation.
+Rebooting never replenishes credit. Flash reservations are scheduled away from PPS
+and never while a station awaits its own armed input; captured timestamps are
+already immutable. A long write or affected PPS invalidates the clock reference.
+Repeated power cycles can therefore conservatively exhaust
+credit; `RADIO_BUDGET` reports the state. `RADIO_RELEASE_BUDGET` returns unused
+credit before maintenance when no attempt or radio job is active. This accounting
+does not replace verification of the final antenna/power installation and local
+radio requirements.
+
+At 115200 baud with LF endings:
+
+- `STATUS`, `GNSS_VERSION`, `GNSS_PPS_CONFIG`, `GNSS_SCAN`, `CLOCK_TEST`.
+- `AUTO_STATUS`, `AUTO_ARM <id>`, `AUTO_GET <id>`, `AUTO_CANCEL <id>`,
+  `AUTO_COMPLETE <id>`, `AUTO_ARCHIVE <id>` for local station control.
+- On B, `REMOTE_STATUS` and `REMOTE_ARM/GET/CANCEL/COMPLETE/ARCHIVE <id>` route to A.
+- `EVENTS` / `EVENT_CLEAR` access the separate bounded diagnostic event list.
+- `TEST_PULSE` is a bench tool: a 60 ms open-drain GPIO6 pulse. It refuses to
+  generate an edge on a station still waiting for its own armed event. It is not
+  part of normal competition operation.
+
+For common-input testing only, disconnect USB, join A GND to B GND and A GPIO6 to
+B GPIO6, then reconnect USB. Never connect GND to GPIO6 or join supply pins.
+Remove the GPIO6 interconnection before normal independent START/STOP button use.
+
+### Reproducing checks
+
+Use the existing PlatformIO Python environment; no new dependencies were installed.
+The original `esp32-s3-devkitc-1` USB prototype environment and default selection are
+preserved. Explicitly select the current A/B environments when building/uploading:
+
+```powershell
+pio run -e lora_A -e lora_B
+pio run -e lora_A -e lora_B -t upload
+python -B test/shared_input.py --count 24
+python -B test/end_to_end.py
+python -B test/radio_workflow.py
+python -B tools/sync_automatic.py
+node test/automatic-timing.test.cjs
+node test/browser-automatic.cjs
+```
+
+Run these from `firmware/`. Physical scripts need the two confirmed common-input
+wires, both USB connections and tracking GNSS clocks. Browser tests use an isolated
+temporary profile and do not modify the owner's competition data. Regenerate the
+embedded modules with `sync_automatic.py`; `integrate_automatic.py` is the one-time
+integration script and intentionally refuses to apply itself twice.
+
+Hardware/protocol references:
+[Wireless Tracker V2 datasheet](https://resource.heltec.cn/download/Wireless_Tracker_V2/Wireless_Tracker_v2_Datasheet/Wireless%20Tracker%20v2.pdf)
+and [Unicore UFirebird II protocol R1.4](https://resource.heltec.cn/download/Wireless_Tracker_V2/GNSS_AT_Datasheet/UFirebirdII%20Series%20Protocol%20Specification_EN_R1.4.pdf).

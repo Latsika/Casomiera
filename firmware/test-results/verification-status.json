@@ -1,0 +1,87 @@
+{
+  "createdAt": "2026-10-31T15:16:47.810135+00:00",
+  "status": "awaiting_final_hardware_upload_and_validation",
+  "latestUpload": "failed_both_USB_boards_absent_from_Windows",
+  "applicationTests": "Node and isolated Chrome tests passed, including recorded hardware fixtures and offline cancellation",
+  "latestBuilds": {
+    "lora_A": {
+      "built": true,
+      "binaryFileSha256": "be2cc6c9f3d883656c74506f4c7f6c333524ba1e01044355d1fd5b56a43d8226"
+    },
+    "lora_B": {
+      "built": true,
+      "binaryFileSha256": "a800aa5b08d340d665d75813ba14312f52b9870721454bd7bba784522096ac4d"
+    }
+  },
+  "sourceSha256": {
+    "src\\lora_test.cpp": "2a93f9b6e731c98b61659a6085f24db6e2c81d8bdd6bbf938067c57d248b1f05",
+    "platformio.ini": "acf6ba2f4a48a99a34aa06542523a34212adb41200021e856f0d469fe56de688",
+    "include\\gnss_clock.h": "432ddf6aa8232bb71c3da17b5173162cb17195b27d17c200c7b4409f6c6af08b",
+    "include\\gnss_clock_tests.h": "b7678fb8ab8c53b56dc4b380c070216eae7ec748afcc6ca225b1633893bf4d86",
+    "include\\station_attempt.h": "c7d45756e1762f8a1107be4311afb5adae2a07445d3e8260bb410e9377b549b7"
+  },
+  "intermediateReports": {
+    "shared-input": {
+      "createdAt": "2026-10-31T14:52:20.418906+00:00",
+      "passedForItsRecordedBuild": true,
+      "fileSha256": "7c37fc513682385a4368256cd18e02eae6f7169a100268fdf9a18ad8674104c3",
+      "stations": {
+        "A": {
+          "boardId": "441bf6f8e9a4",
+          "firmwareHash": "70a2142b72c6a22ba97c82bc2d8d300ad5700d569202035e586e2b9b6e011226"
+        },
+        "B": {
+          "boardId": "441bf6f8eaac",
+          "firmwareHash": "375da3d2c47e60f16c6251763c967dd268e10a1caa8900865159af08256bba81"
+        }
+      }
+    },
+    "end-to-end": {
+      "createdAt": "2026-10-31T14:27:15.421118+00:00",
+      "passedForItsRecordedBuild": true,
+      "fileSha256": "25f9b84ce4f8222808547bdf61578284d8c40a96e87233a07a93a50145152dd3",
+      "stations": null
+    },
+    "radio-workflow": {
+      "createdAt": "2026-10-31T14:29:39.618990+00:00",
+      "passedForItsRecordedBuild": true,
+      "fileSha256": "344de003e09cd4a5df4ef6d98ed0dac25e9c73ec6be317538397e963036ae270",
+      "stations": {
+        "B": {
+          "station": "B",
+          "boot": "3622f4f7",
+          "type": "status",
+          "tracking": true,
+          "clock": "TRACKING",
+          "generation": 1,
+          "accuracy": "unverified",
+          "radioCreditUs": 5701120,
+          "boardId": "441bf6f8eaac",
+          "firmwareHash": "27dbe5ec805793cad3a426194278d6a7ee4283170bc2a0684ab9f2e1e9c229b0"
+        },
+        "A": {
+          "station": "A",
+          "boot": "1f384c55",
+          "type": "status",
+          "tracking": true,
+          "generation": 1,
+          "accuracy": "unverified",
+          "boardId": "441bf6f8e9a4",
+          "firmwareHash": "2adc7f3bb2b9ee1728db79d93e7f47b09aa989521e9eab663f2393cc6e6cc997"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Intermediate electrical agreement does not certify the final source build.",
+    "The current shared-input and older complete/radio reports refer to different firmware hashes.",
+    "Optical gates, long-term temperature accuracy and 200\u2013300 metre range are not verified."
+  ],
+  "nextSteps": [
+    "Reconnect both USB boards",
+    "Upload current lora_A/lora_B",
+    "Run all three physical scripts",
+    "Run tools/sync_automatic.py and application/browser tests",
+    "Refresh documentation with matching reports"
+  ]
+}
