@@ -202,12 +202,8 @@
 ## Combined GNSS timing implementation and verification — 2026-10-31
 
 - Work resumed at the owner's request, including automatic A+B HTML integration.
-- Latest firmware builds, but final upload/physical acceptance is pending.
-  Both USB boards disappeared from Windows; only Bluetooth COM6/COM7 remained.
-  Do not claim final-source 1 ms accuracy or a finished competition system.
-  Shared-input and earlier complete/radio reports currently have different hashes.
-  Next hardware work: reconnect, upload, rerun physical reports, sync HTML and
-  run browser tests. Read-only inspection and independent software work can proceed.
+- A's final no-fix condition was resolved after the owner found and reconnected
+  the disconnected GNSS antenna or lead; both stations then passed physical tests.
 - Current implementation: `lora_A` / `lora_B` in `src/lora_test.cpp`; portable clock
   and station ledger headers in `include/`; standalone HTML has manual and combined
   automatic modes with dual USB or A LoRa + B USB. Independent mode and GNSS-free
@@ -216,10 +212,10 @@
   Five valid sequential epochs establish tracking; stale/invalid references fail
   closed. UART gaps invalidate acquisition. Read-only CFGTP is retried after cold
   boot. Confirmed module: UC6580I-00, R6.0.0.0Build3700, CFGTP 1000000/500000/1/0/0/0.
-- Intermediate common-input report: 24 pulses, maximum absolute difference 6 us
+- Final common-input report: 24 pulses, maximum absolute difference 5 us
   against a 1000 us criterion. Four full GPIO/LoRa/USB/application cycles and USB
   recovery passed. Radio tests cover immediate cancellation/re-preparation,
-  The new archived-ARM replay and absent-attempt assertions still need hardware.
+  archived-ARM replay rejection and cancellation of absent attempts.
 - These are relative electrical-input measurements, not absolute UTC traceability,
   optical-gate accuracy, long-term temperature validation or 200–300 m range proof.
   Raw SYNC=UNVERIFIED remains deliberate. Do not broaden the accuracy claim.

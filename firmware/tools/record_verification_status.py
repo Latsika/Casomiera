@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,6 +37,31 @@ status = {
     ],
     "nextSteps": ["Reconnect both USB boards", "Upload current lora_A/lora_B", "Run all three physical scripts", "Run tools/sync_automatic.py and application/browser tests", "Refresh documentation with matching reports"],
 }
+if "--verified" in sys.argv:
+    shared = json.loads((firmware / "test-results/shared-input.json").read_text(encoding="utf-8"))
+    radio = json.loads((firmware / "test-results/radio-workflow.json").read_text(encoding="utf-8"))
+    if not all(report["passedForItsRecordedBuild"] for report in reports.values()):
+        raise SystemExit("All physical reports must pass.")
+    for station in ("A", "B"):
+        if shared["stations"][station]["firmwareHash"] != radio["stations"][station]["firmwareHash"]:
+            raise SystemExit("Physical reports must identify the same firmware builds.")
+    binaries = [firmware / ".pio/build" / environment / "firmware.bin" for environment in builds]
+    newest_build = max(path.stat().st_mtime for path in binaries)
+    if any(datetime.fromisoformat(report["createdAt"]).timestamp() < newest_build for report in reports.values()):
+        raise SystemExit("Physical reports must be newer than the current binaries.")
+    if max(path.stat().st_mtime for path in source_files) > min(path.stat().st_mtime for path in binaries):
+        raise SystemExit("Firmware source changed after the build.")
+    status["status"] = "relative_electrical_input_and_protocol_verification_passed"
+    status["latestUpload"] = "succeeded_on_both_identified_boards"
+    status["verifiedStations"] = shared["stations"]
+    status["maximumObservedDifferenceUs"] = shared["maximumAbsoluteDifferenceUs"]
+    status["limitations"] = [
+        "Observed relative electrical-input agreement is not absolute UTC traceability or a complete optical-gate system certification.",
+        "Optical gates, long-term temperature accuracy and 200–300 metre range are not verified.",
+        "Board records are RAM-only; power/reset recovery remains limited.",
+    ]
+    status["nextSteps"] = ["Use separate inputs for normal START/STOP operation", "Revalidate after firmware or hardware changes", "Validate optical interfaces and operational range before competition use"]
+    status["recordedReports"] = status.pop("intermediateReports")
 target = firmware / "test-results/verification-status.json"
 target.write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
 print(target)

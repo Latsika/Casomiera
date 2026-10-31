@@ -339,28 +339,6 @@ The owner resumed development and authorized firmware, application, documentatio
 commit and push work. This section supersedes earlier statements that combined
 timing and HTML integration are unimplemented or waiting for a replacement board.
 
-### Current completion status: hardware connection required
-
-The latest source builds successfully for both stations, and its application tests
-pass. Its final upload was attempted but could not run because Windows no longer
-listed either USB board (COM3/COM5). The final radio-budget revision is therefore
-**not uploaded or physically verified**. Do not describe the latest source as a
-completed, fully verified 1 ms competition system.
-Build/source hashes and report provenance are recorded in
-[verification-status.json](firmware/test-results/verification-status.json).
-
-The recorded physical results below are from earlier intermediate builds: the
-latest shared-input report and the earlier complete/radio reports do not refer to
-the same firmware hashes. They establish prior observed electrical agreement and
-working protocol paths, not final-build acceptance. Earlier tests reached 5–8 us
-relative agreement; the latest shared-input report records its own exact result.
-
-Next: reconnect both boards, verify their MAC/port mapping, keep the common-input
-wires for testing, upload the current source and rerun shared-input, end-to-end and
-radio-workflow tests. Then regenerate the embedded HTML verification report and
-run the application/browser tests. Good GNSS reception is required for physical
-tests. Do not bypass the HTML board/build guard to use an unverified binary.
-
 ### Implemented behavior
 
 - The existing standalone HTML application has manual judge timing and a selectable
@@ -417,10 +395,11 @@ claim of 1 ms accuracy for human-operated browser stopwatches.
 
 ### Verification and its limits
 
-- Both latest environments build successfully. Earlier builds were uploaded;
-  the final upload is pending reconnection, as described above.
-- The latest intermediate GPIO6 common-input test passed: **24 impulses**, maximum
-  absolute A/B difference **6 microseconds** (0.006 ms), against
+- The owner found A's GNSS antenna or antenna lead disconnected and reconnected
+  it. Both stations then acquired valid GNSS time and completed the tests below.
+- Both `lora_A` and `lora_B` built and were uploaded successfully.
+- The final recorded GPIO6 common-input test passed: **24 impulses**, maximum
+  absolute A/B difference **5 microseconds** (0.005 ms), against
   a 1000-microsecond acceptance threshold. See
   [shared-input.json](firmware/test-results/shared-input.json) for individual samples,
   board MAC identifiers and exact ELF firmware hashes.
@@ -428,8 +407,7 @@ claim of 1 ms accuracy for human-operated browser stopwatches.
   repeated-START rejection and identical record retrieval after reopening finish USB.
   See [end-to-end.json](firmware/test-results/end-to-end.json).
 - Three radio prepare/GET/cancel/re-prepare cycles passed without a fixed 30-second
-  delay. The new archived-ARM replay and absent-attempt cancellation assertions still
-  require the final hardware run.
+  delay. Tests also replay an archived ARM token and cancel a never-prepared attempt.
   See [radio-workflow.json](firmware/test-results/radio-workflow.json).
 - Deterministic clock/ledger self-tests run on both boards. Node tests cover attempt
   binding, invalid events, late/duplicate messages, cancellation and retention.
@@ -439,6 +417,9 @@ claim of 1 ms accuracy for human-operated browser stopwatches.
 - The HTML embeds the physical verification report and checks board IDs and firmware
   hashes before preparing an automatic attempt. A different/rebuilt firmware requires
   another physical test and regeneration of the embedded verification data.
+
+Build/source hashes and matching report provenance are recorded in
+[verification-status.json](firmware/test-results/verification-status.json).
 
 This is observed relative agreement on the tested electrical inputs and firmware,
 not an absolute UTC calibration or a certification of the entire competition system.
@@ -501,6 +482,8 @@ python -B test/radio_workflow.py
 python -B tools/sync_automatic.py
 node test/automatic-timing.test.cjs
 node test/browser-automatic.cjs
+python -B tools/document_automatic.py
+python -B tools/record_verification_status.py --verified
 ```
 
 Run these from `firmware/`. Physical scripts need the two confirmed common-input

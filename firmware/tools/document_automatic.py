@@ -80,6 +80,8 @@ claim of 1 ms accuracy for human-operated browser stopwatches.
 
 ### Verification and its limits
 
+- The owner found A's GNSS antenna or antenna lead disconnected and reconnected
+  it. Both stations then acquired valid GNSS time and completed the tests below.
 - Both `lora_A` and `lora_B` built and were uploaded successfully.
 - The final recorded GPIO6 common-input test passed: **{count} impulses**, maximum
   absolute A/B difference **{maximum} microseconds** ({maximum / 1000:.3f} ms), against
@@ -100,6 +102,9 @@ claim of 1 ms accuracy for human-operated browser stopwatches.
 - The HTML embeds the physical verification report and checks board IDs and firmware
   hashes before preparing an automatic attempt. A different/rebuilt firmware requires
   another physical test and regeneration of the embedded verification data.
+
+Build/source hashes and matching report provenance are recorded in
+[verification-status.json](firmware/test-results/verification-status.json).
 
 This is observed relative agreement on the tested electrical inputs and firmware,
 not an absolute UTC calibration or a certification of the entire competition system.
@@ -162,6 +167,8 @@ python -B test/radio_workflow.py
 python -B tools/sync_automatic.py
 node test/automatic-timing.test.cjs
 node test/browser-automatic.cjs
+python -B tools/document_automatic.py
+python -B tools/record_verification_status.py --verified
 ```
 
 Run these from `firmware/`. Physical scripts need the two confirmed common-input
@@ -208,6 +215,8 @@ tests. Do not bypass the HTML board/build guard to use an unverified binary.
 agents = f"""{heading}
 
 - Work resumed at the owner's request, including automatic A+B HTML integration.
+- A's final no-fix condition was resolved after the owner found and reconnected
+  the disconnected GNSS antenna or lead; both stations then passed physical tests.
 - Current implementation: `lora_A` / `lora_B` in `src/lora_test.cpp`; portable clock
   and station ledger headers in `include/`; standalone HTML has manual and combined
   automatic modes with dual USB or A LoRa + B USB. Independent mode and GNSS-free

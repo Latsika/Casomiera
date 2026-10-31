@@ -1,376 +1,388 @@
 {
-  "createdAt": "2026-10-31T14:27:15.421118+00:00",
+  "createdAt": "2026-10-31T16:16:47.419453+00:00",
   "passed": true,
   "cycles": [
     {
-      "id": "bench_177f37a0a33e439a905e8624",
+      "id": "bench_24869837638042b6a7c2be73",
       "messages": [
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "armed",
-          "id": "bench_177f37a0a33e439a905e8624",
+          "id": "bench_24869837638042b6a7c2be73",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_177f37a0a33e439a905e8624",
-          "localUs": "133746068",
-          "utcUs": "1793456822538402",
-          "generation": 1,
+          "id": "bench_24869837638042b6a7c2be73",
+          "localUs": "305189145",
+          "utcUs": "1793463393224458",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "armed",
-          "id": "bench_177f37a0a33e439a905e8624",
+          "id": "bench_24869837638042b6a7c2be73",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_177f37a0a33e439a905e8624",
-          "localUs": "84138070",
-          "utcUs": "1793456823156623",
-          "generation": 1,
+          "id": "bench_24869837638042b6a7c2be73",
+          "localUs": "821073311",
+          "utcUs": "1793463393845284",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_177f37a0a33e439a905e8624",
-          "localUs": "84138070",
-          "utcUs": "1793456823156623",
-          "generation": 1,
+          "id": "bench_24869837638042b6a7c2be73",
+          "localUs": "821073311",
+          "utcUs": "1793463393845284",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_177f37a0a33e439a905e8624",
-          "localUs": "133746068",
-          "utcUs": "1793456822538402",
-          "generation": 1,
+          "id": "bench_24869837638042b6a7c2be73",
+          "localUs": "305189145",
+          "utcUs": "1793463393224458",
+          "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "1f384c55",
+        "boot": "e4b6a29f",
         "type": "event",
-        "id": "bench_177f37a0a33e439a905e8624",
-        "localUs": "133746068",
-        "utcUs": "1793456822538402",
-        "generation": 1,
+        "id": "bench_24869837638042b6a7c2be73",
+        "localUs": "305189145",
+        "utcUs": "1793463393224458",
+        "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "3622f4f7",
+        "boot": "1e53f439",
         "type": "event",
-        "id": "bench_177f37a0a33e439a905e8624",
-        "localUs": "84138070",
-        "utcUs": "1793456823156623",
-        "generation": 1,
+        "id": "bench_24869837638042b6a7c2be73",
+        "localUs": "821073311",
+        "utcUs": "1793463393845284",
+        "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "618221",
-        "elapsedMs": 618
+        "elapsedUs": "620826",
+        "elapsedMs": 621
       }
     },
     {
-      "id": "bench_0f80100e9ddc4c9591988fca",
+      "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
       "messages": [
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "armed",
-          "id": "bench_0f80100e9ddc4c9591988fca",
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_0f80100e9ddc4c9591988fca",
-          "localUs": "136258721",
-          "utcUs": "1793456825051039",
-          "generation": 1,
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "localUs": "308060543",
+          "utcUs": "1793463396095847",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "armed",
-          "id": "bench_0f80100e9ddc4c9591988fca",
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_0f80100e9ddc4c9591988fca",
-          "localUs": "87214876",
-          "utcUs": "1793456826233416",
-          "generation": 1,
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "localUs": "824511008",
+          "utcUs": "1793463397282972",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_0f80100e9ddc4c9591988fca",
-          "localUs": "87214876",
-          "utcUs": "1793456826233416",
-          "generation": 1,
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "localUs": "824511008",
+          "utcUs": "1793463397282972",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_0f80100e9ddc4c9591988fca",
-          "localUs": "136258721",
-          "utcUs": "1793456825051039",
-          "generation": 1,
+          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "localUs": "308060543",
+          "utcUs": "1793463396095847",
+          "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "1f384c55",
+        "boot": "e4b6a29f",
         "type": "event",
-        "id": "bench_0f80100e9ddc4c9591988fca",
-        "localUs": "136258721",
-        "utcUs": "1793456825051039",
-        "generation": 1,
+        "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+        "localUs": "308060543",
+        "utcUs": "1793463396095847",
+        "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "3622f4f7",
+        "boot": "1e53f439",
         "type": "event",
-        "id": "bench_0f80100e9ddc4c9591988fca",
-        "localUs": "87214876",
-        "utcUs": "1793456826233416",
-        "generation": 1,
+        "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+        "localUs": "824511008",
+        "utcUs": "1793463397282972",
+        "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "1182377",
-        "elapsedMs": 1182
+        "elapsedUs": "1187125",
+        "elapsedMs": 1187
       }
     },
     {
-      "id": "bench_3bbcab8e8ab24fef9f8c0288",
+      "id": "bench_a205a20ab9d64c54a7e2c572",
       "messages": [
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "armed",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
+          "id": "bench_a205a20ab9d64c54a7e2c572",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
-          "localUs": "139274465",
-          "utcUs": "1793456828066766",
-          "generation": 1,
+          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "localUs": "311622079",
+          "utcUs": "1793463399657372",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "armed",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
+          "id": "bench_a205a20ab9d64c54a7e2c572",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
-          "localUs": "90822476",
-          "utcUs": "1793456829841005",
-          "generation": 1,
+          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "localUs": "828760494",
+          "utcUs": "1793463401532442",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
-          "localUs": "90822476",
-          "utcUs": "1793456829841005",
-          "generation": 1,
+          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "localUs": "828760494",
+          "utcUs": "1793463401532442",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_3bbcab8e8ab24fef9f8c0288",
-          "localUs": "139274465",
-          "utcUs": "1793456828066766",
-          "generation": 1,
+          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "localUs": "311622079",
+          "utcUs": "1793463399657372",
+          "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "1f384c55",
+        "boot": "e4b6a29f",
         "type": "event",
-        "id": "bench_3bbcab8e8ab24fef9f8c0288",
-        "localUs": "139274465",
-        "utcUs": "1793456828066766",
-        "generation": 1,
+        "id": "bench_a205a20ab9d64c54a7e2c572",
+        "localUs": "311622079",
+        "utcUs": "1793463399657372",
+        "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "3622f4f7",
+        "boot": "1e53f439",
         "type": "event",
-        "id": "bench_3bbcab8e8ab24fef9f8c0288",
-        "localUs": "90822476",
-        "utcUs": "1793456829841005",
-        "generation": 1,
+        "id": "bench_a205a20ab9d64c54a7e2c572",
+        "localUs": "828760494",
+        "utcUs": "1793463401532442",
+        "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "1774239",
-        "elapsedMs": 1774
+        "elapsedUs": "1875070",
+        "elapsedMs": 1875
       }
     },
     {
-      "id": "bench_e4d2cf53c62a4fbea3412bec",
+      "id": "bench_eb465249d9ba4de59c2eaf02",
       "messages": [
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "armed",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
+          "id": "bench_eb465249d9ba4de59c2eaf02",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
-          "localUs": "142881459",
-          "utcUs": "1793456831673742",
-          "generation": 1,
+          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "localUs": "315674635",
+          "utcUs": "1793463403709911",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "armed",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
+          "id": "bench_eb465249d9ba4de59c2eaf02",
           "localUs": "0",
           "utcUs": "0",
-          "generation": 1,
+          "generation": 0,
           "valid": false
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
-          "localUs": "95137995",
-          "utcUs": "1793456834156509",
-          "generation": 1,
+          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "localUs": "833419486",
+          "utcUs": "1793463406191427",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "3622f4f7",
+          "boot": "1e53f439",
           "type": "event",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
-          "localUs": "95137995",
-          "utcUs": "1793456834156509",
-          "generation": 1,
+          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "localUs": "833419486",
+          "utcUs": "1793463406191427",
+          "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "1f384c55",
+          "boot": "e4b6a29f",
           "type": "event",
-          "id": "bench_e4d2cf53c62a4fbea3412bec",
-          "localUs": "142881459",
-          "utcUs": "1793456831673742",
-          "generation": 1,
+          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "localUs": "315674635",
+          "utcUs": "1793463403709911",
+          "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "1f384c55",
+        "boot": "e4b6a29f",
         "type": "event",
-        "id": "bench_e4d2cf53c62a4fbea3412bec",
-        "localUs": "142881459",
-        "utcUs": "1793456831673742",
-        "generation": 1,
+        "id": "bench_eb465249d9ba4de59c2eaf02",
+        "localUs": "315674635",
+        "utcUs": "1793463403709911",
+        "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "3622f4f7",
+        "boot": "1e53f439",
         "type": "event",
-        "id": "bench_e4d2cf53c62a4fbea3412bec",
-        "localUs": "95137995",
-        "utcUs": "1793456834156509",
-        "generation": 1,
+        "id": "bench_eb465249d9ba4de59c2eaf02",
+        "localUs": "833419486",
+        "utcUs": "1793463406191427",
+        "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "2482767",
-        "elapsedMs": 2483
+        "elapsedUs": "2481516",
+        "elapsedMs": 2482
       }
     }
   ],
   "transcript": [
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_177f37a0a33e439a905e8624"
+      "command": "REMOTE_ARM bench_24869837638042b6a7c2be73"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_24869837638042b6a7c2be73\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_24869837638042b6a7c2be73\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+    },
+    {
+      "port": "B",
+      "command": "REMOTE_ARM bench_24869837638042b6a7c2be73"
+    },
+    {
+      "port": "A",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -382,11 +394,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=25 LOCAL_US=133746068 UTC_US=1793456822538402 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=25 LOCAL_US=305189145 UTC_US=1793463393224458 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -394,7 +406,7 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=25 LOCAL_US=83519841 UTC_US=1793456822538401 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=25 LOCAL_US=820452482 UTC_US=1793463393224459 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -402,15 +414,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_177f37a0a33e439a905e8624"
+      "command": "AUTO_ARM bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"armed\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -422,7 +434,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=26 LOCAL_US=134364298 UTC_US=1793456823156625 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=26 LOCAL_US=305809975 UTC_US=1793463393845282 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -430,15 +442,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"84138070\",\"utcUs\":\"1793456823156623\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_177f37a0a33e439a905e8624"
+      "command": "REMOTE_GET bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=26 LOCAL_US=84138070 UTC_US=1793456823156623 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=26 LOCAL_US=821073311 UTC_US=1793463393845284 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -446,59 +458,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_177f37a0a33e439a905e8624"
+      "command": "AUTO_GET bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"84138070\",\"utcUs\":\"1793456823156623\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_177f37a0a33e439a905e8624"
+      "command": "REMOTE_GET bench_24869837638042b6a7c2be73"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_177f37a0a33e439a905e8624"
+      "command": "AUTO_COMPLETE bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"complete\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"84138070\",\"utcUs\":\"1793456823156623\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_177f37a0a33e439a905e8624"
+      "command": "REMOTE_COMPLETE bench_24869837638042b6a7c2be73"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_177f37a0a33e439a905e8624\",\"localUs\":\"133746068\",\"utcUs\":\"1793456822538402\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_177f37a0a33e439a905e8624"
+      "command": "AUTO_ARCHIVE bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_177f37a0a33e439a905e8624"
+      "command": "REMOTE_ARCHIVE bench_24869837638042b6a7c2be73"
     },
     {
       "port": "B",
@@ -510,15 +522,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_0f80100e9ddc4c9591988fca"
+      "command": "REMOTE_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+    },
+    {
+      "port": "B",
+      "command": "REMOTE_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
+    },
+    {
+      "port": "A",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -530,11 +554,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=27 LOCAL_US=136258721 UTC_US=1793456825051039 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=27 LOCAL_US=308060543 UTC_US=1793463396095847 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -542,7 +566,7 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=27 LOCAL_US=86032494 UTC_US=1793456825051039 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=27 LOCAL_US=823323878 UTC_US=1793463396095847 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -550,15 +574,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_0f80100e9ddc4c9591988fca"
+      "command": "AUTO_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"armed\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -569,16 +593,8 @@
       "response": "TEST_PULSE BEGIN"
     },
     {
-      "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"87214876\",\"utcUs\":\"1793456826233416\",\"generation\":1,\"valid\":true}"
-    },
-    {
-      "port": "B",
-      "command": "REMOTE_GET bench_0f80100e9ddc4c9591988fca"
-    },
-    {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=28 LOCAL_US=137441106 UTC_US=1793456826233418 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=28 LOCAL_US=309247674 UTC_US=1793463397282974 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -586,7 +602,15 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=28 LOCAL_US=87214876 UTC_US=1793456826233416 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
+    },
+    {
+      "port": "B",
+      "command": "REMOTE_GET bench_02ed0d9bdfe64c56a0c2ccb5"
+    },
+    {
+      "port": "B",
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=28 LOCAL_US=824511008 UTC_US=1793463397282972 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -594,59 +618,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_0f80100e9ddc4c9591988fca"
+      "command": "AUTO_GET bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"87214876\",\"utcUs\":\"1793456826233416\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_0f80100e9ddc4c9591988fca"
+      "command": "REMOTE_GET bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_0f80100e9ddc4c9591988fca"
+      "command": "AUTO_COMPLETE bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"complete\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"87214876\",\"utcUs\":\"1793456826233416\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_0f80100e9ddc4c9591988fca"
+      "command": "REMOTE_COMPLETE bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_0f80100e9ddc4c9591988fca\",\"localUs\":\"136258721\",\"utcUs\":\"1793456825051039\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_0f80100e9ddc4c9591988fca"
+      "command": "AUTO_ARCHIVE bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_0f80100e9ddc4c9591988fca"
+      "command": "REMOTE_ARCHIVE bench_02ed0d9bdfe64c56a0c2ccb5"
     },
     {
       "port": "B",
@@ -658,15 +682,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "REMOTE_ARM bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+    },
+    {
+      "port": "B",
+      "command": "REMOTE_ARM bench_a205a20ab9d64c54a7e2c572"
+    },
+    {
+      "port": "A",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -678,11 +714,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=29 LOCAL_US=139274465 UTC_US=1793456828066766 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=29 LOCAL_US=311622079 UTC_US=1793463399657372 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -690,7 +726,7 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=29 LOCAL_US=89048233 UTC_US=1793456828066766 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=29 LOCAL_US=826885409 UTC_US=1793463399657366 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -698,15 +734,23 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "AUTO_ARM bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"armed\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+    },
+    {
+      "port": "B",
+      "command": "AUTO_ARM bench_a205a20ab9d64c54a7e2c572"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -718,7 +762,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=30 LOCAL_US=141048710 UTC_US=1793456829841004 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=30 LOCAL_US=313497162 UTC_US=1793463401532452 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -726,15 +770,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"90822476\",\"utcUs\":\"1793456829841005\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "REMOTE_GET bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=30 LOCAL_US=90822476 UTC_US=1793456829841005 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=30 LOCAL_US=828760494 UTC_US=1793463401532442 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -742,59 +786,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "AUTO_GET bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"90822476\",\"utcUs\":\"1793456829841005\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "REMOTE_GET bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "AUTO_COMPLETE bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"complete\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"90822476\",\"utcUs\":\"1793456829841005\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "REMOTE_COMPLETE bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_3bbcab8e8ab24fef9f8c0288\",\"localUs\":\"139274465\",\"utcUs\":\"1793456828066766\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "AUTO_ARCHIVE bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_3bbcab8e8ab24fef9f8c0288"
+      "command": "REMOTE_ARCHIVE bench_a205a20ab9d64c54a7e2c572"
     },
     {
       "port": "B",
@@ -806,15 +850,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_e4d2cf53c62a4fbea3412bec"
+      "command": "REMOTE_ARM bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"armed\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+    },
+    {
+      "port": "B",
+      "command": "REMOTE_ARM bench_eb465249d9ba4de59c2eaf02"
+    },
+    {
+      "port": "A",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -826,11 +882,19 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+    },
+    {
+      "port": "B",
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=31 LOCAL_US=830937964 UTC_US=1793463403709906 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+    },
+    {
+      "port": "B",
+      "response": "BUTTON B PRESSED 31"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=31 LOCAL_US=142881459 UTC_US=1793456831673742 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=31 LOCAL_US=315674635 UTC_US=1793463403709911 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -838,23 +902,15 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=31 LOCAL_US=92655221 UTC_US=1793456831673739 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "BUTTON B PRESSED 31"
+      "command": "AUTO_ARM bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
-    },
-    {
-      "port": "B",
-      "command": "AUTO_ARM bench_e4d2cf53c62a4fbea3412bec"
-    },
-    {
-      "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"armed\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":1,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -866,7 +922,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=1f384c55 NUMBER=32 LOCAL_US=145364235 UTC_US=1793456834156507 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=32 LOCAL_US=318156157 UTC_US=1793463406191427 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -874,15 +930,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"95137995\",\"utcUs\":\"1793456834156509\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_e4d2cf53c62a4fbea3412bec"
+      "command": "REMOTE_GET bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=3622f4f7 NUMBER=32 LOCAL_US=95137995 UTC_US=1793456834156509 CLOCK_GENERATION=1 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=32 LOCAL_US=833419486 UTC_US=1793463406191427 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -890,59 +946,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_e4d2cf53c62a4fbea3412bec"
+      "command": "AUTO_GET bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"95137995\",\"utcUs\":\"1793456834156509\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_e4d2cf53c62a4fbea3412bec"
+      "command": "REMOTE_GET bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"event\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_e4d2cf53c62a4fbea3412bec"
+      "command": "AUTO_COMPLETE bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"3622f4f7\",\"type\":\"complete\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"95137995\",\"utcUs\":\"1793456834156509\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_e4d2cf53c62a4fbea3412bec"
+      "command": "REMOTE_COMPLETE bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"1f384c55\",\"type\":\"complete\",\"id\":\"bench_e4d2cf53c62a4fbea3412bec\",\"localUs\":\"142881459\",\"utcUs\":\"1793456831673742\",\"generation\":1,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_e4d2cf53c62a4fbea3412bec"
+      "command": "AUTO_ARCHIVE bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_e4d2cf53c62a4fbea3412bec"
+      "command": "REMOTE_ARCHIVE bench_eb465249d9ba4de59c2eaf02"
     },
     {
       "port": "B",
