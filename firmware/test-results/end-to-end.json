@@ -1,15 +1,16 @@
 {
-  "createdAt": "2026-10-31T16:16:47.419453+00:00",
+  "createdAt": "2026-11-01T13:28:45.186223+00:00",
   "passed": true,
+  "usbStation": "B",
   "cycles": [
     {
-      "id": "bench_24869837638042b6a7c2be73",
+      "id": "bench_9608093e344d4a9b9b93d335",
       "messages": [
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "armed",
-          "id": "bench_24869837638042b6a7c2be73",
+          "id": "bench_9608093e344d4a9b9b93d335",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -17,19 +18,19 @@
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_24869837638042b6a7c2be73",
-          "localUs": "305189145",
-          "utcUs": "1793463393224458",
+          "id": "bench_9608093e344d4a9b9b93d335",
+          "localUs": "507092438",
+          "utcUs": "1793539710791628",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "armed",
-          "id": "bench_24869837638042b6a7c2be73",
+          "id": "bench_9608093e344d4a9b9b93d335",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -37,68 +38,68 @@
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_24869837638042b6a7c2be73",
-          "localUs": "821073311",
-          "utcUs": "1793463393845284",
+          "id": "bench_9608093e344d4a9b9b93d335",
+          "localUs": "767231121",
+          "utcUs": "1793539711415521",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_24869837638042b6a7c2be73",
-          "localUs": "821073311",
-          "utcUs": "1793463393845284",
+          "id": "bench_9608093e344d4a9b9b93d335",
+          "localUs": "767231121",
+          "utcUs": "1793539711415521",
           "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_24869837638042b6a7c2be73",
-          "localUs": "305189145",
-          "utcUs": "1793463393224458",
+          "id": "bench_9608093e344d4a9b9b93d335",
+          "localUs": "507092438",
+          "utcUs": "1793539710791628",
           "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "e4b6a29f",
+        "boot": "cb7359f3",
         "type": "event",
-        "id": "bench_24869837638042b6a7c2be73",
-        "localUs": "305189145",
-        "utcUs": "1793463393224458",
+        "id": "bench_9608093e344d4a9b9b93d335",
+        "localUs": "507092438",
+        "utcUs": "1793539710791628",
         "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "1e53f439",
+        "boot": "bc465de9",
         "type": "event",
-        "id": "bench_24869837638042b6a7c2be73",
-        "localUs": "821073311",
-        "utcUs": "1793463393845284",
+        "id": "bench_9608093e344d4a9b9b93d335",
+        "localUs": "767231121",
+        "utcUs": "1793539711415521",
         "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "620826",
-        "elapsedMs": 621
+        "elapsedUs": "623893",
+        "elapsedMs": 624
       }
     },
     {
-      "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+      "id": "bench_bd60d6ec6b054f70b8c1f804",
       "messages": [
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "armed",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -106,19 +107,19 @@
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-          "localUs": "308060543",
-          "utcUs": "1793463396095847",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
+          "localUs": "510020907",
+          "utcUs": "1793539713720079",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "armed",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -126,68 +127,68 @@
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-          "localUs": "824511008",
-          "utcUs": "1793463397282972",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
+          "localUs": "770715576",
+          "utcUs": "1793539714899960",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-          "localUs": "824511008",
-          "utcUs": "1793463397282972",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
+          "localUs": "770715576",
+          "utcUs": "1793539714899960",
           "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-          "localUs": "308060543",
-          "utcUs": "1793463396095847",
+          "id": "bench_bd60d6ec6b054f70b8c1f804",
+          "localUs": "510020907",
+          "utcUs": "1793539713720079",
           "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "e4b6a29f",
+        "boot": "cb7359f3",
         "type": "event",
-        "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-        "localUs": "308060543",
-        "utcUs": "1793463396095847",
+        "id": "bench_bd60d6ec6b054f70b8c1f804",
+        "localUs": "510020907",
+        "utcUs": "1793539713720079",
         "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "1e53f439",
+        "boot": "bc465de9",
         "type": "event",
-        "id": "bench_02ed0d9bdfe64c56a0c2ccb5",
-        "localUs": "824511008",
-        "utcUs": "1793463397282972",
+        "id": "bench_bd60d6ec6b054f70b8c1f804",
+        "localUs": "770715576",
+        "utcUs": "1793539714899960",
         "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "1187125",
-        "elapsedMs": 1187
+        "elapsedUs": "1179881",
+        "elapsedMs": 1180
       }
     },
     {
-      "id": "bench_a205a20ab9d64c54a7e2c572",
+      "id": "bench_f1ff3800c8754b1f898f10ed",
       "messages": [
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "armed",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -195,19 +196,19 @@
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
-          "localUs": "311622079",
-          "utcUs": "1793463399657372",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
+          "localUs": "513456370",
+          "utcUs": "1793539717155519",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "armed",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -215,68 +216,68 @@
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
-          "localUs": "828760494",
-          "utcUs": "1793463401532442",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
+          "localUs": "774840826",
+          "utcUs": "1793539719025195",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
-          "localUs": "828760494",
-          "utcUs": "1793463401532442",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
+          "localUs": "774840826",
+          "utcUs": "1793539719025195",
           "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_a205a20ab9d64c54a7e2c572",
-          "localUs": "311622079",
-          "utcUs": "1793463399657372",
+          "id": "bench_f1ff3800c8754b1f898f10ed",
+          "localUs": "513456370",
+          "utcUs": "1793539717155519",
           "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "e4b6a29f",
+        "boot": "cb7359f3",
         "type": "event",
-        "id": "bench_a205a20ab9d64c54a7e2c572",
-        "localUs": "311622079",
-        "utcUs": "1793463399657372",
+        "id": "bench_f1ff3800c8754b1f898f10ed",
+        "localUs": "513456370",
+        "utcUs": "1793539717155519",
         "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "1e53f439",
+        "boot": "bc465de9",
         "type": "event",
-        "id": "bench_a205a20ab9d64c54a7e2c572",
-        "localUs": "828760494",
-        "utcUs": "1793463401532442",
+        "id": "bench_f1ff3800c8754b1f898f10ed",
+        "localUs": "774840826",
+        "utcUs": "1793539719025195",
         "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "1875070",
-        "elapsedMs": 1875
+        "elapsedUs": "1869676",
+        "elapsedMs": 1870
       }
     },
     {
-      "id": "bench_eb465249d9ba4de59c2eaf02",
+      "id": "bench_cc1f22ace17545358d7f9aa0",
       "messages": [
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "armed",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -284,19 +285,19 @@
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
-          "localUs": "315674635",
-          "utcUs": "1793463403709911",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
+          "localUs": "517531428",
+          "utcUs": "1793539721230558",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "armed",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
           "localUs": "0",
           "utcUs": "0",
           "generation": 0,
@@ -304,57 +305,57 @@
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
-          "localUs": "833419486",
-          "utcUs": "1793463406191427",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
+          "localUs": "779528535",
+          "utcUs": "1793539723712886",
           "generation": 0,
           "valid": true
         },
         {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "event",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
-          "localUs": "833419486",
-          "utcUs": "1793463406191427",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
+          "localUs": "779528535",
+          "utcUs": "1793539723712886",
           "generation": 0,
           "valid": true
         },
         {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "event",
-          "id": "bench_eb465249d9ba4de59c2eaf02",
-          "localUs": "315674635",
-          "utcUs": "1793463403709911",
+          "id": "bench_cc1f22ace17545358d7f9aa0",
+          "localUs": "517531428",
+          "utcUs": "1793539721230558",
           "generation": 0,
           "valid": true
         }
       ],
       "start": {
         "station": "A",
-        "boot": "e4b6a29f",
+        "boot": "cb7359f3",
         "type": "event",
-        "id": "bench_eb465249d9ba4de59c2eaf02",
-        "localUs": "315674635",
-        "utcUs": "1793463403709911",
+        "id": "bench_cc1f22ace17545358d7f9aa0",
+        "localUs": "517531428",
+        "utcUs": "1793539721230558",
         "generation": 0,
         "valid": true
       },
       "stop": {
         "station": "B",
-        "boot": "1e53f439",
+        "boot": "bc465de9",
         "type": "event",
-        "id": "bench_eb465249d9ba4de59c2eaf02",
-        "localUs": "833419486",
-        "utcUs": "1793463406191427",
+        "id": "bench_cc1f22ace17545358d7f9aa0",
+        "localUs": "779528535",
+        "utcUs": "1793539723712886",
         "generation": 0,
         "valid": true
       },
       "computed": {
-        "elapsedUs": "2481516",
+        "elapsedUs": "2482328",
         "elapsedMs": 2482
       }
     }
@@ -362,27 +363,27 @@
   "transcript": [
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_ARM bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_24869837638042b6a7c2be73\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_24869837638042b6a7c2be73\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_ARM bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -394,11 +395,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=25 LOCAL_US=305189145 UTC_US=1793463393224458 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=25 LOCAL_US=507092438 UTC_US=1793539710791628 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -406,7 +407,7 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=25 LOCAL_US=820452482 UTC_US=1793463393224459 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=25 LOCAL_US=766607219 UTC_US=1793539710791628 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -414,15 +415,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_24869837638042b6a7c2be73"
+      "command": "AUTO_ARM bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -434,7 +435,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=26 LOCAL_US=305809975 UTC_US=1793463393845282 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=26 LOCAL_US=507716337 UTC_US=1793539711415521 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -442,15 +443,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"767231121\",\"utcUs\":\"1793539711415521\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_GET bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=26 LOCAL_US=821073311 UTC_US=1793463393845284 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=26 LOCAL_US=767231121 UTC_US=1793539711415521 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -458,59 +459,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_24869837638042b6a7c2be73"
+      "command": "AUTO_GET bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"767231121\",\"utcUs\":\"1793539711415521\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_GET bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_24869837638042b6a7c2be73"
+      "command": "AUTO_COMPLETE bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"821073311\",\"utcUs\":\"1793463393845284\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"complete\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"767231121\",\"utcUs\":\"1793539711415521\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_COMPLETE bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_24869837638042b6a7c2be73\",\"localUs\":\"305189145\",\"utcUs\":\"1793463393224458\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_9608093e344d4a9b9b93d335\",\"localUs\":\"507092438\",\"utcUs\":\"1793539710791628\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_24869837638042b6a7c2be73"
+      "command": "AUTO_ARCHIVE bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_24869837638042b6a7c2be73"
+      "command": "REMOTE_ARCHIVE bench_9608093e344d4a9b9b93d335"
     },
     {
       "port": "B",
@@ -522,27 +523,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_ARM bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_ARM bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -554,11 +555,19 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
+    },
+    {
+      "port": "B",
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=27 LOCAL_US=769535687 UTC_US=1793539713720075 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+    },
+    {
+      "port": "B",
+      "response": "BUTTON B PRESSED 27"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=27 LOCAL_US=308060543 UTC_US=1793463396095847 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=27 LOCAL_US=510020907 UTC_US=1793539713720079 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -566,23 +575,15 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=27 LOCAL_US=823323878 UTC_US=1793463396095847 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "BUTTON B PRESSED 27"
+      "command": "AUTO_ARM bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
-    },
-    {
-      "port": "B",
-      "command": "AUTO_ARM bench_02ed0d9bdfe64c56a0c2ccb5"
-    },
-    {
-      "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -594,7 +595,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=28 LOCAL_US=309247674 UTC_US=1793463397282974 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=28 LOCAL_US=511200796 UTC_US=1793539714899961 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -602,15 +603,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"770715576\",\"utcUs\":\"1793539714899960\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_GET bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=28 LOCAL_US=824511008 UTC_US=1793463397282972 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=28 LOCAL_US=770715576 UTC_US=1793539714899960 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -618,59 +619,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "AUTO_GET bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"770715576\",\"utcUs\":\"1793539714899960\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_GET bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "AUTO_COMPLETE bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"824511008\",\"utcUs\":\"1793463397282972\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"complete\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"770715576\",\"utcUs\":\"1793539714899960\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_COMPLETE bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_02ed0d9bdfe64c56a0c2ccb5\",\"localUs\":\"308060543\",\"utcUs\":\"1793463396095847\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_bd60d6ec6b054f70b8c1f804\",\"localUs\":\"510020907\",\"utcUs\":\"1793539713720079\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "AUTO_ARCHIVE bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_02ed0d9bdfe64c56a0c2ccb5"
+      "command": "REMOTE_ARCHIVE bench_bd60d6ec6b054f70b8c1f804"
     },
     {
       "port": "B",
@@ -682,27 +683,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_ARM bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_ARM bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -714,11 +715,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=29 LOCAL_US=311622079 UTC_US=1793463399657372 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=29 LOCAL_US=513456370 UTC_US=1793539717155519 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -726,7 +727,7 @@
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=29 LOCAL_US=826885409 UTC_US=1793463399657366 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=29 LOCAL_US=772971149 UTC_US=1793539717155522 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -734,23 +735,23 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_a205a20ab9d64c54a7e2c572"
+      "command": "AUTO_ARM bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"error\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"error\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_a205a20ab9d64c54a7e2c572"
+      "command": "AUTO_ARM bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -762,7 +763,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=30 LOCAL_US=313497162 UTC_US=1793463401532452 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=30 LOCAL_US=515326051 UTC_US=1793539719025197 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -770,15 +771,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"774840826\",\"utcUs\":\"1793539719025195\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_GET bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=30 LOCAL_US=828760494 UTC_US=1793463401532442 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=30 LOCAL_US=774840826 UTC_US=1793539719025195 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -786,59 +787,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_a205a20ab9d64c54a7e2c572"
+      "command": "AUTO_GET bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"774840826\",\"utcUs\":\"1793539719025195\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_GET bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_a205a20ab9d64c54a7e2c572"
+      "command": "AUTO_COMPLETE bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"828760494\",\"utcUs\":\"1793463401532442\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"complete\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"774840826\",\"utcUs\":\"1793539719025195\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_COMPLETE bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_a205a20ab9d64c54a7e2c572\",\"localUs\":\"311622079\",\"utcUs\":\"1793463399657372\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_f1ff3800c8754b1f898f10ed\",\"localUs\":\"513456370\",\"utcUs\":\"1793539717155519\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_a205a20ab9d64c54a7e2c572"
+      "command": "AUTO_ARCHIVE bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_a205a20ab9d64c54a7e2c572"
+      "command": "REMOTE_ARCHIVE bench_f1ff3800c8754b1f898f10ed"
     },
     {
       "port": "B",
@@ -850,27 +851,27 @@
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_ARM bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARM bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_ARM bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "B",
@@ -882,19 +883,11 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
-    },
-    {
-      "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=31 LOCAL_US=830937964 UTC_US=1793463403709906 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
-    },
-    {
-      "port": "B",
-      "response": "BUTTON B PRESSED 31"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=31 LOCAL_US=315674635 UTC_US=1793463403709911 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=31 LOCAL_US=517531428 UTC_US=1793539721230558 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -902,15 +895,23 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=31 LOCAL_US=777046204 UTC_US=1793539721230557 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
-      "command": "AUTO_ARM bench_eb465249d9ba4de59c2eaf02"
+      "response": "BUTTON B PRESSED 31"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
+    },
+    {
+      "port": "B",
+      "command": "AUTO_ARM bench_cc1f22ace17545358d7f9aa0"
+    },
+    {
+      "port": "B",
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
       "port": "A",
@@ -922,7 +923,7 @@
     },
     {
       "port": "A",
-      "response": "EVENT STATION=A BOOT=e4b6a29f NUMBER=32 LOCAL_US=318156157 UTC_US=1793463406191427 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=A BOOT=cb7359f3 NUMBER=32 LOCAL_US=520013763 UTC_US=1793539723712884 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "A",
@@ -930,15 +931,15 @@
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"779528535\",\"utcUs\":\"1793539723712886\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_GET bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "B",
-      "response": "EVENT STATION=B BOOT=1e53f439 NUMBER=32 LOCAL_US=833419486 UTC_US=1793463406191427 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
+      "response": "EVENT STATION=B BOOT=bc465de9 NUMBER=32 LOCAL_US=779528535 UTC_US=1793539723712886 CLOCK_GENERATION=0 VALID=1 ACCURACY=UNVERIFIED"
     },
     {
       "port": "B",
@@ -946,59 +947,59 @@
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_GET bench_eb465249d9ba4de59c2eaf02"
+      "command": "AUTO_GET bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"779528535\",\"utcUs\":\"1793539723712886\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_GET bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_GET bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"event\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"event\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_COMPLETE bench_eb465249d9ba4de59c2eaf02"
+      "command": "AUTO_COMPLETE bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"833419486\",\"utcUs\":\"1793463406191427\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"complete\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"779528535\",\"utcUs\":\"1793539723712886\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "REMOTE_COMPLETE bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_COMPLETE bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "A",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"complete\",\"id\":\"bench_eb465249d9ba4de59c2eaf02\",\"localUs\":\"315674635\",\"utcUs\":\"1793463403709911\",\"generation\":0,\"valid\":true}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"complete\",\"id\":\"bench_cc1f22ace17545358d7f9aa0\",\"localUs\":\"517531428\",\"utcUs\":\"1793539721230558\",\"generation\":0,\"valid\":true}"
     },
     {
       "port": "B",
-      "command": "AUTO_ARCHIVE bench_eb465249d9ba4de59c2eaf02"
+      "command": "AUTO_ARCHIVE bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "B",
-      "command": "REMOTE_ARCHIVE bench_eb465249d9ba4de59c2eaf02"
+      "command": "REMOTE_ARCHIVE bench_cc1f22ace17545358d7f9aa0"
     },
     {
       "port": "B",

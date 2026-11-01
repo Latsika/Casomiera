@@ -1,10 +1,11 @@
 {
-  "createdAt": "2026-10-31T16:17:07.498570+00:00",
+  "createdAt": "2026-11-01T13:28:58.549642+00:00",
   "passed": true,
+  "usbStation": "B",
   "stations": {
     "B": {
       "station": "B",
-      "boot": "1e53f439",
+      "boot": "bc465de9",
       "type": "status",
       "tracking": true,
       "clock": "TRACKING",
@@ -12,32 +13,32 @@
       "accuracy": "unverified",
       "radioCreditUs": 1249536,
       "boardId": "441bf6f8eaac",
-      "firmwareHash": "9aca669f9c813633657af581ebd884a7b4753d86db4065e8caf9c287405d81dc",
+      "firmwareHash": "44a9f5a9db40f508a851ce8dc270061f14474b00d99871441e37d1a86f4ff559",
       "radioCanPrepare": true
     },
     "A": {
       "station": "A",
-      "boot": "e4b6a29f",
+      "boot": "cb7359f3",
       "type": "status",
       "tracking": true,
       "generation": 0,
       "accuracy": "unverified",
       "boardId": "441bf6f8e9a4",
-      "firmwareHash": "d5e3c6fe9db13aa6468c13ebd4ce6fe3ba8817cdcd4aeb1b672549b7abc0df58"
+      "firmwareHash": "cc50cb07c61423e1635733f3cf330a2a106b2dbe711cd1b2a8565e0ddb471ed7"
     }
   },
   "cycles": [
     {
-      "id": "rf_c7d029b47b164503a79ec775",
+      "id": "rf_b0b9f47f75134afdb443be8f",
       "elapsedSeconds": 1.5
     },
     {
-      "id": "rf_cd305aee40bb4d4e808c2823",
-      "elapsedSeconds": 1.9059999999990396
+      "id": "rf_0f5651d11064426e91ad5583",
+      "elapsedSeconds": 1.9530000000086147
     },
     {
-      "id": "rf_3d97c2e49d6a4f6fb862b96e",
-      "elapsedSeconds": 1.5159999999996217
+      "id": "rf_333ae0072e4a426596c534d4",
+      "elapsedSeconds": 1.514999999999418
     }
   ],
   "transcript": [
@@ -48,166 +49,184 @@
       "command": "REMOTE_STATUS"
     },
     {
-      "command": "AUTO_ARM rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_ARM rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_ARM rf_c7d029b47b164503a79ec775"
+      "command": "AUTO_ARM rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "AUTO_GET rf_c7d029b47b164503a79ec775"
+      "command": "AUTO_GET rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_GET rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_GET rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "AUTO_CANCEL rf_c7d029b47b164503a79ec775"
+      "command": "AUTO_CANCEL rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_CANCEL rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_CANCEL rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"cancelled\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"cancelled\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"cancelled\",\"id\":\"rf_c7d029b47b164503a79ec775\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"cancelled\",\"id\":\"rf_b0b9f47f75134afdb443be8f\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "AUTO_ARCHIVE rf_c7d029b47b164503a79ec775"
+      "command": "AUTO_ARCHIVE rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_ARCHIVE rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_ARCHIVE rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_ARM rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_ARM rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "REMOTE_GET rf_c7d029b47b164503a79ec775"
+      "command": "REMOTE_GET rf_b0b9f47f75134afdb443be8f"
     },
     {
-      "command": "AUTO_ARM rf_cd305aee40bb4d4e808c2823"
+      "command": "REMOTE_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "REMOTE_ARM rf_cd305aee40bb4d4e808c2823"
+      "command": "AUTO_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"error\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"error\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
+      "command": "AUTO_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "REMOTE_ARM rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"error\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "AUTO_GET rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"error\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
-      "command": "REMOTE_GET rf_cd305aee40bb4d4e808c2823"
+      "command": "AUTO_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"error\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"reason\":\"RADIO_CREDIT_PENDING\"}"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "AUTO_CANCEL rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_CANCEL rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"cancelled\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_GET rf_0f5651d11064426e91ad5583"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"cancelled\",\"id\":\"rf_cd305aee40bb4d4e808c2823\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_GET rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "AUTO_ARCHIVE rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_ARCHIVE rf_cd305aee40bb4d4e808c2823"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_ARM rf_cd305aee40bb4d4e808c2823"
+      "command": "AUTO_CANCEL rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "REMOTE_GET rf_cd305aee40bb4d4e808c2823"
+      "command": "REMOTE_CANCEL rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "AUTO_ARM rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"cancelled\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_ARM rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"cancelled\",\"id\":\"rf_0f5651d11064426e91ad5583\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_ARCHIVE rf_0f5651d11064426e91ad5583"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_ARCHIVE rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "AUTO_GET rf_3d97c2e49d6a4f6fb862b96e"
+      "command": "REMOTE_ARM rf_0f5651d11064426e91ad5583"
     },
     {
-      "command": "REMOTE_GET rf_3d97c2e49d6a4f6fb862b96e"
+      "command": "REMOTE_GET rf_0f5651d11064426e91ad5583"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"armed\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_ARM rf_333ae0072e4a426596c534d4"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"armed\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_ARM rf_333ae0072e4a426596c534d4"
     },
     {
-      "command": "AUTO_CANCEL rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_CANCEL rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"cancelled\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_GET rf_333ae0072e4a426596c534d4"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"cancelled\",\"id\":\"rf_3d97c2e49d6a4f6fb862b96e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_GET rf_333ae0072e4a426596c534d4"
     },
     {
-      "command": "AUTO_ARCHIVE rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"armed\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_ARCHIVE rf_3d97c2e49d6a4f6fb862b96e"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"armed\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_ARM rf_3d97c2e49d6a4f6fb862b96e"
+      "command": "AUTO_CANCEL rf_333ae0072e4a426596c534d4"
     },
     {
-      "command": "REMOTE_GET rf_3d97c2e49d6a4f6fb862b96e"
+      "command": "REMOTE_CANCEL rf_333ae0072e4a426596c534d4"
     },
     {
-      "command": "AUTO_CANCEL rf_missing_c31da6b2598c455a9cf1"
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"cancelled\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "command": "REMOTE_CANCEL rf_missing_c31da6b2598c455a9cf1"
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"cancelled\",\"id\":\"rf_333ae0072e4a426596c534d4\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     },
     {
-      "response": "AUTO {\"station\":\"B\",\"boot\":\"1e53f439\",\"type\":\"cancelled\",\"id\":\"rf_missing_c31da6b2598c455a9cf1\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "AUTO_ARCHIVE rf_333ae0072e4a426596c534d4"
     },
     {
-      "response": "AUTO {\"station\":\"A\",\"boot\":\"e4b6a29f\",\"type\":\"cancelled\",\"id\":\"rf_missing_c31da6b2598c455a9cf1\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+      "command": "REMOTE_ARCHIVE rf_333ae0072e4a426596c534d4"
+    },
+    {
+      "command": "REMOTE_ARM rf_333ae0072e4a426596c534d4"
+    },
+    {
+      "command": "REMOTE_GET rf_333ae0072e4a426596c534d4"
+    },
+    {
+      "command": "AUTO_CANCEL rf_missing_a370621d8c0240dea42e"
+    },
+    {
+      "command": "REMOTE_CANCEL rf_missing_a370621d8c0240dea42e"
+    },
+    {
+      "response": "AUTO {\"station\":\"B\",\"boot\":\"bc465de9\",\"type\":\"cancelled\",\"id\":\"rf_missing_a370621d8c0240dea42e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
+    },
+    {
+      "response": "AUTO {\"station\":\"A\",\"boot\":\"cb7359f3\",\"type\":\"cancelled\",\"id\":\"rf_missing_a370621d8c0240dea42e\",\"localUs\":\"0\",\"utcUs\":\"0\",\"generation\":0,\"valid\":false}"
     }
   ]
 }

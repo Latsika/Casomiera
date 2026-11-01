@@ -1,20 +1,20 @@
 {
-  "createdAt": "2026-10-31T16:17:39.725834+00:00",
+  "createdAt": "2026-11-01T13:31:00.999012+00:00",
   "status": "relative_electrical_input_and_protocol_verification_passed",
   "latestUpload": "succeeded_on_both_identified_boards",
   "applicationTests": "Node and isolated Chrome tests passed, including recorded hardware fixtures and offline cancellation",
   "latestBuilds": {
     "lora_A": {
       "built": true,
-      "binaryFileSha256": "be2cc6c9f3d883656c74506f4c7f6c333524ba1e01044355d1fd5b56a43d8226"
+      "binaryFileSha256": "ae44e9c4208890c9750b063c269ebc2c20f9e0739f2f11042a4bc1e4b3997305"
     },
     "lora_B": {
       "built": true,
-      "binaryFileSha256": "a800aa5b08d340d665d75813ba14312f52b9870721454bd7bba784522096ac4d"
+      "binaryFileSha256": "acd0d2c27c80918409303496136d6e1172e023b3a6167c360ab622dee0babda3"
     }
   },
   "sourceSha256": {
-    "src\\lora_test.cpp": "2a93f9b6e731c98b61659a6085f24db6e2c81d8bdd6bbf938067c57d248b1f05",
+    "src\\lora_test.cpp": "5be4bca7ff861d7708d086fa5f2c0c905ddece1d7d8341a82868087855fabc99",
     "platformio.ini": "acf6ba2f4a48a99a34aa06542523a34212adb41200021e856f0d469fe56de688",
     "include\\gnss_clock.h": "432ddf6aa8232bb71c3da17b5173162cb17195b27d17c200c7b4409f6c6af08b",
     "include\\gnss_clock_tests.h": "b7678fb8ab8c53b56dc4b380c070216eae7ec748afcc6ca225b1633893bf4d86",
@@ -33,44 +33,46 @@
   "verifiedStations": {
     "A": {
       "boardId": "441bf6f8e9a4",
-      "firmwareHash": "d5e3c6fe9db13aa6468c13ebd4ce6fe3ba8817cdcd4aeb1b672549b7abc0df58"
+      "firmwareHash": "cc50cb07c61423e1635733f3cf330a2a106b2dbe711cd1b2a8565e0ddb471ed7"
     },
     "B": {
       "boardId": "441bf6f8eaac",
-      "firmwareHash": "9aca669f9c813633657af581ebd884a7b4753d86db4065e8caf9c287405d81dc"
+      "firmwareHash": "44a9f5a9db40f508a851ce8dc270061f14474b00d99871441e37d1a86f4ff559"
     }
   },
-  "maximumObservedDifferenceUs": 5,
+  "maximumObservedDifferenceUs": 6,
   "recordedReports": {
     "shared-input": {
-      "createdAt": "2026-10-31T16:16:23.077247+00:00",
+      "createdAt": "2026-11-01T13:28:24.976636+00:00",
       "passedForItsRecordedBuild": true,
-      "fileSha256": "d09b8b8fb871cf01507f3334c6df22ef44860133f71245caed41925e1680cd08",
+      "fileSha256": "7180aa7a484d5d831a4b8a4e165556fdcbfdd55f7328856394d0516a9c7f1a9c",
       "stations": {
         "A": {
           "boardId": "441bf6f8e9a4",
-          "firmwareHash": "d5e3c6fe9db13aa6468c13ebd4ce6fe3ba8817cdcd4aeb1b672549b7abc0df58"
+          "firmwareHash": "cc50cb07c61423e1635733f3cf330a2a106b2dbe711cd1b2a8565e0ddb471ed7"
         },
         "B": {
           "boardId": "441bf6f8eaac",
-          "firmwareHash": "9aca669f9c813633657af581ebd884a7b4753d86db4065e8caf9c287405d81dc"
+          "firmwareHash": "44a9f5a9db40f508a851ce8dc270061f14474b00d99871441e37d1a86f4ff559"
         }
       }
     },
     "end-to-end": {
-      "createdAt": "2026-10-31T16:16:47.419453+00:00",
+      "createdAt": "2026-11-01T13:28:45.186223+00:00",
       "passedForItsRecordedBuild": true,
-      "fileSha256": "1eb4339a606caeb0e2393a646e95e55ad0cf6b9ea211f17ab5ea64d15e6d3171",
-      "stations": null
+      "fileSha256": "8427a562324f4ef6def80ac39cb148512fa969987a1013dc1f5fa0f765bb0973",
+      "stations": null,
+      "usbStation": "B",
+      "eventBootsMatchVerifiedStations": true
     },
     "radio-workflow": {
-      "createdAt": "2026-10-31T16:17:07.498570+00:00",
+      "createdAt": "2026-11-01T13:28:58.549642+00:00",
       "passedForItsRecordedBuild": true,
-      "fileSha256": "f62bb55773185ef39c30f656563b1bd63741330fe795fa19b7953049b9540d3a",
+      "fileSha256": "e538c6fb27de3b5be1c72cbc4c8c070ad26137bfa649ffd10b58ac550dc16473",
       "stations": {
         "B": {
           "station": "B",
-          "boot": "1e53f439",
+          "boot": "bc465de9",
           "type": "status",
           "tracking": true,
           "clock": "TRACKING",
@@ -78,20 +80,68 @@
           "accuracy": "unverified",
           "radioCreditUs": 1249536,
           "boardId": "441bf6f8eaac",
-          "firmwareHash": "9aca669f9c813633657af581ebd884a7b4753d86db4065e8caf9c287405d81dc",
+          "firmwareHash": "44a9f5a9db40f508a851ce8dc270061f14474b00d99871441e37d1a86f4ff559",
           "radioCanPrepare": true
         },
         "A": {
           "station": "A",
-          "boot": "e4b6a29f",
+          "boot": "cb7359f3",
           "type": "status",
           "tracking": true,
           "generation": 0,
           "accuracy": "unverified",
           "boardId": "441bf6f8e9a4",
-          "firmwareHash": "d5e3c6fe9db13aa6468c13ebd4ce6fe3ba8817cdcd4aeb1b672549b7abc0df58"
+          "firmwareHash": "cc50cb07c61423e1635733f3cf330a2a106b2dbe711cd1b2a8565e0ddb471ed7"
         }
-      }
+      },
+      "usbStation": "B"
+    },
+    "radio-workflow-a-usb": {
+      "createdAt": "2026-11-01T13:29:26.067530+00:00",
+      "passedForItsRecordedBuild": true,
+      "fileSha256": "8bef34aadba44504525be08646d55369ed76537e42f493a937aa3cfa870f5d7c",
+      "stations": {
+        "A": {
+          "station": "A",
+          "boot": "cb7359f3",
+          "type": "status",
+          "tracking": true,
+          "clock": "TRACKING",
+          "generation": 0,
+          "accuracy": "unverified",
+          "radioCreditUs": 988224,
+          "boardId": "441bf6f8e9a4",
+          "firmwareHash": "cc50cb07c61423e1635733f3cf330a2a106b2dbe711cd1b2a8565e0ddb471ed7",
+          "radioCanPrepare": true
+        },
+        "B": {
+          "station": "B",
+          "boot": "bc465de9",
+          "type": "status",
+          "tracking": true,
+          "generation": 0,
+          "accuracy": "unverified",
+          "boardId": "441bf6f8eaac",
+          "firmwareHash": "44a9f5a9db40f508a851ce8dc270061f14474b00d99871441e37d1a86f4ff559"
+        }
+      },
+      "usbStation": "A"
+    },
+    "end-to-end-a-usb": {
+      "createdAt": "2026-11-01T13:29:14.468367+00:00",
+      "passedForItsRecordedBuild": true,
+      "fileSha256": "72d7b3245073288ecf275ceaa99cca8958cd045f920aebffddeee90406655736",
+      "stations": null,
+      "usbStation": "A",
+      "eventBootsMatchVerifiedStations": true
     }
-  }
+  },
+  "wirelessUsbCoordinatorsVerified": [
+    "A",
+    "B"
+  ],
+  "physicalCompleteCyclesPerUsbCoordinator": 4,
+  "radioWorkflowCyclesPerUsbCoordinator": 3,
+  "usbRecoveryTest": "Close and reopen the selected coordinator USB connection without resetting either board; retrieved timestamps remain identical.",
+  "automaticUsbDiscoveryTest": "Isolated Chrome tests with simulated serial devices; first-time permission and automatic identification on the owner browser remain to be checked."
 }
