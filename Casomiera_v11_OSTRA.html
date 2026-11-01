@@ -1926,6 +1926,8 @@ body.timer-display>.timerLiveStage{
               <th class="right">R1</th>
               <th class="right">R2</th>
               <th class="right">R3</th>
+              <th class="right">Nameraný čas (s)</th>
+              <th class="right">Výsledný čas (s)</th>
               <th class="right">Výhodové body</th>
               <th class="right">Trest (s)</th>
               <th>Čas zápisu</th>
@@ -1933,7 +1935,7 @@ body.timer-display>.timerLiveStage{
             </tr>
           </thead>
           <tbody id="tbody">
-            <tr><td colspan="10" class="muted">Zatiaľ nič uložené.</td></tr>
+            <tr><td colspan="12" class="muted">Zatiaľ nič uložené.</td></tr>
           </tbody>
         </table>
       </div>
@@ -6233,6 +6235,19 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     return list;
   }
 
+  function getRecordedMeasuredMs(record){
+    if (Number.isFinite(record.rawMeasuredMs) && record.rawMeasuredMs >= 0) return record.rawMeasuredMs;
+    if (isElectronicRecord(record)){
+      const elapsedUs = String(record.electronic?.elapsedUs ?? "");
+      if (!/^\d{1,20}$/.test(elapsedUs)) return null;
+      const roundedMs = (BigInt(elapsedUs) + 500n) / 1000n;
+      return roundedMs <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(roundedMs) : null;
+    }
+    const count = normalizeJudgeCount(record.judgeCount ?? 3);
+    return calculateRawTime([record.t1, record.t2, record.t3].slice(0, count),
+      normalizeTimeRule(record.timeRule ?? "median"));
+  }
+
   function getFlatRowsForExport(){
     const groups = getGroupedSorted();
     const rows = [];
@@ -6244,6 +6259,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           displayName: g.displayName,
           subLine: g.subLine,
           bestValid: g.bestValid,
+          rawMeasuredMs: getRecordedMeasuredMs(a),
+          valid: a.valid,
           t1: a.t1, t2: a.t2, t3: a.t3,
           measurementMode: a.measurementMode || "manual",
           elapsedUs: a.electronic?.elapsedUs || "",
@@ -6287,7 +6304,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
         : "Zatiaľ bez výsledkov v tejto kategórii.";
     }
     if (!groups.length){
-      el.tbody.innerHTML = `<tr><td colspan="10" class="muted">Zatiaľ nič uložené pre tento pohľad.</td></tr>`;
+      el.tbody.innerHTML = `<tr><td colspan="12" class="muted">Zatiaľ nič uložené pre tento pohľad.</td></tr>`;
       return;
     }
 
@@ -6296,6 +6313,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       const r1Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t1)}</div>`).join("");
       const r2Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t2)}</div>`).join("");
       const r3Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t3)}</div>`).join("");
+      const measuredLines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(getRecordedMeasuredMs(a))}</div>`).join("");
+      const finalLines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.valid)}</div>`).join("");
       const advantageLines = g.attempts.map(a => `<div class="line mono right">${formatAdvantageSecondsSigned(getAdvantageSeconds(a))}</div>`).join("");
       const penaltyLines = g.attempts.map(a => `<div class="line mono right">${formatPenaltySeconds(getPenaltySecondsForRecord(a))}</div>`).join("");
       const stampLines = g.attempts.map(a => `<div class="line mono muted stampLine">${escapeHtml(a.stamp || "")}</div>`).join("");
@@ -6317,6 +6336,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           <td><div class="stackLines">${r1Lines}</div></td>
           <td><div class="stackLines">${r2Lines}</div></td>
           <td><div class="stackLines">${r3Lines}</div></td>
+          <td class="measured-time"><div class="stackLines">${measuredLines}</div></td>
+          <td class="attempt-time"><div class="stackLines">${finalLines}</div></td>
           <td><div class="stackLines">${advantageLines}</div></td>
           <td><div class="stackLines">${penaltyLines}</div></td>
           <td><div class="stackLines">${stampLines}</div></td>
@@ -6365,7 +6386,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     const rows = getFlatRowsForExport();
     if (!rows.length){ alert("Nie je čo exportovať v tomto pohľade."); return; }
 
-    const header = ["#","Pokus","Pretekár / družstvo","Info","Platný (najlepší pokus)","R1","R2","R3","Rozhodcovia","Výpočet","Výhodové body","Trest (s)","Čas zápisu","Spôsob merania","Elektronický čas (us)"];
+    const header = ["#","Pokus","Pretekár / družstvo","Info","Platný (najlepší pokus)","R1","R2","R3","Rozhodcovia","Výpočet","Výhodové body","Trest (s)","Čas zápisu","Spôsob merania","Elektronický čas (us)","Nameraný čas (s)","Výsledný čas pokusu (s)"];
     const lines = [header.join(";")];
 
     rows.forEach((r,i) => {
@@ -6384,7 +6405,9 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
         formatPenaltySeconds(r.penaltySeconds),
         r.stamp || "",
         r.measurementMode,
-        r.elapsedUs
+        r.elapsedUs,
+        formatOptionalMs(r.rawMeasuredMs),
+        formatOptionalMs(r.valid)
       ].map(v => `"${String(v).replaceAll('"','""')}"`).join(";"));
     });
 
@@ -6422,6 +6445,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       const r1Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t1)}</div>`).join("");
       const r2Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t2)}</div>`).join("");
       const r3Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t3)}</div>`).join("");
+      const measuredLines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(getRecordedMeasuredMs(a))}</div>`).join("");
+      const finalLines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.valid)}</div>`).join("");
       const advantageLines = g.attempts.map(a => `<div class="line mono right">${formatAdvantageSecondsSigned(getAdvantageSeconds(a))}</div>`).join("");
       const penaltyLines = g.attempts.map(a => `<div class="line mono right">${formatPenaltySeconds(getPenaltySecondsForRecord(a))}</div>`).join("");
       const stampLines = g.attempts.map(a => `<div class="line mono muted stampLine">${escapeHtml(a.stamp || "")}</div>`).join("");
@@ -6442,6 +6467,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           <td><div class="stackLines">${r1Lines}</div></td>
           <td><div class="stackLines">${r2Lines}</div></td>
           <td><div class="stackLines">${r3Lines}</div></td>
+          <td class="measured-time"><div class="stackLines">${measuredLines}</div></td>
+          <td class="attempt-time"><div class="stackLines">${finalLines}</div></td>
           <td><div class="stackLines">${advantageLines}</div></td>
           <td><div class="stackLines">${penaltyLines}</div></td>
           <td><div class="stackLines">${stampLines}</div></td>
@@ -6462,6 +6489,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
             <th>R1</th>
             <th>R2</th>
             <th>R3</th>
+            <th>Nameraný čas (s)</th>
+            <th>Výsledný čas (s)</th>
             <th>Výhodové body</th>
             <th>Trest (s)</th>
             <th>Čas zápisu</th>

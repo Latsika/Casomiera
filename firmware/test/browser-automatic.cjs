@@ -24,6 +24,7 @@ const hooks = `
     applySnapshot, buildSnapshot, saveResult, getValidIfReady, getConfiguredJudgeCount, persistCompetitionSettings,
     prepareAutomaticAttempt, applyAutomaticProgress, automaticRun, persistAutomatic, cancelAutomaticAttempt,
     setManualJudge, confirmPendingParticipantSelection, getFlatRowsForExport,
+    getRecordedMeasuredMs, exportCSVCurrentView, exportPDFCurrentView,
     get results() { return loadAll(); },
     get currentMode() { return automaticMode; },
     select(key) { selectedParticipantKey = key; pendingParticipantKey = key; setUI(); },
@@ -656,6 +657,100 @@ async function main() {
     t.mode("manual");
   }).toString() + ")()");
   console.log("Microphone queue passed: initial pair, first/second postponement, reordering, single A/B, live labels, busy attempt protection, duplicate prevention, save/cancel refresh and an empty second slot.");
+  await evaluate("(" + (async function () {
+    const t = __timingTest;
+    const check = (condition, message) => { if (!condition) throw new Error(message); };
+    const participants = ["Independent results", "Combined results", "Manual results"].map((displayName, index) => ({
+      key: "results-" + index, displayName, mode: "individual", category: "girls", timeEnabled: true, startNumber: index + 1
+    }));
+    const record = (person, attemptNo, values) => ({
+      id: "results-" + person + "-" + attemptNo, participantKey: participants[person].key,
+      displayName: participants[person].displayName, mode: "individual", category: "girls", attemptNo,
+      t1: null, t2: null, t3: null, advantageSeconds: 0, penaltySeconds: 0,
+      createdAt: "2026-11-01T12:00:00.000Z", stamp: "1. 11. 2026", ...values
+    });
+    const results = [
+      record(0, 1, { measurementMode: "automatic_independent", rawMeasuredMs: 12345, valid: 14345, penaltySeconds: 2, electronic: { station: "A", elapsedUs: "12345000" } }),
+      record(0, 2, { measurementMode: "automatic_independent", rawMeasuredMs: 9950, valid: 10950, penaltySeconds: 1, electronic: { station: "B", elapsedUs: "9950000" } }),
+      record(1, 1, { measurementMode: "automatic_combined", rawMeasuredMs: 20001, valid: 18501, advantageSeconds: 1.5, electronic: { elapsedUs: "20001000" } }),
+      record(1, 2, { measurementMode: "automatic_combined", valid: 23235, penaltySeconds: 2, electronic: { elapsedUs: "21234567" } }),
+      record(2, 1, { t1: 10000, t2: 11000, t3: 12000, judgeCount: 3, timeRule: "median", valid: 12000, penaltySeconds: 1 }),
+      record(2, 2, { t1: 14000, t2: 10000, judgeCount: 2, timeRule: "average", valid: 11000, advantageSeconds: 1.5, penaltySeconds: 0.5 })
+    ];
+    t.applySnapshot({ competitionName: "Saved attempt display regression", attemptsLimit: 3, judgeCount: 3,
+      timeRule: "median", participants, results, mode: "individual", viewCat: "girls",
+      resultsView: { mode: "individual", category: "all" },
+      automatic: { competitionId: "saved-results", mode: "manual", transport: "dual_usb", pending: null, cancellations: [], history: [] } });
+    const retained = JSON.stringify(t.results);
+    const expected = {
+      "Independent results": { measured: ["12.345", "9.950"], final: ["14.345", "10.950"], best: "10.950" },
+      "Combined results": { measured: ["20.001", "21.235"], final: ["18.501", "23.235"], best: "18.501" },
+      "Manual results": { measured: ["11.000", "12.000"], final: ["12.000", "11.000"], best: "11.000" }
+    };
+    const checkTable = tbody => {
+      const rows = [...tbody.querySelectorAll("tr")];
+      check(rows.length === 3, "All participants must appear in the result table.");
+      for (const row of rows) {
+        const name = row.querySelector(".nameMain").textContent;
+        const measured = [...row.querySelectorAll(".measured-time .line")].map(line => line.textContent);
+        const final = [...row.querySelectorAll(".attempt-time .line")].map(line => line.textContent);
+        check(JSON.stringify(measured) === JSON.stringify(expected[name].measured), "Missing measured attempts for " + name);
+        check(JSON.stringify(final) === JSON.stringify(expected[name].final), "Missing final attempts for " + name);
+        check(row.querySelector(".validBadge").textContent === expected[name].best, "Best-time ranking changed for " + name);
+        const judgeOne = [...row.children[3].querySelectorAll(".line")].map(line => line.textContent);
+        check(JSON.stringify(judgeOne) === JSON.stringify(name === "Manual results" ? ["10.000", "14.000"] : ["—", "—"]),
+          "Electronic time must not be presented as a judge's time.");
+      }
+    };
+    checkTable(document.getElementById("tbody"));
+    const flat = t.getFlatRowsForExport();
+    check(flat.length === 6 && flat.every(row => Number.isFinite(row.rawMeasuredMs) && Number.isFinite(row.valid)),
+      "Every export row needs its own measured and final time.");
+    check(t.getRecordedMeasuredMs({ measurementMode: "automatic_independent", rawMeasuredMs: 0 }) === 0, "A zero measured time must be preserved.");
+    check(t.getRecordedMeasuredMs({ measurementMode: "automatic_combined", electronic: { elapsedUs: "broken" } }) === null,
+      "Missing electronic data must not manufacture a zero time.");
+    check(t.getRecordedMeasuredMs({ t1: 1000, t2: null, t3: null }) === null, "Missing judge times must not manufacture a measurement.");
+    const blobs = [];
+    const createUrl = URL.createObjectURL;
+    const revokeUrl = URL.revokeObjectURL;
+    const click = HTMLAnchorElement.prototype.click;
+    let csv;
+    try {
+      URL.createObjectURL = blob => { blobs.push(blob); return "blob:results-test"; };
+      URL.revokeObjectURL = () => {};
+      HTMLAnchorElement.prototype.click = () => {};
+      t.exportCSVCurrentView();
+      check(blobs.length === 1, "CSV export did not create its output.");
+      csv = await blobs[0].text();
+    } finally {
+      URL.createObjectURL = createUrl;
+      URL.revokeObjectURL = revokeUrl;
+      HTMLAnchorElement.prototype.click = click;
+    }
+    const lines = csv.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+    const headers = lines[0].split(";");
+    const measuredIndex = headers.indexOf("Nameraný čas (s)");
+    const finalIndex = headers.indexOf("Výsledný čas pokusu (s)");
+    check(measuredIndex >= 0 && finalIndex >= 0 && lines.length === 7, "CSV must include both time columns and all six attempts.");
+    for (const line of lines.slice(1)) {
+      const fields = line.split(";").map(value => value.slice(1, -1).replaceAll('""', '"'));
+      const expectation = expected[fields[2]];
+      const attempt = Number(fields[1]) - 1;
+      check(fields.length === headers.length && fields[measuredIndex] === expectation.measured[attempt] &&
+        fields[finalIndex] === expectation.final[attempt], "CSV lost an attempt's measured or final time.");
+    }
+    const print = window.print;
+    let printCalls = 0;
+    try {
+      window.print = () => { printCalls++; };
+      t.exportPDFCurrentView();
+      check(printCalls === 1, "PDF export must open the print flow.");
+      checkTable(document.querySelector("#printArea tbody"));
+      check(document.querySelectorAll("#printArea th").length === 11, "PDF header must match its additional time columns.");
+    } finally { window.print = print; }
+    check(JSON.stringify(t.results) === retained, "Displaying or exporting existing records must not rewrite saved measurements.");
+  }).toString() + ")()");
+  console.log("Result display passed: all attempts, both electronic modes, legacy durations and judge calculations, penalties/advantages, preserved best ranking, CSV/PDF and unchanged saved data.");
   const usbChecks = await evaluate("(" + (async function () {
     const t = __timingTest;
     const checks = [];
