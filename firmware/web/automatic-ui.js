@@ -29,6 +29,40 @@
   let automaticRetryAt = 0;
   let automaticPulseAt = 0;
   let automaticUiReady = false;
+  let automaticDiscoveryTask = null;
+  let automaticDiscoveryAt = 0;
+  let automaticConnectionNotice = "";
+  const automaticPortFailures = new Map();
+
+
+  function normalizeAutomaticTransport(value) {
+    return ["wireless", "wireless_a_usb"].includes(value) ? value : "dual_usb";
+  }
+
+  function automaticUsbStation() {
+    return automaticTransport === "wireless" ? "B" :
+      automaticTransport === "wireless_a_usb" ? "A" : null;
+  }
+
+  function automaticRemoteStation() {
+    const usb = automaticUsbStation();
+    return usb ? (usb === "A" ? "B" : "A") : null;
+  }
+
+  function automaticConnectedStations() {
+    const usb = automaticUsbStation();
+    return usb ? [usb] : ["A", "B"];
+  }
+
+  function automaticConnection(station) {
+    return automaticPorts[station === automaticRemoteStation() ? automaticUsbStation() : station];
+  }
+
+  function automaticCommandStations() {
+    // Establish the radio coordinator's attempt/airtime requirement before local ARM.
+    const remote = automaticRemoteStation();
+    return remote ? [remote, automaticUsbStation()] : ["A", "B"];
+  }
 
   function isAutomaticMode() { return automaticMode === "combined"; }
   function automaticPending() { return automaticRun.busy; }
@@ -87,8 +121,8 @@
   }
 
   async function sendAutomatic(station, command) {
-    const remote = station === "A" && automaticTransport === "wireless";
-    const connection = automaticPorts[remote ? "B" : station];
+    const remote = station === automaticRemoteStation();
+    const connection = automaticConnection(station);
     if (remote) command = command.replace(/^AUTO_/, "REMOTE_");
     if (!connection?.port?.writable) throw new Error(`Stanica ${station} nie je pripojená.`);
     const next = connection.writes.catch(() => {}).then(async () => {
@@ -100,42 +134,199 @@
     return next;
   }
 
-  async function connectAutomatic(station) {
-    if (!navigator.serial) throw new Error("USB meranie vyžaduje Chrome alebo Edge na PC.");
-    if (automaticPorts[station]) throw new Error(`Stanica ${station} je už pripojená.`);
-    const port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a, usbProductId: 0x1001 }] });
-    if (Object.values(automaticPorts).some(value => value?.port === port)) {
-      throw new Error("Tento USB port už používa druhá stanica.");
-    }
-    await port.open({ baudRate: 115200 });
-    const connection = { port, reader: null, writes: Promise.resolve(), status: null, seenAt: 0 };
-    automaticPorts[station] = connection;
-    readAutomatic(station, connection).catch(showAutomaticError);
-    await sendAutomatic(station, "AUTO_STATUS");
-    if (station === "B" && automaticTransport === "wireless") {
-      await sendAutomatic("A", "AUTO_STATUS");
-    }
-    automaticNotice = `Overujem identitu stanice ${station}…`;
-    updateAutomaticUI();
+  async function closeAutomaticCandidate(connection) {
+    try { await connection.reader?.cancel(); } catch {}
+    try { connection.reader?.releaseLock(); } catch {}
+    try { await connection.port.close(); } catch {}
   }
 
-  async function readAutomatic(station, connection) {
-    const reader = connection.port.readable.getReader();
-    connection.reader = reader;
-    const decoder = new TextDecoder();
+  async function identifyAutomaticPort(connection) {
+    const writer = connection.port.writable.getWriter();
+    try { await writer.write(new TextEncoder().encode("AUTO_STATUS\n")); }
+    finally { writer.releaseLock(); }
     let buffer = "";
+    const timeout = setTimeout(() => connection.reader.cancel().catch(() => {}), 2000);
     try {
       while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
+        const { value, done } = await connection.reader.read();
+        if (done) throw new Error("USB zariadenie neodpovedalo na overenie identity.");
+        buffer += new TextDecoder().decode(value);
+        let newline;
+        while ((newline = buffer.indexOf("\n")) >= 0) {
+          const line = buffer.slice(0, newline).trim();
+          buffer = buffer.slice(newline + 1);
+          const status = CasomieraAutomatic.parseMessage(line);
+          if (!status || status.type !== "status") continue;
+          // Forwarded LoRa status lacks local radio-budget fields. It cannot identify this USB port.
+          if (typeof status.radioCanPrepare !== "boolean" || !Number.isSafeInteger(status.radioCreditUs)) continue;
+          const tested = globalThis.CasomieraTimingValidation?.stations?.[status.station];
+          if (!tested || status.boardId !== tested.boardId) {
+            throw new Error("USB zariadenie nie je overená stanica A alebo B.");
+          }
+          return { status, buffer };
+        }
+        if (buffer.length > 2048) buffer = "";
+      }
+    } finally { clearTimeout(timeout); }
+  }
+
+  async function attachAutomaticPort(port) {
+    if (Object.values(automaticPorts).some(connection => connection?.port === port)) return;
+    const connection = { port, reader: null, writes: Promise.resolve(), status: null, seenAt: 0 };
+    try {
+      await port.open({ baudRate: 115200 });
+    } catch (error) {
+      // A port owned by another application must never be closed or reset here.
+      throw new Error("USB zariadenie sa nedá otvoriť. Zatvor sériový monitor alebo inú aplikáciu používajúcu dosku. " + error.message);
+    }
+    let attached = false;
+    try {
+      connection.reader = port.readable.getReader();
+      const identified = await identifyAutomaticPort(connection);
+      const station = identified.status.station;
+      if (!isAutomaticMode() || !automaticConnectedStations().includes(station)) return;
+      if (automaticPorts[station]) throw new Error("Viac USB zariadení sa hlási ako stanica " + station + ".");
+      connection.status = identified.status;
+      connection.seenAt = Date.now();
+      automaticPorts[station] = connection;
+      attached = true;
+      connection.readTask = readAutomatic(station, connection, identified.buffer).catch(error => {
+        automaticConnectionNotice = String(error?.message || error);
+        updateAutomaticUI();
+      });
+      if (station === automaticUsbStation()) await sendAutomatic(automaticRemoteStation(), "AUTO_STATUS");
+      if (automaticRun.busy) await recoverAutomaticAttempt();
+      updateAutomaticUI();
+    } finally {
+      if (!attached) await closeAutomaticCandidate(connection);
+    }
+  }
+
+  function discoverAutomaticPorts(force = false) {
+    if (automaticDiscoveryTask) return automaticDiscoveryTask;
+    if (!isAutomaticMode() || IS_DISPLAY_MODE) return Promise.resolve();
+    if (!navigator.serial) {
+      automaticConnectionNotice = "USB meranie vyžaduje Chrome alebo Edge na PC.";
+      updateAutomaticUI();
+      return Promise.resolve();
+    }
+    automaticDiscoveryAt = Date.now();
+    automaticDiscoveryTask = (async () => {
+      const errors = [];
+      try {
+        const ports = await navigator.serial.getPorts();
+        const candidates = ports.filter(port => {
+          const info = port.getInfo();
+          return info.usbVendorId === 0x303a && info.usbProductId === 0x1001;
+        });
+        for (const port of candidates) {
+          if (!isAutomaticMode()) break;
+          if (automaticConnectedStations().every(station => automaticPorts[station])) break;
+          if (!force && Date.now() - (automaticPortFailures.get(port) || 0) < 5000) continue;
+          try {
+            await attachAutomaticPort(port);
+            automaticPortFailures.delete(port);
+          } catch (error) {
+            automaticPortFailures.set(port, Date.now());
+            errors.push(String(error?.message || error));
+          }
+        }
+        const missing = automaticConnectedStations().filter(station => !automaticPorts[station]);
+        automaticConnectionNotice = missing.length
+          ? ("Chýba USB stanica " + missing.join(", ") + ". Skontroluj kábel; pri prvom použití vyber Spojenie staníc → Povoliť USB zariadenie…"
+            + (errors.length ? " " + [...new Set(errors)].join(" ") : ""))
+          : "USB stanice boli automaticky rozpoznané podľa overenej identity.";
+      } catch (error) {
+        automaticConnectionNotice = "Vyhľadanie USB zariadení zlyhalo: " + String(error?.message || error);
+      } finally {
+        automaticDiscoveryTask = null;
+        updateAutomaticUI();
+      }
+    })();
+    return automaticDiscoveryTask;
+  }
+
+  async function authorizeAutomaticPort() {
+    if (!navigator.serial) throw new Error("USB meranie vyžaduje Chrome alebo Edge na PC.");
+    try {
+      // Request permission directly from this user action, never from a timer.
+      await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a, usbProductId: 0x1001 }] });
+    } catch (error) {
+      if (error.name !== "NotFoundError" && error.name !== "AbortError") throw error;
+      automaticConnectionNotice = "Výber USB zariadenia bol zrušený. Už pripojené stanice a zachytené údaje zostávajú zachované.";
+      updateAutomaticUI();
+      return;
+    }
+    if (automaticDiscoveryTask) await automaticDiscoveryTask;
+    await discoverAutomaticPorts(true);
+  }
+
+  function initializeMeasurementInformation() {
+    for (const info of document.querySelectorAll(".timerSection .measurementInfo")) {
+      const button = info.querySelector("button");
+      const tooltip = info.querySelector('[role="tooltip"]');
+      function position() {
+        const anchor = button.getBoundingClientRect();
+        const width = tooltip.offsetWidth;
+        const height = tooltip.offsetHeight;
+        const left = Math.max(12, Math.min(anchor.left, window.innerWidth - width - 12));
+        const below = anchor.bottom + 8;
+        const top = below + height <= window.innerHeight - 12 ? below : Math.max(12, anchor.top - height - 8);
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
+      info.addEventListener("pointerenter", () => {
+        info.dataset.dismissed = "false";
+        position();
+      });
+      info.addEventListener("focusin", () => {
+        info.dataset.dismissed = "false";
+        position();
+      });
+      button.addEventListener("click", () => {
+        info.dataset.dismissed = "false";
+        position();
+        const open = info.dataset.open !== "true";
+        info.dataset.open = String(open);
+        button.setAttribute("aria-expanded", String(open));
+      });
+      info.addEventListener("focusout", event => {
+        if (!info.contains(event.relatedTarget)) {
+          info.dataset.open = "false";
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          info.dataset.dismissed = "true";
+          info.dataset.open = "false";
+          button.setAttribute("aria-expanded", "false");
+          button.blur();
+        }
+      });
+      window.addEventListener("resize", position);
+    }
+  }
+
+  async function readAutomatic(station, connection, initialBuffer = "") {
+    const reader = connection.reader || connection.port.readable.getReader();
+    connection.reader = reader;
+    const decoder = new TextDecoder();
+    let buffer = initialBuffer;
+    try {
+      while (true) {
+        if (!buffer.includes("\n")) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+        }
         let newline;
         while ((newline = buffer.indexOf("\n")) >= 0) {
           const line = buffer.slice(0, newline).trim();
           buffer = buffer.slice(newline + 1);
           const message = CasomieraAutomatic.parseMessage(line);
           if (!message) continue;
-          const forwarded = station === "B" && message.station === "A" && automaticTransport === "wireless";
+          const forwarded = station === automaticUsbStation() && message.station === automaticRemoteStation();
           if (message.station !== station && !forwarded) {
             throw new Error(`Vybraný port patrí stanici ${message.station}, nie ${station}.`);
           }
@@ -154,7 +345,8 @@
       }
     } finally {
       reader.releaseLock();
-      automaticPorts[station] = null;
+      if (automaticPorts[station] === connection) automaticPorts[station] = null;
+      if (station === automaticUsbStation()) automaticRemoteStatus = null;
       try { await connection.writes; await connection.port.close(); } catch {}
       automaticNotice = `Stanica ${station} bola odpojená. Zachytené časy zostávajú uložené; pripoj ju a obnov údaje.`;
       updateAutomaticUI();
@@ -162,11 +354,11 @@
   }
 
   function automaticStationsReady() {
-    const stations = automaticTransport === "wireless" ? ["B"] : ["A", "B"];
+    const stations = automaticConnectedStations();
     return !!automaticValidation() && stations.every(station => {
       const connection = automaticPorts[station];
       return connection?.status?.tracking === true && Date.now() - connection.seenAt < 5000 &&
-        (automaticTransport !== "wireless" || connection.status.radioCanPrepare === true);
+        (!automaticUsbStation() || connection.status.radioCanPrepare === true);
     });
   }
 
@@ -175,7 +367,7 @@
     if (!report?.passed || report.criterionUs !== 1000 || report.sampleCount < 24 ||
         report.maximumAbsoluteDifferenceUs > 1000) return null;
     for (const station of ["A", "B"]) {
-      const status = station === "A" && automaticTransport === "wireless"
+      const status = station === automaticRemoteStation()
         ? automaticRemoteStatus : automaticPorts[station]?.status;
       const tested = report.stations?.[station];
       if (!tested || !status || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
@@ -210,7 +402,7 @@
     if (el.penaltySeconds) el.penaltySeconds.value = "";
     automaticNotice = "Pripravujem obe stanice…";
     setUI();
-    await Promise.all(["A", "B"].map(station => sendAutomatic(station, `AUTO_ARM ${attempt.id}`)));
+    await Promise.all(automaticCommandStations().map(station => sendAutomatic(station, `AUTO_ARM ${attempt.id}`)));
   }
 
   function applyAutomaticProgress() {
@@ -320,7 +512,7 @@
     const attempt = automaticRun.current;
     if (!attempt || !automaticRun.busy) return;
     for (const station of ["A", "B"]) {
-      if (!automaticPorts[station] && !(station === "A" && automaticTransport === "wireless" && automaticPorts.B)) continue;
+      if (!automaticConnection(station)) continue;
       const operation = attempt.phase === "cancelling" ? "AUTO_CANCEL" : "AUTO_GET";
       await sendAutomatic(station, `${operation} ${attempt.id}`);
     }
@@ -340,7 +532,12 @@
     $("automaticMode").value = automaticMode;
     $("automaticMode").disabled = automaticRun.busy || running || rec.some(value => value !== null);
     $("automaticTransport").value = automaticTransport;
-    $("automaticTransport").disabled = automaticRun.busy || running || rec.some(value => value !== null);
+    // Permission renewal must remain available while recovering an active attempt.
+    $("automaticTransport").disabled = false;
+    const transportLocked = automaticRun.busy || running || rec.some(value => value !== null);
+    for (const option of $("automaticTransport").options) {
+      option.disabled = option.value !== "authorize_usb" && transportLocked;
+    }
     $("automaticControls").hidden = !enabled;
     $("automaticNotice").textContent = automaticNotice;
     const verified = automaticValidation();
@@ -349,14 +546,16 @@
       : "Pre túto dvojicu a verziu firmvéru zatiaľ nie je platný protokol overenia do 1 ms. Automatický pokus sa nedá pripraviť.";
     for (const station of ["A", "B"]) {
       const connection = automaticPorts[station];
-      $("automaticConnect" + station).disabled = !!connection;
       $("automaticStation" + station).textContent = !connection ? `${station}: odpojená` :
         `${station}: ${connection.status?.tracking ? "časová základňa pripravená" : "čakám na GNSS/PPS"}`;
     }
-    $("automaticConnectA").hidden = automaticTransport === "wireless";
-    if (automaticTransport === "wireless") {
-      $("automaticStationA").textContent = `A cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
+    const remote = automaticRemoteStation();
+    if (remote) {
+      $("automaticStation" + remote).textContent = `${remote} cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
     }
+    $("automaticConnectionNotice").textContent = automaticConnectionNotice;
+    $("automaticConnectionInfo").dataset.tone = automaticStationsReady() ? "ok" :
+      (automaticDiscoveryTask ? "busy" : "warning");
     $("automaticRecover").disabled = !automaticRun.busy;
     for (const control of [el.tabIndividual, el.tabTeam, el.tabGirls, el.tabBoys, el.tabMix]) {
       if (control) control.disabled = automaticRun.busy;
@@ -389,12 +588,24 @@
   function initializeAutomaticUI() {
     if (IS_DISPLAY_MODE) return;
     automaticUiReady = true;
+    initializeMeasurementInformation();
     $("automaticTransport").addEventListener("change", () => {
+      if ($("automaticTransport").value === "authorize_usb") {
+        $("automaticTransport").value = automaticTransport;
+        authorizeAutomaticPort().catch(error => {
+          automaticConnectionNotice = String(error?.message || error);
+          updateAutomaticUI();
+        });
+        return;
+      }
       if (automaticRun.busy || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
-      automaticTransport = $("automaticTransport").value === "wireless" ? "wireless" : "dual_usb";
+      automaticTransport = normalizeAutomaticTransport($("automaticTransport").value);
       automaticRemoteStatus = null;
-      if (automaticTransport === "wireless" && automaticPorts.B) sendAutomatic("A", "AUTO_STATUS").catch(showAutomaticError);
+      const usb = automaticUsbStation();
+      if (usb && automaticPorts[usb]) sendAutomatic(automaticRemoteStation(), "AUTO_STATUS").catch(showAutomaticError);
       updateAutomaticUI();
+      autoPersistToFile();
+      discoverAutomaticPorts(true);
     });
     $("automaticMode").addEventListener("change", () => {
       if (automaticRun.busy || running || rec.some(value => value !== null)) {
@@ -405,14 +616,14 @@
       automaticMode = $("automaticMode").value === "combined" ? "combined" : "manual";
       tStart = 0;
       setUI();
+      autoPersistToFile();
+      discoverAutomaticPorts(true);
     });
-    for (const station of ["A", "B"]) {
-      $("automaticConnect" + station).addEventListener("click", () => connectAutomatic(station).catch(showAutomaticError));
-    }
+    navigator.serial?.addEventListener("connect", () => discoverAutomaticPorts(true));
     $("automaticRecover").addEventListener("click", () => recoverAutomaticAttempt().catch(showAutomaticError));
     if (automaticRun.busy) {
       automaticMode = "combined";
-      automaticTransport = automaticRun.current.transport === "wireless" ? "wireless" : "dual_usb";
+      automaticTransport = normalizeAutomaticTransport(automaticRun.current.transport);
       automaticNotice = "Našiel sa rozpracovaný automatický pokus. Pripoj stanice a obnov údaje.";
       running = true;
     }
@@ -424,9 +635,11 @@
       rec[0] = rec[1] = rec[2] = null;
     }
     setInterval(() => {
+      if (Date.now() - automaticDiscoveryAt >= 3000 &&
+          automaticConnectedStations().some(station => !automaticPorts[station])) discoverAutomaticPorts();
       if (Date.now() - automaticPulseAt >= 2000) {
         automaticPulseAt = Date.now();
-        for (const station of (automaticTransport === "wireless" ? ["B"] : ["A", "B"])) {
+        for (const station of automaticConnectedStations()) {
           if (automaticPorts[station]) sendAutomatic(station, "AUTO_STATUS").catch(showAutomaticError);
         }
         serviceAutomaticCancellations();
@@ -441,16 +654,16 @@
         tStart = 0;
         automaticNotice = "Pokus bol zrušený. Nový môžeš pripraviť ihneď.";
         for (const station of ["A", "B"]) {
-          if (automaticPorts[station] || (station === "A" && automaticTransport === "wireless" && automaticPorts.B)) sendAutomatic(station, `AUTO_ARCHIVE ${attempt.id}`).catch(showAutomaticError);
+          if (automaticConnection(station)) sendAutomatic(station, `AUTO_ARCHIVE ${attempt.id}`).catch(showAutomaticError);
         }
         setUI();
       }
-      const retryInterval = automaticTransport === "wireless" && attempt?.phase !== "preparing" && attempt?.phase !== "cancelling" ? 10000 : 2000;
+      const retryInterval = automaticUsbStation() && attempt?.phase !== "preparing" && attempt?.phase !== "cancelling" ? 10000 : 2000;
       if (automaticRun.busy && Date.now() - automaticRetryAt >= retryInterval) {
         automaticRetryAt = Date.now();
         if (attempt.phase === "preparing") {
-          for (const station of ["A", "B"]) {
-            if (automaticPorts[station] || (station === "A" && automaticTransport === "wireless" && automaticPorts.B)) sendAutomatic(station, `AUTO_ARM ${attempt.id}`).catch(showAutomaticError);
+          for (const station of automaticCommandStations()) {
+            if (automaticConnection(station)) sendAutomatic(station, `AUTO_ARM ${attempt.id}`).catch(showAutomaticError);
           }
         } else {
           recoverAutomaticAttempt().catch(showAutomaticError);
@@ -460,4 +673,5 @@
     }, 500);
     applyAutomaticProgress();
     setUI();
+    discoverAutomaticPorts();
   }

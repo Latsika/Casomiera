@@ -604,8 +604,8 @@ button.bracketName:disabled{cursor:default;color:#91a3b7}
     .testActions button{background:#d6f8ef}
     .testBracketInfo{padding:10px 14px;background:#eaf7ff;border:1px solid #73c5eb;border-radius:12px;
       color:#114266;font-size:14px;line-height:1.45}
-    /* Do not show production-only auto-save controls in the isolated test. */
-    #setAutoSaveFile,#autoSaveStatus{display:none!important}
+    /* Backup status is shown in the shared application header. */
+    #autoSaveStatus{display:none!important}
     html{scroll-behavior:smooth}
     @media(max-width:600px){.testJump,.testActions button{width:100%;text-align:center}.testActions{width:100%}}
 
@@ -1204,10 +1204,33 @@ body.work-podium .podiumWorkspace{display:block}
 .timerBox[data-judges="1"]{grid-template-columns:minmax(0,1fr)!important}
 .timerBox[data-judges="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .timerBox .judge.inactiveJudge{display:none!important}
+.measurementLabel{display:flex;align-items:center;gap:8px;margin:0 0 5px}
+.measurementLabel label{margin:0}
+.measurementInfo{display:inline-flex;align-items:center;vertical-align:middle}
+.measurementInfoButton{display:inline-grid;place-items:center;width:23px;height:23px;padding:0;
+  border:1.5px solid #8091a8;border-radius:50%;background:#fff;color:#38536f;font:bold 14px Georgia,serif;cursor:help}
+.measurementInfoButton:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
+.measurementInfo[data-tone="ok"] .measurementInfoButton{border-color:#159555;color:#10683a}
+.measurementInfo[data-tone="warning"] .measurementInfoButton{border-color:#c18016;color:#815b13;background:#fff8e6}
+.measurementInfo[data-tone="busy"] .measurementInfoButton{border-color:#2563eb;color:#1d4ed8}
+.measurementTooltip{position:fixed;z-index:100000;width:min(390px,calc(100vw - 24px));
+  max-height:min(560px,70vh);overflow:auto;box-sizing:border-box;padding:13px 15px;border:1px solid #ced8e5;
+  border-radius:12px;background:#fff;color:#24364d;box-shadow:0 8px 28px #152b482e;
+  font:400 13px/1.5 system-ui,sans-serif;letter-spacing:normal;text-transform:none;
+  visibility:hidden;opacity:0;pointer-events:none}
+.measurementTooltip>span{display:block}
+.measurementTooltip>span+span{margin-top:8px}
+.measurementInfo:not([data-dismissed="true"]):hover .measurementTooltip,
+.measurementInfo:not([data-dismissed="true"]):focus-within .measurementTooltip,
+.measurementInfo[data-open="true"] .measurementTooltip{visibility:visible;opacity:1;pointer-events:auto}
+.timerSection .kbdHint{display:none}
+@media print{.measurementInfo{display:none!important}}
 .ruleHint{margin:1px 0 11px;font-size:12px;color:#51687f;line-height:1.4}
 @media(max-width:630px){.timerBox[data-judges="2"]{grid-template-columns:1fr!important}}
 
 /* Stav skutočnej JSON zálohy: úspech sa potvrdí až po uzavretí zápisu na disk. */
+.backupActions{display:flex;flex:1 1 420px;align-items:center;gap:10px;min-width:0;max-width:760px}
+.productionActions .backupActions button{flex:0 0 auto}
 .backupHealth{display:flex;flex:1 1 290px;min-width:210px;align-items:center;gap:9px;
   padding:9px 12px;border:1px solid #d7dce6;border-radius:13px;background:#f5f7fa;
   color:#34435c;font-size:12px;line-height:1.35;max-width:610px}
@@ -1221,9 +1244,9 @@ body.work-podium .podiumWorkspace{display:block}
 .backupHealth[data-tone="error"] .backupHealthDot{background:#cd3333;box-shadow:0 0 0 3px #ffd1ce}
 .backupHealth[data-tone="info"]{background:#fff8e6;border-color:#eed09a;color:#815b13}
 .backupHealth[data-tone="info"] .backupHealthDot{background:#dfac35}
-@media(max-width:620px){.backupHealth{flex:1 1 100%;order:3;max-width:none}.productionActions button{flex:0 1 auto}}
-@media print{.backupHealth{display:none!important}}
-body.display-mode .backupHealth,body.timer-display .backupHealth{display:none!important}
+@media(max-width:620px){.backupActions{flex-basis:100%;order:3;max-width:none}.backupHealth{min-width:0;max-width:none}.productionActions button{flex:0 1 auto}}
+@media print{.backupActions{display:none!important}}
+body.display-mode .backupActions,body.timer-display .backupActions{display:none!important}
 
 /* Samostatná, nezávislá LIVE projekcia časomiery.
    Toto nemení ovládanie v hlavnej aplikácii ani ostatné LIVE okná. */
@@ -1334,9 +1357,12 @@ body.timer-display>.timerLiveStage{
 <div class="wrap">
   <div class="productionActions">
     <span class="productionBadge">● OSTRÁ VERZIA v11</span>
+    <div class="backupActions">
     <div class="backupHealth" id="backupHealth" data-tone="info" role="status" aria-live="polite" aria-atomic="true" title="Stav zálohy súťaže">
       <span class="backupHealthDot" aria-hidden="true"></span>
       <span class="backupHealthBody"><strong id="backupHealthText">Záloha: nekontrolovaná</strong><small id="backupHealthTime">Posledný úspešný zápis JSON: zatiaľ neznámy</small></span>
+    </div>
+    <button class="btn primary" type="button" id="backupNow">Zalohovat</button>
     </div>
     <button class="btn soft" type="button" id="switchCompetition">📁 Nová / načítať súťaž</button>
   </div>
@@ -1571,7 +1597,15 @@ body.timer-display>.timerLiveStage{
 
       <div class="timerSection">
         <div class="timerSectionTop">
-          <div class="timerSectionHeader" style="margin:0;">Časomiera</div>
+          <div class="timerSectionHeader" style="margin:0;">Časomiera
+            <span class="measurementInfo">
+              <button class="measurementInfoButton" type="button" aria-label="Informácie o meraní" aria-describedby="measurementStatusInfo" aria-expanded="false">i</button>
+              <span class="measurementTooltip" id="measurementStatusInfo" role="tooltip">
+                <span id="status" aria-live="polite">Pripravené</span>
+                <span>Skratky na PC: Space = štart, 1/2/3 = stop zapnutého rozhodcu, Enter = uložiť, keď je možné.</span>
+              </span>
+            </span>
+          </div>
           <button class="btn soft" id="liveToggleStopwatch" type="button">LIVE časomiera: vypnuté</button>
         </div>
         <div class="activeCompetitor">
@@ -1584,26 +1618,47 @@ body.timer-display>.timerLiveStage{
         </div>
 
       <div class="automaticPanel" style="margin:10px 0;padding:12px;border:1px solid #d7d9e0;border-radius:12px;">
-        <label for="automaticMode">Spôsob merania</label>
+        <div class="measurementLabel">
+          <label for="automaticMode">Spôsob merania</label>
+          <span class="measurementInfo">
+            <button class="measurementInfoButton" type="button" aria-label="Informácie o spôsobe merania" aria-describedby="measurementModeInfo" aria-expanded="false">i</button>
+            <span class="measurementTooltip" id="measurementModeInfo" role="tooltip">
+              <span>Ručné meranie používa stopky rozhodcov alebo ručne zadané časy.</span>
+              <span>Automatické meranie: START zachytí stanica A, STOP stanica B. Zobrazenie: 0,001 s. Spôsob merania sa dá zmeniť po uložení alebo zrušení rozpracovaného pokusu.</span>
+            </span>
+          </span>
+        </div>
         <select id="automaticMode">
           <option value="manual">Ručné meranie rozhodcov</option>
           <option value="combined">Automatické meranie A+B</option>
         </select>
         <div id="automaticControls" hidden>
-          <label for="automaticTransport">Spojenie staníc</label>
+          <div class="measurementLabel" style="margin-top:10px;">
+            <label for="automaticTransport">Spojenie staníc</label>
+            <span class="measurementInfo" id="automaticConnectionInfo" data-tone="warning">
+              <button class="measurementInfoButton" type="button" aria-label="Informácie o spojení staníc" aria-describedby="automaticConnectionDetails" aria-expanded="false">i</button>
+              <span class="measurementTooltip" id="automaticConnectionDetails" role="tooltip">
+                <span><span id="automaticStationA">A: odpojená</span> · <span id="automaticStationB">B: odpojená</span></span>
+                <span id="automaticConnectionNotice"></span>
+                <span id="automaticNotice" role="status" aria-live="polite"></span>
+                <span id="automaticAccuracy"></span>
+                <span>Už povolené USB zariadenia sa vyhľadajú automaticky a A/B sa overí podľa identity dosky. Pri prvom použití vyber „Povoliť USB zariadenie…“. Prehliadač vyžaduje samostatné povolenie pre každú dosku.</span>
+              </span>
+            </span>
+          </div>
           <select id="automaticTransport">
-            <option value="dual_usb">Obe stanice cez USB</option>
-            <option value="wireless">A cez LoRa, B cez USB</option>
+            <optgroup label="Spojenie">
+              <option value="dual_usb">Obe stanice cez USB</option>
+              <option value="wireless">A cez LoRa, B cez USB</option>
+              <option value="wireless_a_usb">A cez USB, B cez LoRa</option>
+            </optgroup>
+            <optgroup label="USB zariadenia">
+              <option value="authorize_usb">Povoliť USB zariadenie…</option>
+            </optgroup>
           </select>
           <div class="row" style="margin-top:8px;">
-            <button class="btn soft" id="automaticConnectA" type="button">Pripojiť A cez USB</button>
-            <button class="btn soft" id="automaticConnectB" type="button">Pripojiť B cez USB</button>
             <button class="btn soft" id="automaticRecover" type="button">Obnoviť zachytené údaje</button>
           </div>
-          <div class="smallTxt" style="margin-top:8px;"><span id="automaticStationA">A: odpojená</span> · <span id="automaticStationB">B: odpojená</span></div>
-          <div id="automaticNotice" class="smallTxt" role="status" aria-live="polite" style="margin-top:8px;"></div>
-          <div class="smallTxt" style="margin-top:8px;">START: tlačidlo A · STOP: tlačidlo B. Zobrazenie: 0,001 s.</div>
-          <div id="automaticAccuracy" class="smallTxt" style="margin-top:8px;"></div>
         </div>
       </div>
 
@@ -1666,15 +1721,11 @@ body.timer-display>.timerLiveStage{
 
       <div class="row" style="margin-top:10px;">
         <div class="pill">Platný čas (<span id="validRuleLabel">medián</span>): <span class="mono ok" id="valid">—</span></div>
-        <div class="pill">Stav: <span class="mono" id="status">Pripravené</span></div>
         <div class="pill">Pokusy / súťažiaci: <span class="mono" id="attemptsInfo">1</span></div>
         <div class="pill">Kandidát: <span class="mono" id="candidateParticipantInfo">—</span></div>
         <div class="pill">Vybraný: <span class="mono" id="selectedParticipantInfo">—</span></div>
       </div>
 
-      <div class="smallTxt muted" style="margin-top:10px;">
-        Skratky na PC: <span class="mono">Space</span>=štart, <span class="mono">1/2/3</span>=stop zapnutého rozhodcu, <span class="mono">Enter</span>=uložiť (keď je možné).
-      </div>
       </div>
         </div>
 <section class="bracketCard" id="bracketSection">
@@ -2037,7 +2088,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   let autoSaveTimer = null;
   let autoSaveBusy = false;
   let autoSavePending = false;
-  let autoSaveWarned = false;
+  let autoSaveTask = null;
+  let snapshotWriteQueue = Promise.resolve();
   let backupGuardLocked = false;
   let backupGuardMessage = "Pred pokracovanim nastav JSON subor pre auto-ulozenie.";
   let backupGuardOverlay = null;
@@ -2188,6 +2240,40 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   let automaticRetryAt = 0;
   let automaticPulseAt = 0;
   let automaticUiReady = false;
+  let automaticDiscoveryTask = null;
+  let automaticDiscoveryAt = 0;
+  let automaticConnectionNotice = "";
+  const automaticPortFailures = new Map();
+
+
+  function normalizeAutomaticTransport(value) {
+    return ["wireless", "wireless_a_usb"].includes(value) ? value : "dual_usb";
+  }
+
+  function automaticUsbStation() {
+    return automaticTransport === "wireless" ? "B" :
+      automaticTransport === "wireless_a_usb" ? "A" : null;
+  }
+
+  function automaticRemoteStation() {
+    const usb = automaticUsbStation();
+    return usb ? (usb === "A" ? "B" : "A") : null;
+  }
+
+  function automaticConnectedStations() {
+    const usb = automaticUsbStation();
+    return usb ? [usb] : ["A", "B"];
+  }
+
+  function automaticConnection(station) {
+    return automaticPorts[station === automaticRemoteStation() ? automaticUsbStation() : station];
+  }
+
+  function automaticCommandStations() {
+    // Establish the radio coordinator's attempt/airtime requirement before local ARM.
+    const remote = automaticRemoteStation();
+    return remote ? [remote, automaticUsbStation()] : ["A", "B"];
+  }
 
   function isAutomaticMode() { return automaticMode === "combined"; }
   function automaticPending() { return automaticRun.busy; }
@@ -2246,8 +2332,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   }
 
   async function sendAutomatic(station, command) {
-    const remote = station === "A" && automaticTransport === "wireless";
-    const connection = automaticPorts[remote ? "B" : station];
+    const remote = station === automaticRemoteStation();
+    const connection = automaticConnection(station);
     if (remote) command = command.replace(/^AUTO_/, "REMOTE_");
     if (!connection?.port?.writable) throw new Error(`Stanica ${station} nie je pripojená.`);
     const next = connection.writes.catch(() => {}).then(async () => {
@@ -2259,42 +2345,199 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     return next;
   }
 
-  async function connectAutomatic(station) {
-    if (!navigator.serial) throw new Error("USB meranie vyžaduje Chrome alebo Edge na PC.");
-    if (automaticPorts[station]) throw new Error(`Stanica ${station} je už pripojená.`);
-    const port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a, usbProductId: 0x1001 }] });
-    if (Object.values(automaticPorts).some(value => value?.port === port)) {
-      throw new Error("Tento USB port už používa druhá stanica.");
-    }
-    await port.open({ baudRate: 115200 });
-    const connection = { port, reader: null, writes: Promise.resolve(), status: null, seenAt: 0 };
-    automaticPorts[station] = connection;
-    readAutomatic(station, connection).catch(showAutomaticError);
-    await sendAutomatic(station, "AUTO_STATUS");
-    if (station === "B" && automaticTransport === "wireless") {
-      await sendAutomatic("A", "AUTO_STATUS");
-    }
-    automaticNotice = `Overujem identitu stanice ${station}…`;
-    updateAutomaticUI();
+  async function closeAutomaticCandidate(connection) {
+    try { await connection.reader?.cancel(); } catch {}
+    try { connection.reader?.releaseLock(); } catch {}
+    try { await connection.port.close(); } catch {}
   }
 
-  async function readAutomatic(station, connection) {
-    const reader = connection.port.readable.getReader();
-    connection.reader = reader;
-    const decoder = new TextDecoder();
+  async function identifyAutomaticPort(connection) {
+    const writer = connection.port.writable.getWriter();
+    try { await writer.write(new TextEncoder().encode("AUTO_STATUS\n")); }
+    finally { writer.releaseLock(); }
     let buffer = "";
+    const timeout = setTimeout(() => connection.reader.cancel().catch(() => {}), 2000);
     try {
       while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
+        const { value, done } = await connection.reader.read();
+        if (done) throw new Error("USB zariadenie neodpovedalo na overenie identity.");
+        buffer += new TextDecoder().decode(value);
+        let newline;
+        while ((newline = buffer.indexOf("\n")) >= 0) {
+          const line = buffer.slice(0, newline).trim();
+          buffer = buffer.slice(newline + 1);
+          const status = CasomieraAutomatic.parseMessage(line);
+          if (!status || status.type !== "status") continue;
+          // Forwarded LoRa status lacks local radio-budget fields. It cannot identify this USB port.
+          if (typeof status.radioCanPrepare !== "boolean" || !Number.isSafeInteger(status.radioCreditUs)) continue;
+          const tested = globalThis.CasomieraTimingValidation?.stations?.[status.station];
+          if (!tested || status.boardId !== tested.boardId) {
+            throw new Error("USB zariadenie nie je overená stanica A alebo B.");
+          }
+          return { status, buffer };
+        }
+        if (buffer.length > 2048) buffer = "";
+      }
+    } finally { clearTimeout(timeout); }
+  }
+
+  async function attachAutomaticPort(port) {
+    if (Object.values(automaticPorts).some(connection => connection?.port === port)) return;
+    const connection = { port, reader: null, writes: Promise.resolve(), status: null, seenAt: 0 };
+    try {
+      await port.open({ baudRate: 115200 });
+    } catch (error) {
+      // A port owned by another application must never be closed or reset here.
+      throw new Error("USB zariadenie sa nedá otvoriť. Zatvor sériový monitor alebo inú aplikáciu používajúcu dosku. " + error.message);
+    }
+    let attached = false;
+    try {
+      connection.reader = port.readable.getReader();
+      const identified = await identifyAutomaticPort(connection);
+      const station = identified.status.station;
+      if (!isAutomaticMode() || !automaticConnectedStations().includes(station)) return;
+      if (automaticPorts[station]) throw new Error("Viac USB zariadení sa hlási ako stanica " + station + ".");
+      connection.status = identified.status;
+      connection.seenAt = Date.now();
+      automaticPorts[station] = connection;
+      attached = true;
+      connection.readTask = readAutomatic(station, connection, identified.buffer).catch(error => {
+        automaticConnectionNotice = String(error?.message || error);
+        updateAutomaticUI();
+      });
+      if (station === automaticUsbStation()) await sendAutomatic(automaticRemoteStation(), "AUTO_STATUS");
+      if (automaticRun.busy) await recoverAutomaticAttempt();
+      updateAutomaticUI();
+    } finally {
+      if (!attached) await closeAutomaticCandidate(connection);
+    }
+  }
+
+  function discoverAutomaticPorts(force = false) {
+    if (automaticDiscoveryTask) return automaticDiscoveryTask;
+    if (!isAutomaticMode() || IS_DISPLAY_MODE) return Promise.resolve();
+    if (!navigator.serial) {
+      automaticConnectionNotice = "USB meranie vyžaduje Chrome alebo Edge na PC.";
+      updateAutomaticUI();
+      return Promise.resolve();
+    }
+    automaticDiscoveryAt = Date.now();
+    automaticDiscoveryTask = (async () => {
+      const errors = [];
+      try {
+        const ports = await navigator.serial.getPorts();
+        const candidates = ports.filter(port => {
+          const info = port.getInfo();
+          return info.usbVendorId === 0x303a && info.usbProductId === 0x1001;
+        });
+        for (const port of candidates) {
+          if (!isAutomaticMode()) break;
+          if (automaticConnectedStations().every(station => automaticPorts[station])) break;
+          if (!force && Date.now() - (automaticPortFailures.get(port) || 0) < 5000) continue;
+          try {
+            await attachAutomaticPort(port);
+            automaticPortFailures.delete(port);
+          } catch (error) {
+            automaticPortFailures.set(port, Date.now());
+            errors.push(String(error?.message || error));
+          }
+        }
+        const missing = automaticConnectedStations().filter(station => !automaticPorts[station]);
+        automaticConnectionNotice = missing.length
+          ? ("Chýba USB stanica " + missing.join(", ") + ". Skontroluj kábel; pri prvom použití vyber Spojenie staníc → Povoliť USB zariadenie…"
+            + (errors.length ? " " + [...new Set(errors)].join(" ") : ""))
+          : "USB stanice boli automaticky rozpoznané podľa overenej identity.";
+      } catch (error) {
+        automaticConnectionNotice = "Vyhľadanie USB zariadení zlyhalo: " + String(error?.message || error);
+      } finally {
+        automaticDiscoveryTask = null;
+        updateAutomaticUI();
+      }
+    })();
+    return automaticDiscoveryTask;
+  }
+
+  async function authorizeAutomaticPort() {
+    if (!navigator.serial) throw new Error("USB meranie vyžaduje Chrome alebo Edge na PC.");
+    try {
+      // Request permission directly from this user action, never from a timer.
+      await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a, usbProductId: 0x1001 }] });
+    } catch (error) {
+      if (error.name !== "NotFoundError" && error.name !== "AbortError") throw error;
+      automaticConnectionNotice = "Výber USB zariadenia bol zrušený. Už pripojené stanice a zachytené údaje zostávajú zachované.";
+      updateAutomaticUI();
+      return;
+    }
+    if (automaticDiscoveryTask) await automaticDiscoveryTask;
+    await discoverAutomaticPorts(true);
+  }
+
+  function initializeMeasurementInformation() {
+    for (const info of document.querySelectorAll(".timerSection .measurementInfo")) {
+      const button = info.querySelector("button");
+      const tooltip = info.querySelector('[role="tooltip"]');
+      function position() {
+        const anchor = button.getBoundingClientRect();
+        const width = tooltip.offsetWidth;
+        const height = tooltip.offsetHeight;
+        const left = Math.max(12, Math.min(anchor.left, window.innerWidth - width - 12));
+        const below = anchor.bottom + 8;
+        const top = below + height <= window.innerHeight - 12 ? below : Math.max(12, anchor.top - height - 8);
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
+      info.addEventListener("pointerenter", () => {
+        info.dataset.dismissed = "false";
+        position();
+      });
+      info.addEventListener("focusin", () => {
+        info.dataset.dismissed = "false";
+        position();
+      });
+      button.addEventListener("click", () => {
+        info.dataset.dismissed = "false";
+        position();
+        const open = info.dataset.open !== "true";
+        info.dataset.open = String(open);
+        button.setAttribute("aria-expanded", String(open));
+      });
+      info.addEventListener("focusout", event => {
+        if (!info.contains(event.relatedTarget)) {
+          info.dataset.open = "false";
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          info.dataset.dismissed = "true";
+          info.dataset.open = "false";
+          button.setAttribute("aria-expanded", "false");
+          button.blur();
+        }
+      });
+      window.addEventListener("resize", position);
+    }
+  }
+
+  async function readAutomatic(station, connection, initialBuffer = "") {
+    const reader = connection.reader || connection.port.readable.getReader();
+    connection.reader = reader;
+    const decoder = new TextDecoder();
+    let buffer = initialBuffer;
+    try {
+      while (true) {
+        if (!buffer.includes("\n")) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+        }
         let newline;
         while ((newline = buffer.indexOf("\n")) >= 0) {
           const line = buffer.slice(0, newline).trim();
           buffer = buffer.slice(newline + 1);
           const message = CasomieraAutomatic.parseMessage(line);
           if (!message) continue;
-          const forwarded = station === "B" && message.station === "A" && automaticTransport === "wireless";
+          const forwarded = station === automaticUsbStation() && message.station === automaticRemoteStation();
           if (message.station !== station && !forwarded) {
             throw new Error(`Vybraný port patrí stanici ${message.station}, nie ${station}.`);
           }
@@ -2313,7 +2556,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       }
     } finally {
       reader.releaseLock();
-      automaticPorts[station] = null;
+      if (automaticPorts[station] === connection) automaticPorts[station] = null;
+      if (station === automaticUsbStation()) automaticRemoteStatus = null;
       try { await connection.writes; await connection.port.close(); } catch {}
       automaticNotice = `Stanica ${station} bola odpojená. Zachytené časy zostávajú uložené; pripoj ju a obnov údaje.`;
       updateAutomaticUI();
@@ -2321,11 +2565,11 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   }
 
   function automaticStationsReady() {
-    const stations = automaticTransport === "wireless" ? ["B"] : ["A", "B"];
+    const stations = automaticConnectedStations();
     return !!automaticValidation() && stations.every(station => {
       const connection = automaticPorts[station];
       return connection?.status?.tracking === true && Date.now() - connection.seenAt < 5000 &&
-        (automaticTransport !== "wireless" || connection.status.radioCanPrepare === true);
+        (!automaticUsbStation() || connection.status.radioCanPrepare === true);
     });
   }
 
@@ -2334,7 +2578,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     if (!report?.passed || report.criterionUs !== 1000 || report.sampleCount < 24 ||
         report.maximumAbsoluteDifferenceUs > 1000) return null;
     for (const station of ["A", "B"]) {
-      const status = station === "A" && automaticTransport === "wireless"
+      const status = station === automaticRemoteStation()
         ? automaticRemoteStatus : automaticPorts[station]?.status;
       const tested = report.stations?.[station];
       if (!tested || !status || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
@@ -2369,7 +2613,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     if (el.penaltySeconds) el.penaltySeconds.value = "";
     automaticNotice = "Pripravujem obe stanice…";
     setUI();
-    await Promise.all(["A", "B"].map(station => sendAutomatic(station, `AUTO_ARM ${attempt.id}`)));
+    await Promise.all(automaticCommandStations().map(station => sendAutomatic(station, `AUTO_ARM ${attempt.id}`)));
   }
 
   function applyAutomaticProgress() {
@@ -2479,7 +2723,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     const attempt = automaticRun.current;
     if (!attempt || !automaticRun.busy) return;
     for (const station of ["A", "B"]) {
-      if (!automaticPorts[station] && !(station === "A" && automaticTransport === "wireless" && automaticPorts.B)) continue;
+      if (!automaticConnection(station)) continue;
       const operation = attempt.phase === "cancelling" ? "AUTO_CANCEL" : "AUTO_GET";
       await sendAutomatic(station, `${operation} ${attempt.id}`);
     }
@@ -2499,7 +2743,12 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     $("automaticMode").value = automaticMode;
     $("automaticMode").disabled = automaticRun.busy || running || rec.some(value => value !== null);
     $("automaticTransport").value = automaticTransport;
-    $("automaticTransport").disabled = automaticRun.busy || running || rec.some(value => value !== null);
+    // Permission renewal must remain available while recovering an active attempt.
+    $("automaticTransport").disabled = false;
+    const transportLocked = automaticRun.busy || running || rec.some(value => value !== null);
+    for (const option of $("automaticTransport").options) {
+      option.disabled = option.value !== "authorize_usb" && transportLocked;
+    }
     $("automaticControls").hidden = !enabled;
     $("automaticNotice").textContent = automaticNotice;
     const verified = automaticValidation();
@@ -2508,14 +2757,16 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       : "Pre túto dvojicu a verziu firmvéru zatiaľ nie je platný protokol overenia do 1 ms. Automatický pokus sa nedá pripraviť.";
     for (const station of ["A", "B"]) {
       const connection = automaticPorts[station];
-      $("automaticConnect" + station).disabled = !!connection;
       $("automaticStation" + station).textContent = !connection ? `${station}: odpojená` :
         `${station}: ${connection.status?.tracking ? "časová základňa pripravená" : "čakám na GNSS/PPS"}`;
     }
-    $("automaticConnectA").hidden = automaticTransport === "wireless";
-    if (automaticTransport === "wireless") {
-      $("automaticStationA").textContent = `A cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
+    const remote = automaticRemoteStation();
+    if (remote) {
+      $("automaticStation" + remote).textContent = `${remote} cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
     }
+    $("automaticConnectionNotice").textContent = automaticConnectionNotice;
+    $("automaticConnectionInfo").dataset.tone = automaticStationsReady() ? "ok" :
+      (automaticDiscoveryTask ? "busy" : "warning");
     $("automaticRecover").disabled = !automaticRun.busy;
     for (const control of [el.tabIndividual, el.tabTeam, el.tabGirls, el.tabBoys, el.tabMix]) {
       if (control) control.disabled = automaticRun.busy;
@@ -2548,12 +2799,24 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   function initializeAutomaticUI() {
     if (IS_DISPLAY_MODE) return;
     automaticUiReady = true;
+    initializeMeasurementInformation();
     $("automaticTransport").addEventListener("change", () => {
+      if ($("automaticTransport").value === "authorize_usb") {
+        $("automaticTransport").value = automaticTransport;
+        authorizeAutomaticPort().catch(error => {
+          automaticConnectionNotice = String(error?.message || error);
+          updateAutomaticUI();
+        });
+        return;
+      }
       if (automaticRun.busy || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
-      automaticTransport = $("automaticTransport").value === "wireless" ? "wireless" : "dual_usb";
+      automaticTransport = normalizeAutomaticTransport($("automaticTransport").value);
       automaticRemoteStatus = null;
-      if (automaticTransport === "wireless" && automaticPorts.B) sendAutomatic("A", "AUTO_STATUS").catch(showAutomaticError);
+      const usb = automaticUsbStation();
+      if (usb && automaticPorts[usb]) sendAutomatic(automaticRemoteStation(), "AUTO_STATUS").catch(showAutomaticError);
       updateAutomaticUI();
+      autoPersistToFile();
+      discoverAutomaticPorts(true);
     });
     $("automaticMode").addEventListener("change", () => {
       if (automaticRun.busy || running || rec.some(value => value !== null)) {
@@ -2564,14 +2827,14 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       automaticMode = $("automaticMode").value === "combined" ? "combined" : "manual";
       tStart = 0;
       setUI();
+      autoPersistToFile();
+      discoverAutomaticPorts(true);
     });
-    for (const station of ["A", "B"]) {
-      $("automaticConnect" + station).addEventListener("click", () => connectAutomatic(station).catch(showAutomaticError));
-    }
+    navigator.serial?.addEventListener("connect", () => discoverAutomaticPorts(true));
     $("automaticRecover").addEventListener("click", () => recoverAutomaticAttempt().catch(showAutomaticError));
     if (automaticRun.busy) {
       automaticMode = "combined";
-      automaticTransport = automaticRun.current.transport === "wireless" ? "wireless" : "dual_usb";
+      automaticTransport = normalizeAutomaticTransport(automaticRun.current.transport);
       automaticNotice = "Našiel sa rozpracovaný automatický pokus. Pripoj stanice a obnov údaje.";
       running = true;
     }
@@ -2583,9 +2846,11 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       rec[0] = rec[1] = rec[2] = null;
     }
     setInterval(() => {
+      if (Date.now() - automaticDiscoveryAt >= 3000 &&
+          automaticConnectedStations().some(station => !automaticPorts[station])) discoverAutomaticPorts();
       if (Date.now() - automaticPulseAt >= 2000) {
         automaticPulseAt = Date.now();
-        for (const station of (automaticTransport === "wireless" ? ["B"] : ["A", "B"])) {
+        for (const station of automaticConnectedStations()) {
           if (automaticPorts[station]) sendAutomatic(station, "AUTO_STATUS").catch(showAutomaticError);
         }
         serviceAutomaticCancellations();
@@ -2600,16 +2865,16 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
         tStart = 0;
         automaticNotice = "Pokus bol zrušený. Nový môžeš pripraviť ihneď.";
         for (const station of ["A", "B"]) {
-          if (automaticPorts[station] || (station === "A" && automaticTransport === "wireless" && automaticPorts.B)) sendAutomatic(station, `AUTO_ARCHIVE ${attempt.id}`).catch(showAutomaticError);
+          if (automaticConnection(station)) sendAutomatic(station, `AUTO_ARCHIVE ${attempt.id}`).catch(showAutomaticError);
         }
         setUI();
       }
-      const retryInterval = automaticTransport === "wireless" && attempt?.phase !== "preparing" && attempt?.phase !== "cancelling" ? 10000 : 2000;
+      const retryInterval = automaticUsbStation() && attempt?.phase !== "preparing" && attempt?.phase !== "cancelling" ? 10000 : 2000;
       if (automaticRun.busy && Date.now() - automaticRetryAt >= retryInterval) {
         automaticRetryAt = Date.now();
         if (attempt.phase === "preparing") {
-          for (const station of ["A", "B"]) {
-            if (automaticPorts[station] || (station === "A" && automaticTransport === "wireless" && automaticPorts.B)) sendAutomatic(station, `AUTO_ARM ${attempt.id}`).catch(showAutomaticError);
+          for (const station of automaticCommandStations()) {
+            if (automaticConnection(station)) sendAutomatic(station, `AUTO_ARM ${attempt.id}`).catch(showAutomaticError);
           }
         } else {
           recoverAutomaticAttempt().catch(showAutomaticError);
@@ -2619,6 +2884,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     }, 500);
     applyAutomaticProgress();
     setUI();
+    discoverAutomaticPorts();
   }
 
   // CASOMIERA_AUTOMATIC_UI_END
@@ -3014,16 +3280,25 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   }
 
   async function writeSnapshotToHandle(allowPrompt = false){
-    if (!backupFileHandle) return false;
-    const permission = await requestHandlePermission(backupFileHandle, true, allowPrompt);
+    const handle = backupFileHandle;
+    if (!handle) return false;
+    const permission = await requestHandlePermission(handle, true, allowPrompt);
     if (permission !== "granted") return false;
-
-    const snapshot = buildSnapshot();
-    const text = JSON.stringify(snapshot, null, 2);
-    const writable = await backupFileHandle.createWritable();
-    await writable.write(text);
-    await writable.close();
-    return true;
+    const text = JSON.stringify(buildSnapshot(), null, 2);
+    // Serialize every disk write, including manual saves and competition imports.
+    const write = snapshotWriteQueue.then(async () => {
+      const writable = await handle.createWritable();
+      try {
+        await writable.write(text);
+        await writable.close();
+      } catch (error) {
+        try { await writable.abort(); } catch {}
+        throw error;
+      }
+      return true;
+    });
+    snapshotWriteQueue = write.catch(() => {});
+    return write;
   }
 
   function scheduleAutoPersist(){
@@ -3031,6 +3306,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       setBackupGuardLocked(true, "Auto-ulozenie nie je nastavene. Zvol JSON subor, inak sa neda pokracovat.");
       return;
     }
+    if (autoSaveBusy) autoSavePending = true;
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
     setAutoSaveStatus("Auto-uloženie: ukladá sa...", "info");
     autoSaveTimer = setTimeout(() => {
@@ -3039,55 +3315,50 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     }, 180);
   }
 
-  async function flushAutoPersist(){
-    if (!backupFileHandle){
-      setBackupGuardLocked(true, "Auto-ulozenie nie je nastavene. Zvol JSON subor, inak sa neda pokracovat.");
-      return;
+  function flushAutoPersist(){
+    if (autoSaveTimer){
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = null;
     }
+    if (!backupFileHandle) return Promise.resolve(false);
     if (autoSaveBusy){
       autoSavePending = true;
-      return;
+      return autoSaveTask;
     }
     autoSaveBusy = true;
-    try {
-      let ok = await writeSnapshotToHandle(false);
-      if (!ok){
-        ok = await writeSnapshotToHandle(true);
+    autoSaveTask = (async () => {
+      try {
+        do {
+          autoSavePending = false;
+          setAutoSaveStatus("Auto-uloženie: ukladá sa...", "info");
+          // Permission prompts must come from the user's backup button click.
+          const ok = await writeSnapshotToHandle(false);
+          if (!ok){
+            setAutoSaveStatus("Chýba povolenie na zápis do JSON. Klikni na Zalohovat a povoľ zápis. Lokálna záloha zostáva zachovaná.", "error");
+            return false;
+          }
+          const saved = recordJsonWriteSuccess();
+          if (!autoSavePending && !autoSaveTimer){
+            setAutoSaveStatus(`Auto-uloženie JSON: uložené ${formattedBackupTime(saved.time)}.`, "ok");
+          }
+          setBackupGuardLocked(false, "");
+        } while (autoSavePending);
+        return true;
+      } catch (error) {
+        setAutoSaveStatus(`Zápis JSON zlyhal (${error.name || "Error"}: ${error.message || error}). Lokálna záloha zostáva zachovaná; klikni na Zalohovat alebo nastav iný súbor cez Auto-uloženie.`, "error");
+        return false;
+      } finally {
+        autoSaveBusy = false;
+        autoSavePending = false;
       }
-      if (!ok && !autoSaveWarned){
-        autoSaveWarned = true;
-        alert("Auto-ulozenie JSON zlyhalo. Klikni na 'Auto-ulozenie' a znovu povol zapis do suboru.");
-      }
-      if (ok){
-        autoSaveWarned = false;
-        const saved=recordJsonWriteSuccess();
-        const stamp=formattedBackupTime(saved.time);
-        setAutoSaveStatus(`Auto-uloženie JSON: uložené ${stamp}.`, "ok");
-        setBackupGuardLocked(false, "");
-      } else {
-        setAutoSaveStatus("Auto-uloženie: chyba pri ukladaní. Klikni 'Uložiť'.", "error");
-        setAutoSaveStatus("Priamy zápis JSON zlyhal. Dáta zostávajú v lokálnej zálohe; stiahni JSON cez Uložiť.","error");
-      }
-    } catch {
-      if (!autoSaveWarned){
-        autoSaveWarned = true;
-        alert("Auto-ulozenie JSON zlyhalo. Skontroluj pristup k suboru.");
-      }
-      setAutoSaveStatus("Auto-uloženie: chyba pri ukladaní. Klikni 'Uložiť'.", "error");
-      setAutoSaveStatus("Priamy zápis JSON zlyhal. Dáta zostávajú v lokálnej zálohe; stiahni JSON cez Uložiť.","error");
-    }
-    autoSaveBusy = false;
-    if (autoSavePending){
-      autoSavePending = false;
-      scheduleAutoPersist();
-    }
+    })();
+    return autoSaveTask;
   }
 
   async function chooseAutoSaveFile(){
     if (!("showSaveFilePicker" in window)){
       saveSnapshotFile();
-      setAutoSaveStatus("JSON záloha ponúknutá na stiahnutie; úspešný zápis na disk sa nedá potvrdiť.","info");
-      setAutoSaveStatus("Auto-uloženie: nepodporované v tomto prehliadači.", "error");
+      setAutoSaveStatus("JSON záloha ponúknutá na stiahnutie; automatický zápis tento prehliadač nepodporuje. Uloženie stiahnutého súboru treba overiť.", "info");
       return;
     }
     try {
@@ -3109,9 +3380,6 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       try{await saveHandleToDb(handle);}catch(e){console.warn("Zapamätanie súboru nie je dostupné",e);}
       updateAutoSaveButtonLabel();
       await flushAutoPersist();
-      if (backupFileHandle){
-        setBackupGuardLocked(false, "");
-      }
     } catch (err){
       if (err?.name === "AbortError") return;
       alert("Nepodarilo sa nastaviť auto-uloženie.");
@@ -3123,26 +3391,28 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   async function initAutoSaveHandle(){
     if (!("showSaveFilePicker" in window)){
       updateAutoSaveButtonLabel();
+      setAutoSaveStatus("Automatický zápis JSON tento prehliadač nepodporuje. Lokálna záloha zostáva aktívna; kliknutím na Zalohovat stiahni JSON.", "info");
       return;
     }
     try {
       const savedHandle = await loadHandleFromDb();
       if (!savedHandle){
         updateAutoSaveButtonLabel();
+        setAutoSaveStatus("JSON súbor nie je pripojený. Lokálna záloha zostáva aktívna; klikni na Zalohovat a vyber súbor.", "info");
         return;
       }
+      // Retain the target even when renewed permission requires a user click.
+      backupFileHandle = savedHandle;
+      backupMode = "disk";
+      updateAutoSaveButtonLabel();
       const permission = await requestHandlePermission(savedHandle, true, false);
       if (permission === "granted"){
-        backupFileHandle = savedHandle;
+        autoPersistToFile();
+      } else {
+        setAutoSaveStatus(`Prehliadač vyžaduje nové povolenie na zápis do ${savedHandle.name || "JSON"}. Klikni na Zalohovat. Lokálna záloha zostáva aktívna.`, "info");
       }
-    } catch {}
-    updateAutoSaveButtonLabel();
-    if(!backupFileHandle && localStorage.getItem(COMPETITION_STARTED_KEY)==="yes"){
-      backupMode="local";
-      setAutoSaveStatus("Priamy zápis vyžaduje nové povolenie. Lokálna záloha zostáva aktívna; nastav auto-uloženie.","info");
-    } else if(backupFileHandle){
-      backupMode="disk";
-      setBackupGuardLocked(false, "");
+    } catch (error) {
+      setAutoSaveStatus(`Zapamätaný JSON súbor sa nepodarilo obnoviť (${error.name || "Error"}: ${error.message || error}). Klikni na Zalohovat a vyber súbor.`, "error");
     }
   }
 
@@ -3566,27 +3836,34 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
   }
 
   async function manualSaveSnapshotNow(){
+    const button = document.getElementById("backupNow");
+    if (button?.disabled) return;
+    if (button) button.disabled = true;
     try {
-      if (backupFileHandle){
-        setAutoSaveStatus("Manuálne uloženie: ukladá sa...", "info");
-        const ok = await writeSnapshotToHandle(true);
-        if (ok){
-          autoSaveWarned = false;
-          const saved=recordJsonWriteSuccess();
-          setAutoSaveStatus(`Manuálne uloženie JSON: ${formattedBackupTime(saved.time)}.`, "ok");
-          return;
-        }
-      }
-
-      saveSnapshotFile();
-      setAutoSaveStatus("JSON bol ponúknutý na stiahnutie. Over jeho uloženie v zariadení.", "info");
-    } catch {
-      try {
+      if (!("showSaveFilePicker" in window)){
         saveSnapshotFile();
-        setAutoSaveStatus("JSON bol ponúknutý na stiahnutie. Over jeho uloženie v zariadení.", "info");
-      } catch {
-        setAutoSaveStatus("Manuálne uloženie zlyhalo. Skús znova.", "error");
+        setAutoSaveStatus("JSON bol ponúknutý na stiahnutie. Over jeho uloženie v zariadení; automatický zápis tento prehliadač nepodporuje.", "info");
+        return;
       }
+      if (!backupFileHandle){
+        await chooseAutoSaveFile();
+        return;
+      }
+      const permission = await requestHandlePermission(backupFileHandle, true, true);
+      if (permission !== "granted"){
+        setAutoSaveStatus("Povolenie na zápis do JSON nebolo udelené. Lokálna záloha zostáva zachovaná; cez Auto-uloženie môžeš vybrať iný súbor.", "error");
+        return;
+      }
+      backupMode = "disk";
+      autoPersistToFile();
+      if (!await flushAutoPersist()){
+        saveSnapshotFile();
+        setAutoSaveStatus("Priamy zápis JSON zlyhal; náhradná JSON záloha bola ponúknutá na stiahnutie. Over jej uloženie a cez Auto-uloženie vyber dostupný súbor.", "error");
+      }
+    } catch (error) {
+      setAutoSaveStatus(`Manuálne zálohovanie zlyhalo (${error.name || "Error"}: ${error.message || error}). Skús znova alebo nastav iný súbor cez Auto-uloženie.`, "error");
+    } finally {
+      if (button) button.disabled = false;
     }
   }
 
@@ -3595,7 +3872,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     try { localStorage.setItem(LOCAL_SNAPSHOT_KEY, JSON.stringify(buildSnapshot())); }
     catch (e) { setAutoSaveStatus("Chyba lokálnej zálohy: "+String(e.message||e),"error"); return; }
     if (backupFileHandle && backupMode === "disk") scheduleAutoPersist();
-    else setAutoSaveStatus("Automaticky uložené lokálne. Na mobile pravidelne stiahni JSON cez Uložiť.","info");
+    else setAutoSaveStatus("Automaticky uložené lokálne; JSON súbor nie je pripojený. Klikni na Zalohovat a vytvor JSON zálohu.", "info");
   }
 
   function applySnapshot(snapshot){
@@ -3610,7 +3887,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     automaticCancellations = Array.isArray(incomingAutomatic?.cancellations) ? incomingAutomatic.cancellations : [];
     persistAutomaticCancellations();
     automaticStorageError = false;
-    automaticTransport = incomingAutomatic?.transport === "wireless" ? "wireless" : "dual_usb";
+    automaticTransport = normalizeAutomaticTransport(incomingAutomatic?.transport);
     automaticMode = incomingAutomatic?.mode === "combined" || recovered.busy ? "combined" : "manual";
     persistAutomatic();
     localStorage.setItem(AUTO_HISTORY_KEY, JSON.stringify(Array.isArray(incomingAutomatic?.history) ? incomingAutomatic.history : []));
@@ -5496,6 +5773,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
     });
   }
   el.printStartList.addEventListener("click", printStartListCurrentView);
+  document.getElementById("backupNow").addEventListener("click", manualSaveSnapshotNow);
   el.setAutoSaveFile.addEventListener("click", chooseAutoSaveFile);
   el.loadBackup.addEventListener("click", () => el.backupFileInput.click());
   el.backupFileInput.addEventListener("change", handleLoadBackupFile);
@@ -7004,9 +7282,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-10-31T16:16:23.077247
       }catch(e){console.warn("Lokálna záloha sa nepodarila obnoviť",e);}}
       backupMode="local";
       if(!oldSnapshot)autoPersistToFile();
-      initAutoSaveHandle().then(()=>{
-        if(!backupFileHandle)setAutoSaveStatus("Lokálna záloha aktívna; pre zápis do JSON nastav Auto-uloženie.","info");
-      });
+      initAutoSaveHandle();
     }else {
       setAutoSaveStatus("Pred založením súťaže vyber spôsob zálohovania.","info");
       showGate();

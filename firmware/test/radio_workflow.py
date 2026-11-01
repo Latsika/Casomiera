@@ -1,5 +1,6 @@
 """Exercise preparation, recovery and immediate cancellation over real LoRa."""
 
+import argparse
 import json
 import time
 import uuid
@@ -10,10 +11,20 @@ import serial
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--usb-station", choices=("A", "B"), default="B",
+                        help="Station relaying the other station's LoRa data to USB")
+    parser.add_argument("--port-a", default="COM3")
+    parser.add_argument("--port-b", default="COM5")
+    parser.add_argument("--output", type=Path, help="Report path; A-USB uses a separate report by default")
+    args = parser.parse_args()
+    usb_station = args.usb_station
+    remote_station = "B" if usb_station == "A" else "A"
+    ports = {"A": args.port_a, "B": args.port_b}
     connection = serial.Serial(port=None, baudrate=115200, timeout=0.1, write_timeout=2)
     connection.dtr = False
     connection.rts = False
-    connection.port = "COM5"
+    connection.port = ports[usb_station]
     transcript = []
     reports = []
 
@@ -39,7 +50,7 @@ def main():
             if message.get("type") == "error":
                 if expected == "armed" and message.get("reason") == "RADIO_CREDIT_PENDING":
                     time.sleep(0.1)
-                    send(("REMOTE_ARM " if message["station"] == "A" else "AUTO_ARM ") + attempt_id)
+                    send(("REMOTE_ARM " if message["station"] == remote_station else "AUTO_ARM ") + attempt_id)
                     continue
                 raise RuntimeError(message)
             if message.get("type") == expected:
@@ -68,8 +79,9 @@ def main():
             for index in range(3):
                 attempt_id = "rf_" + uuid.uuid4().hex[:24]
                 began = time.monotonic()
-                send("AUTO_ARM " + attempt_id)
+                # Establish the coordinator's radio requirement before local ARM.
                 send("REMOTE_ARM " + attempt_id)
+                send("AUTO_ARM " + attempt_id)
                 wait_for(attempt_id, "armed")
                 send("AUTO_GET " + attempt_id)
                 send("REMOTE_GET " + attempt_id)
@@ -81,7 +93,7 @@ def main():
                 send("REMOTE_ARCHIVE " + attempt_id)
                 # Give the archive frame time to leave the FIFO before next ARM.
                 time.sleep(0.25)
-                # Replay the same old ARM token after archival: it must not rearm A.
+                # Replay the old ARM token: it must not rearm the remote station.
                 send("REMOTE_ARM " + attempt_id)
                 send("REMOTE_GET " + attempt_id)
                 deadline = time.monotonic() + 3
@@ -91,7 +103,7 @@ def main():
                     if not line.startswith("AUTO "):
                         continue
                     message = json.loads(line[5:])
-                    if message.get("station") != "A" or message.get("id") != attempt_id:
+                    if message.get("station") != remote_station or message.get("id") != attempt_id:
                         continue
                     if message.get("type") == "armed":
                         raise RuntimeError("An archived attempt was rearmed by a delayed ARM")
@@ -106,10 +118,10 @@ def main():
             send("AUTO_CANCEL " + missing_id)
             send("REMOTE_CANCEL " + missing_id)
             wait_for(missing_id, "cancelled")
-            output = Path("test-results/radio-workflow.json")
+            output = args.output or Path("test-results/radio-workflow" + ("-a-usb" if usb_station == "A" else "") + ".json")
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(json.dumps({"createdAt": datetime.now(timezone.utc).isoformat(),
-                "passed": True, "stations": identities, "cycles": reports, "transcript": transcript}, indent=2) + "\n", encoding="utf-8")
+                "passed": True, "usbStation": usb_station, "stations": identities, "cycles": reports, "transcript": transcript}, indent=2) + "\n", encoding="utf-8")
             print("Real-radio preparation, GET recovery and immediate re-preparation passed.", flush=True)
         except Exception:
             # Do not leave a diagnostic attempt armed after a failed test.

@@ -17,19 +17,17 @@ for name, filename, indent in (("CORE", "automatic-timing.js", ""), ("UI", "auto
     source = prefix + begin + (firmware / "web" / filename).read_text(encoding="utf-8") + "\n" + end + suffix
 source = source.replace("pending: automaticRun.current, history:",
                         "pending: automaticRun.current ? JSON.parse(JSON.stringify(automaticRun.current)) : null, history:")
-if 'id="automaticTransport"' not in source:
-    source = source.replace('<div id="automaticControls" hidden>', '''<div id="automaticControls" hidden>
-          <label for="automaticTransport">Spojenie staníc</label>
-          <select id="automaticTransport">
-            <option value="dual_usb">Obe stanice cez USB</option>
-            <option value="wireless">A cez LoRa, B cez USB</option>
-          </select>''', 1)
+# Current controls must stay paired with the USB discovery module.
+required_controls = ("automaticTransport", "automaticConnectionInfo", "automaticConnectionDetails",
+                     "automaticConnectionNotice", "measurementModeInfo", "measurementStatusInfo")
+if any('id="' + control + '"' not in source for control in required_controls):
+    raise RuntimeError("Use the current HTML measurement panel before synchronizing automatic modules.")
+source = source.replace('automaticTransport = incomingAutomatic?.transport === "wireless" ? "wireless" : "dual_usb";',
+    'automaticTransport = normalizeAutomaticTransport(incomingAutomatic?.transport);')
 source = source.replace("mode: automaticMode, pending:", "mode: automaticMode, transport: automaticTransport, pending:")
-if '    automaticTransport = incomingAutomatic?.transport' not in source:
+if 'automaticTransport = normalizeAutomaticTransport(incomingAutomatic?.transport);' not in source:
     source = source.replace('    automaticRun.current = recovered.current;\n',
-        '    automaticRun.current = recovered.current;\n    automaticStorageError = false;\n    automaticTransport = incomingAutomatic?.transport === "wireless" ? "wireless" : "dual_usb";\n', 1)
-source = source.replace('<div class="smallTxt" style="margin-top:8px;">START: tlačidlo A · STOP: tlačidlo B. Zobrazenie: 0,001 s. Presnosť zostáva do overenia spoločným impulzom nepotvrdená.</div>',
-    '<div class="smallTxt" style="margin-top:8px;">START: tlačidlo A · STOP: tlačidlo B. Zobrazenie: 0,001 s.</div>\n          <div id="automaticAccuracy" class="smallTxt" style="margin-top:8px;"></div>')
+        '    automaticRun.current = recovered.current;\n    automaticStorageError = false;\n    automaticTransport = normalizeAutomaticTransport(incomingAutomatic?.transport);\n', 1)
 report_path = firmware / "test-results/shared-input.json"
 verification = None
 if report_path.exists():

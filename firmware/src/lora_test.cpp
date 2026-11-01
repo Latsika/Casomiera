@@ -717,6 +717,9 @@ String radioJobs[8];
 size_t radioJobCount = 0;
 bool radioTransmitting = false;
 uint32_t radioTransmitStartedMs = 0;
+// Outgoing USB-coordinator tokens are separate from incoming peer tokens.
+uint32_t coordinatorSequence = 0;
+String coordinatorAttemptId;
 uint32_t remoteSequence = 0;
 String remoteAttemptId;
 uint32_t remoteCoordinatorBoot = 0;
@@ -725,7 +728,7 @@ uint32_t retiredCoordinatorBoots[8] = {};
 size_t retiredCoordinatorCount = 0;
 
 void closeRemoteAttempt(const String& id) {
-    if (LORA_TEST_SENDER && remoteAttemptId == id) remoteAttemptClosed = true;
+    if (remoteAttemptId == id) remoteAttemptClosed = true;
 }
 
 struct RadioBudget {
@@ -741,7 +744,7 @@ int64_t radioCreditGrantedAtUs = 0;
 uint32_t lastBudgetTryMs = 0;
 
 bool armRequiresRadioCredit(const String& id, bool remoteRequest) {
-    return remoteRequest || (!LORA_TEST_SENDER && remoteAttemptId == id);
+    return remoteRequest || coordinatorAttemptId == id;
 }
 
 bool radioCanPrepare() {
@@ -843,7 +846,7 @@ void queueRadioJob(const String& packet) {
 }
 
 void forwardAutomaticRecord(const timing::StationRecord& record) {
-    if (!LORA_TEST_SENDER || remoteCoordinatorBoot == 0 || remoteAttemptId != record.id) {
+    if (remoteCoordinatorBoot == 0 || remoteAttemptId != record.id) {
         return;
     }
     char packet[220];
@@ -856,7 +859,7 @@ void forwardAutomaticRecord(const timing::StationRecord& record) {
 }
 
 void forwardAutomaticError(const String& id, const char* reason) {
-    if (!LORA_TEST_SENDER || remoteCoordinatorBoot == 0 || id != remoteAttemptId) {
+    if (remoteCoordinatorBoot == 0 || id != remoteAttemptId) {
         return;
     }
     char packet[180];
@@ -867,21 +870,21 @@ void forwardAutomaticError(const String& id, const char* reason) {
 }
 
 void handleRemoteCommand(const String& operation, const String& id) {
-    if (LORA_TEST_SENDER || (operation != "STATUS" && !timing::validAttemptId(id.c_str()))) {
+    if (operation != "STATUS" && !timing::validAttemptId(id.c_str())) {
         printAutomaticError(id, "INVALID_REMOTE_COMMAND");
         return;
     }
-    if ((operation == "ARM" || operation == "CANCEL") && id != remoteAttemptId) {
-        remoteAttemptId = id;
-        ++remoteSequence;
+    if ((operation == "ARM" || operation == "CANCEL") && id != coordinatorAttemptId) {
+        coordinatorAttemptId = id;
+        ++coordinatorSequence;
     }
-    if (operation != "STATUS" && id != remoteAttemptId) {
+    if (operation != "STATUS" && id != coordinatorAttemptId) {
         printAutomaticError(id, "REMOTE_ATTEMPT_MISMATCH");
         return;
     }
     char packet[150];
     snprintf(packet, sizeof(packet), "CT2 C %08lx %08lx %s %s",
-        static_cast<unsigned long>(timingBootId), static_cast<unsigned long>(remoteSequence),
+        static_cast<unsigned long>(timingBootId), static_cast<unsigned long>(coordinatorSequence),
         operation.c_str(), operation == "STATUS" ? "-" : id.c_str());
     queueRadioJob(packet);
 }
@@ -891,9 +894,9 @@ void receiveTimingPacket(const String& packet) {
     char operation[24] = {}, id[41] = {}, reason[48] = {};
     int consumed = 0, valid = 0;
     long long localUs = 0, utcUs = 0;
-    if (LORA_TEST_SENDER && sscanf(packet.c_str(), "CT2 C %8lx %8lx %23s %40s%n",
+    if (sscanf(packet.c_str(), "CT2 C %8lx %8lx %23s %40s%n",
         &coordinator, &sequence, operation, id, &consumed) == 4 &&
-        consumed == static_cast<int>(packet.length())) {
+        consumed == static_cast<int>(packet.length()) && coordinator != timingBootId) {
         if (strcmp(operation, "STATUS") == 0) {
             char response[220];
             snprintf(response, sizeof(response), "CT2 S %08lx %08lx %08lx %d %lu %s %s",
@@ -941,39 +944,40 @@ void receiveTimingPacket(const String& packet) {
         }
         return;
     }
-    if (LORA_TEST_SENDER) return;
+    const char peerStation = LORA_TEST_SENDER ? 'B' : 'A';
     char peerBoard[13] = {}, peerFirmware[65] = {};
     consumed = 0;
     if (sscanf(packet.c_str(), "CT2 S %8lx %8lx %8lx %d %lu %12s %64s%n",
         &coordinator, &sequence, &peerBoot, &valid, &generation, peerBoard, peerFirmware, &consumed) == 7 &&
-        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId && (valid == 0 || valid == 1) &&
+        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId &&
+        sequence == coordinatorSequence && (valid == 0 || valid == 1) &&
         strlen(peerBoard) == 12 && strspn(peerBoard, "0123456789abcdef") == 12 &&
         strlen(peerFirmware) == 64 && strspn(peerFirmware, "0123456789abcdef") == 64) {
-        Serial.printf("AUTO {\"station\":\"A\",\"boot\":\"%08lx\",\"type\":\"status\","
+        Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"status\","
                       "\"tracking\":%s,\"generation\":%lu,\"accuracy\":\"unverified\","
                       "\"boardId\":\"%s\",\"firmwareHash\":\"%s\"}\n",
-            peerBoot, valid ? "true" : "false", generation, peerBoard, peerFirmware);
+            peerStation, peerBoot, valid ? "true" : "false", generation, peerBoard, peerFirmware);
         return;
     }
     consumed = 0;
     if (sscanf(packet.c_str(), "CT2 R %8lx %8lx %8lx %23s %40s %lld %lld %lu %d%n",
         &coordinator, &sequence, &peerBoot, operation, id, &localUs, &utcUs, &generation, &valid, &consumed) == 9 &&
-        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId && sequence == remoteSequence &&
-        remoteAttemptId == id && timing::validAttemptId(id) && (valid == 0 || valid == 1) &&
+        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId && sequence == coordinatorSequence &&
+        coordinatorAttemptId == id && timing::validAttemptId(id) && (valid == 0 || valid == 1) &&
         (strcmp(operation, "armed") == 0 || strcmp(operation, "event") == 0 ||
          strcmp(operation, "complete") == 0 || strcmp(operation, "cancelled") == 0)) {
-        Serial.printf("AUTO {\"station\":\"A\",\"boot\":\"%08lx\",\"type\":\"%s\","
+        Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"%s\","
                       "\"id\":\"%s\",\"localUs\":\"%lld\",\"utcUs\":\"%lld\",\"generation\":%lu,\"valid\":%s}\n",
-            peerBoot, operation, id, localUs, utcUs, generation, valid ? "true" : "false");
+            peerStation, peerBoot, operation, id, localUs, utcUs, generation, valid ? "true" : "false");
         return;
     }
     consumed = 0;
     if (sscanf(packet.c_str(), "CT2 X %8lx %8lx %8lx %40s %47s%n",
         &coordinator, &sequence, &peerBoot, id, reason, &consumed) == 5 &&
-        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId && sequence == remoteSequence &&
-        remoteAttemptId == id && timing::validAttemptId(id) && timing::validAttemptId(reason)) {
-        Serial.printf("AUTO {\"station\":\"A\",\"boot\":\"%08lx\",\"type\":\"error\",\"id\":\"%s\",\"reason\":\"%s\"}\n",
-            peerBoot, id, reason);
+        consumed == static_cast<int>(packet.length()) && coordinator == timingBootId && sequence == coordinatorSequence &&
+        coordinatorAttemptId == id && timing::validAttemptId(id) && timing::validAttemptId(reason)) {
+        Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"error\",\"id\":\"%s\",\"reason\":\"%s\"}\n",
+            peerStation, peerBoot, id, reason);
     }
 }
 
