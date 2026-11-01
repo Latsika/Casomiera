@@ -3,7 +3,7 @@
 An offline competition management and timing application for DHZ Ruskov.
 The project also includes a planned electronic timing extension.
 
-Status reviewed: 2026-10-31.
+Status reviewed: 2026-11-01.
 
 ## Project files
 
@@ -115,13 +115,14 @@ The application must provide three selectable measurement modes:
    or physical button; station B records STOP from an optical gate
    or physical button. Both stations measure one participant's attempt.
 3. Independent automatic stations: each board measures a complete
-   attempt using its own optical gate or physical button for START
-   and a separate physical button for STOP. A and B connect directly
-   to the same PC through separate USB connections and support two
-   participants being timed concurrently and independently.
+   attempt with separate START and STOP inputs. Both inputs must support
+   physical buttons and optical gates. A and B connect to the same PC
+   through separate USB connections and can time two participants independently.
 
-The application configures the operating mode and selected START/STOP
-sources. In independent mode, each station must have its own participant,
+The application configures the measurement mode. The owner selects buttons
+or optical gates through an external hardware selector.
+
+In independent mode, each station must have its own participant,
 attempt ID, state, and result. Starting, stopping, or cancelling one
 station's attempt must not affect the other station's attempt.
 
@@ -143,9 +144,9 @@ explicitly cancels an active attempt, a replacement attempt may use
 another mode. Do not automatically transfer partial measurements
 between modes.
 
-Manual and combined automatic button timing are implemented as described in
-the latest verification section below. Independent two-participant automatic
-timing remains a requirement for future implementation.
+Manual, combined automatic and independent timing are implemented. Current
+independent implementation and verification limits are recorded in the latest
+section below; final physical verification remains pending.
 
 ## v11 integration review — 2026-10-23
 
@@ -495,3 +496,58 @@ integration script and intentionally refuses to apply itself twice.
 Hardware/protocol references:
 [Wireless Tracker V2 datasheet](https://resource.heltec.cn/download/Wireless_Tracker_V2/Wireless_Tracker_v2_Datasheet/Wireless%20Tracker%20v2.pdf)
 and [Unicore UFirebird II protocol R1.4](https://resource.heltec.cn/download/Wireless_Tracker_V2/GNSS_AT_Datasheet/UFirebirdII%20Series%20Protocol%20Specification_EN_R1.4.pdf).
+
+## Input interface requirements — 2026-11-01
+
+- Independent mode on both boards: START uses GPIO6; STOP uses GPIO17.
+  Final physical validation of the board wiring remains pending.
+- Both START and STOP must support buttons and optical gates.
+- The external selector and signal conditioning must present a common
+  3.3 V-compatible, idle-HIGH, active-LOW interface to each GPIO.
+- Sensor polarity, pulse duration, response delay and conditioning must
+  be established before optical timing is considered supported and verified.
+- Existing combined GNSS timing keeps A GPIO6 as START and B GPIO6 as STOP.
+  Its firmware captures the falling edge before approximately 30 ms of
+  stable-LOW qualification; shorter optical pulses may be rejected.
+- Optical-gate operation and accuracy remain unverified in combined mode.
+  Any required adaptation is deferred for separate implementation and testing.
+- Independent mode is implemented; final physical verification remains pending.
+  Preserve the existing combined GNSS capture and its verification guard.
+
+## Independent timing — 2026-11-01
+
+- The shared lora_A/lora_B firmware supports application-selected combined and
+  independent modes through AUTO_MODE; changing modes does not require reflashing.
+  Independent START uses GPIO6 and STOP GPIO17, active LOW with a common GND.
+  The external hardware selector chooses buttons or conditioned optical signals.
+  Default qualification is 1000 us LOW and 30000 us stable release; optical-gate
+  compatibility and accuracy remain unverified.
+- Independent mode supports one participant on A or B, or two concurrent
+  participants. Selections follow the microphone calling panel: the first slot
+  for a single station, or the first two slots for A/B. Queue changes update idle
+  stations; prepared, running and unsaved attempts retain their participants.
+  LIVE shows one or two clocks. Workstation participant labels use registered
+  team names. Measurement settings can be collapsed. Saving requires an explicit
+  valid penalty, including zero.
+- Each station retains its own attempt ID, local timestamps and result. Browser
+  backups retain pending state and results; board records remain RAM-only.
+  Inputs must be released before preparing an attempt.
+- A physical B test exposed raw-edge queue exhaustion: 264 START and 2072 STOP
+  interrupts, with 58 dropped changes and a latched fault. The replacement capture
+  module qualifies inputs before queueing events and preserves the first-edge
+  timestamp. An idle station can recover after stable release; uncertain active
+  measurements remain faulted.
+- Both firmware builds/uploads, on-device INDEP_TEST and CLOCK_TEST, and
+  Node/Chrome regression checks passed. INDEP_TEST includes over 10000 raw
+  transitions without draining, held contacts, short pulses, queue exhaustion and
+  both station completion orders. Post-fix physical button/end-to-end testing,
+  optical timing and accuracy remain pending. No A input transitions were observed
+  in the earlier diagnostic button test.
+- The original combined GPS input functions are unchanged. The embedded
+  physical-verification guard remains in place; new firmware hashes require
+  fresh physical GPS verification before combined timing is enabled. The
+  deferred 100 m A-USB/B-LoRa test remains open.
+
+Read-only diagnostics: `INDEP_DIAG`. Input configuration:
+`INDEP_CONFIG <lowUs> <releaseUs>`, allowed only while idle.
+Run `INDEP_TEST` and `CLOCK_TEST` for internal checks.

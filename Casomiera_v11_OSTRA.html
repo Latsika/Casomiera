@@ -1204,8 +1204,25 @@ body.work-podium .podiumWorkspace{display:block}
 .timerBox[data-judges="1"]{grid-template-columns:minmax(0,1fr)!important}
 .timerBox[data-judges="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .timerBox .judge.inactiveJudge{display:none!important}
+.independentPanels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.independentPanels[hidden]{display:none}
+.independentPanels[data-count="1"]{grid-template-columns:minmax(0,1fr);max-width:640px;margin:12px auto}
+.independentStation[hidden],#independentLayoutControls[hidden],#independentSingleStationField[hidden]{display:none!important}
+.independentStation{padding:15px;border:1px solid #cfdce9;border-radius:14px;background:#fff;min-width:0}
+.independentStation select,.independentStation input{width:100%;box-sizing:border-box}
+.independentStation output{display:block;margin:14px 0}
+.independentStation .measurementTooltip input{margin:3px 0 7px}
+body.measurement-independent .timerSection .timerBox,
+body.measurement-independent #legacyPenalty,
+body.measurement-independent #legacyActions,
+body.measurement-independent #legacySummary{display:none}
+@media(max-width:760px){.independentPanels{grid-template-columns:1fr}}
 .measurementLabel{display:flex;align-items:center;gap:8px;margin:0 0 5px}
 .measurementLabel label{margin:0}
+#measurementSettings[hidden],#measurementSettingsToggle[hidden]{display:none!important}
+.measurementSettingsToggle{margin-left:auto;display:inline-grid;place-items:center;width:32px;height:28px;
+  padding:0;border:1px solid #b8c6d5;border-radius:7px;background:#fff;color:#38536f;font-size:20px;cursor:pointer}
+.measurementSettingsToggle:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
 .measurementInfo{display:inline-flex;align-items:center;vertical-align:middle}
 .measurementInfoButton{display:inline-grid;place-items:center;width:23px;height:23px;padding:0;
   border:1.5px solid #8091a8;border-radius:50%;background:#fff;color:#38536f;font:bold 14px Georgia,serif;cursor:help}
@@ -1627,18 +1644,32 @@ body.timer-display>.timerLiveStage{
               <span>Automatické meranie: START zachytí stanica A, STOP stanica B. Zobrazenie: 0,001 s. Spôsob merania sa dá zmeniť po uložení alebo zrušení rozpracovaného pokusu.</span>
             </span>
           </span>
+          <button id="measurementSettingsToggle" class="measurementSettingsToggle" type="button" hidden
+            aria-controls="measurementSettings" aria-expanded="false" aria-label="Rozbaliť nastavenia merania">▾</button>
         </div>
         <select id="automaticMode">
           <option value="manual">Ručné meranie rozhodcov</option>
           <option value="combined">Automatické meranie A+B</option>
+          <option value="independent">Nezávislé meranie A/B</option>
         </select>
+        <div id="measurementSettings" hidden>
+        <div id="independentLayoutControls" class="row" hidden style="margin-top:10px;">
+          <div class="field">
+            <label for="independentCount">Počet súťažiacich</label>
+            <select id="independentCount"><option value="1">1 súťažiaci</option><option value="2">2 súťažiaci</option></select>
+          </div>
+          <div class="field" id="independentSingleStationField">
+            <label for="independentSingleStation">Použitá stanica</label>
+            <select id="independentSingleStation"><option value="A">Stanica A</option><option value="B">Stanica B</option></select>
+          </div>
+        </div>
         <div id="automaticControls" hidden>
           <div class="measurementLabel" style="margin-top:10px;">
             <label for="automaticTransport">Spojenie staníc</label>
             <span class="measurementInfo" id="automaticConnectionInfo" data-tone="warning">
               <button class="measurementInfoButton" type="button" aria-label="Informácie o spojení staníc" aria-describedby="automaticConnectionDetails" aria-expanded="false">i</button>
               <span class="measurementTooltip" id="automaticConnectionDetails" role="tooltip">
-                <span><span id="automaticStationA">A: odpojená</span> · <span id="automaticStationB">B: odpojená</span></span>
+                <span><span id="automaticStationA">A: odpojená</span><span id="automaticStationSeparator"> · </span><span id="automaticStationB">B: odpojená</span></span>
                 <span id="automaticConnectionNotice"></span>
                 <span id="automaticNotice" role="status" aria-live="polite"></span>
                 <span id="automaticAccuracy"></span>
@@ -1660,6 +1691,66 @@ body.timer-display>.timerLiveStage{
             <button class="btn soft" id="automaticRecover" type="button">Obnoviť zachytené údaje</button>
           </div>
         </div>
+        </div>
+      </div>
+
+      <div id="independentPanels" class="independentPanels" hidden>
+        <article id="independentStationA" class="independentStation">
+          <div class="measurementLabel"><strong>Stanica A</strong>
+            <span class="measurementInfo" id="independentInfoA" data-tone="busy">
+              <button class="measurementInfoButton" type="button" aria-label="Informácie o stanici A" aria-describedby="independentDetailsA" aria-expanded="false">i</button>
+              <span class="measurementTooltip" id="independentDetailsA" role="tooltip">
+                <span id="independentNoticeA" aria-live="polite"></span>
+                <span>Pri výpadku USB zachovaj pokus a obnov zachytené údaje. Zmena režimu vyžaduje uloženie alebo výslovné zrušenie oboch pokusov.</span>
+                <span>Hardvérový prepínač vyberá tlačidlá alebo optozávory. Rozhranie musí poskytovať 3,3 V-kompatibilný signál: v pokoji HIGH, pri udalosti LOW. Konkrétne optozávory a ich oneskorenie ešte nie sú overené.</span>
+                <label for="independentLowA">Potvrdenie LOW (µs)</label>
+                <input id="independentLowA" type="number" min="0" max="30000" value="1000">
+                <label for="independentReleaseA">Stabilné uvoľnenie (µs)</label>
+                <input id="independentReleaseA" type="number" min="1000" max="1000000" value="30000">
+                <button class="btn soft" id="independentConfigureA" type="button">Nastaviť vstupy</button>
+              </span>
+            </span>
+          </div>
+          <label for="independentParticipantA">Súťažiaci</label>
+          <select id="independentParticipantA"></select>
+          <output class="bigTime mono" id="independentClockA">0.000</output>
+          <label for="independentPenaltyA">Trestné sekundy</label>
+          <input id="independentPenaltyA" class="mono" type="text" inputmode="decimal" placeholder="0">
+          <div class="row" style="margin-top:10px;">
+            <button class="btn primary" id="independentPrepareA" type="button">Pripraviť</button>
+            <button class="btn warn" id="independentCancelA" type="button">Zrušiť</button>
+            <button class="btn good" id="independentSaveA" type="button">Uložiť výsledok</button>
+            <button class="btn soft" id="independentRecoverA" type="button">Obnoviť údaje</button>
+          </div>
+        </article>
+        <article id="independentStationB" class="independentStation">
+          <div class="measurementLabel"><strong>Stanica B</strong>
+            <span class="measurementInfo" id="independentInfoB" data-tone="busy">
+              <button class="measurementInfoButton" type="button" aria-label="Informácie o stanici B" aria-describedby="independentDetailsB" aria-expanded="false">i</button>
+              <span class="measurementTooltip" id="independentDetailsB" role="tooltip">
+                <span id="independentNoticeB" aria-live="polite"></span>
+                <span>Pri výpadku USB zachovaj pokus a obnov zachytené údaje. Zmena režimu vyžaduje uloženie alebo výslovné zrušenie oboch pokusov.</span>
+                <span>Hardvérový prepínač vyberá tlačidlá alebo optozávory. Rozhranie musí poskytovať 3,3 V-kompatibilný signál: v pokoji HIGH, pri udalosti LOW. Konkrétne optozávory a ich oneskorenie ešte nie sú overené.</span>
+                <label for="independentLowB">Potvrdenie LOW (µs)</label>
+                <input id="independentLowB" type="number" min="0" max="30000" value="1000">
+                <label for="independentReleaseB">Stabilné uvoľnenie (µs)</label>
+                <input id="independentReleaseB" type="number" min="1000" max="1000000" value="30000">
+                <button class="btn soft" id="independentConfigureB" type="button">Nastaviť vstupy</button>
+              </span>
+            </span>
+          </div>
+          <label for="independentParticipantB">Súťažiaci</label>
+          <select id="independentParticipantB"></select>
+          <output class="bigTime mono" id="independentClockB">0.000</output>
+          <label for="independentPenaltyB">Trestné sekundy</label>
+          <input id="independentPenaltyB" class="mono" type="text" inputmode="decimal" placeholder="0">
+          <div class="row" style="margin-top:10px;">
+            <button class="btn primary" id="independentPrepareB" type="button">Pripraviť</button>
+            <button class="btn warn" id="independentCancelB" type="button">Zrušiť</button>
+            <button class="btn good" id="independentSaveB" type="button">Uložiť výsledok</button>
+            <button class="btn soft" id="independentRecoverB" type="button">Obnoviť údaje</button>
+          </div>
+        </article>
       </div>
 
       <div class="timerBox" id="timerBox" data-judges="3">
@@ -1706,20 +1797,20 @@ body.timer-display>.timerLiveStage{
         </div>
       </div>
 
-      <div class="row" style="margin:0 0 10px;">
+      <div class="row" id="legacyPenalty" style="margin:0 0 10px;">
         <div class="field small" style="max-width:220px;">
           <label>Trestné sekundy</label>
           <input class="mono" id="penaltySeconds" type="text" inputmode="decimal" placeholder="napr. 0 alebo 1.5" />
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id="legacyActions">
         <button class="btn primary" id="start" type="button">Štart (všetky 3)</button>
         <button class="btn warn" id="abort" type="button" disabled>Zrušiť meranie</button>
         <button class="btn soft" id="save" type="button" disabled>Uložiť výsledok</button>
       </div>
 
-      <div class="row" style="margin-top:10px;">
+      <div class="row" id="legacySummary" style="margin-top:10px;">
         <div class="pill">Platný čas (<span id="validRuleLabel">medián</span>): <span class="mono ok" id="valid">—</span></div>
         <div class="pill">Pokusy / súťažiaci: <span class="mono" id="attemptsInfo">1</span></div>
         <div class="pill">Kandidát: <span class="mono" id="candidateParticipantInfo">—</span></div>
@@ -1889,6 +1980,186 @@ body.timer-display>.timerLiveStage{
 </div>
 
 <script>
+// CASOMIERA_INDEPENDENT_CORE_BEGIN
+(function (root) {
+  "use strict";
+  const stations = ["A", "B"];
+  const phases = ["preparing", "armed", "running", "finished", "recovery", "cancelled", "saved"];
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const validId = value => /^[A-Za-z0-9_-]{1,40}$/.test(value || "");
+  const validTime = value => /^\d{1,17}$/.test(String(value)) && BigInt(value) >= 0n;
+  const isBusy = attempt => !!attempt && !["saved", "cancelled"].includes(attempt.phase);
+
+  function validateAttempt(attempt, station) {
+    if (attempt === null) return;
+    if (!attempt || attempt.station !== station || !validId(attempt.id) ||
+        !attempt.participant?.key || !attempt.competitionId ||
+        !Number.isInteger(attempt.attemptNo) || attempt.attemptNo < 1 ||
+        !phases.includes(attempt.phase) || !Array.isArray(attempt.errors) ||
+        (attempt.startUs != null && !validTime(attempt.startUs)) ||
+        (attempt.stopUs != null && !validTime(attempt.stopUs))) {
+      throw new Error("Invalid retained independent attempt.");
+    }
+    if (attempt.startUs != null && BigInt(attempt.startUs) <= 0n) throw new Error("Invalid retained START.");
+    if (attempt.stopUs != null) {
+      if (!attempt.startUs || BigInt(attempt.stopUs) <= BigInt(attempt.startUs) ||
+          BigInt(attempt.stopUs) - BigInt(attempt.startUs) > 86400000000n) throw new Error("Invalid retained STOP.");
+      const elapsed = BigInt(attempt.stopUs) - BigInt(attempt.startUs);
+      if (attempt.elapsedUs !== elapsed.toString() || attempt.elapsedMs !== Number((elapsed + 500n) / 1000n)) {
+        throw new Error("Retained duration does not match captured timestamps.");
+      }
+    } else if (["finished", "saved"].includes(attempt.phase)) {
+      throw new Error("Completed independent attempt has no STOP.");
+    }
+  }
+
+  class IndependentRuns {
+    constructor(snapshot = null) {
+      this.current = { A: null, B: null };
+      this.history = [];
+      this.actions = [];
+      if (!snapshot) return;
+      if (!snapshot.current || !Array.isArray(snapshot.history) || !Array.isArray(snapshot.actions)) {
+        throw new Error("Invalid independent timing backup.");
+      }
+      for (const station of stations) {
+        validateAttempt(snapshot.current[station], station);
+        this.current[station] = clone(snapshot.current[station]);
+      }
+      for (const attempt of snapshot.history) {
+        validateAttempt(attempt, attempt?.station);
+        if (!stations.includes(attempt.station)) throw new Error("Invalid history station.");
+      }
+      for (const action of snapshot.actions) {
+        if (!stations.includes(action.station) || !validId(action.id) ||
+            !["CANCEL", "COMPLETE"].includes(action.operation) || !["finish", "archive"].includes(action.stage)) {
+          throw new Error("Invalid retained device operation.");
+        }
+      }
+      this.history = clone(snapshot.history);
+      this.actions = clone(snapshot.actions);
+    }
+
+    get busy() { return stations.some(station => isBusy(this.current[station])); }
+    busyAt(station) { return isBusy(this.current[station]); }
+    snapshot() { return clone({ current: this.current, history: this.history, actions: this.actions }); }
+
+    retain(attempt) {
+      const index = this.history.findIndex(item => item.station === attempt.station && item.id === attempt.id);
+      if (index < 0) this.history.push(clone(attempt)); else this.history[index] = clone(attempt);
+    }
+
+    prepare(station, participant, attemptNo, competitionId, id, context = {}) {
+      if (!stations.includes(station) || !participant?.key || !competitionId || !validId(id) ||
+          !Number.isInteger(attemptNo) || attemptNo < 1 || this.busyAt(station)) throw new Error("Invalid or busy independent attempt.");
+      if (this.history.some(item => item.id === id) || stations.some(key => this.current[key]?.id === id)) throw new Error("Attempt ID already used.");
+      for (const other of stations) {
+        const active = this.current[other];
+        if (isBusy(active) && active.participant.key === participant.key &&
+            active.participant.mode === participant.mode && active.participant.category === participant.category) {
+          throw new Error("This participant already has an active attempt on the other station.");
+        }
+      }
+      if (this.current[station]) this.retain(this.current[station]);
+      const attempt = {
+        station, id, participant: clone(participant), attemptNo, competitionId,
+        phase: "preparing", startUs: null, stopUs: null, elapsedUs: null, elapsedMs: null,
+        boot: context.boot || null, firmwareHash: context.firmwareHash || null,
+        boardId: context.boardId || null, inputLowUs: context.inputLowUs,
+        inputReleaseUs: context.inputReleaseUs, errors: [], createdAt: new Date().toISOString()
+      };
+      this.current[station] = attempt;
+      return attempt;
+    }
+
+    action(attempt, operation) {
+      if (!this.actions.some(item => item.station === attempt.station && item.id === attempt.id)) {
+        this.actions.push({ station: attempt.station, id: attempt.id, operation, stage: "finish" });
+      }
+    }
+
+    cancel(station) {
+      const attempt = this.current[station];
+      if (!isBusy(attempt)) return;
+      attempt.phase = "cancelled";
+      this.action(attempt, "CANCEL");
+      this.retain(attempt);
+    }
+
+    markSaved(station, resultId) {
+      const attempt = this.current[station];
+      if (attempt?.phase !== "finished") throw new Error("No finished independent result.");
+      attempt.phase = "saved";
+      attempt.resultId = resultId;
+      this.action(attempt, "COMPLETE");
+      this.retain(attempt);
+    }
+
+    accept(message) {
+      if (message?.kind !== "independent" || !stations.includes(message.station) || !validId(message.id)) return false;
+      const station = message.station;
+      const attempt = this.current[station]?.id === message.id ? this.current[station] :
+        this.history.find(item => item.station === station && item.id === message.id);
+      const action = this.actions.find(item => item.station === station && item.id === message.id);
+      if (message.type === "independent_ack") {
+        if (message.operation === "ARCHIVE" && action?.stage === "archive") {
+          this.actions = this.actions.filter(item => item !== action);
+          return true;
+        }
+        return false;
+      }
+      if (!attempt) return false;
+      const closed = ["saved", "cancelled"].includes(attempt.phase);
+      const fail = (reason, fatal = true) => {
+        attempt.errors.push({ reason, at: new Date().toISOString() });
+        attempt.errors = attempt.errors.slice(-32);
+        if (!closed && fatal) attempt.phase = "recovery";
+        else this.retain(attempt);
+        return true;
+      };
+      if (message.type === "independent_error") {
+        const reason = String(message.reason || "DEVICE_ERROR");
+        return fail(reason, reason === "INPUT_OVERFLOW");
+      }
+      if (message.type !== "independent" || !/^[0-9a-f]{8}$/i.test(message.boot || "")) return false;
+      if (!["armed", "running", "finished", "cancelled", "complete"].includes(message.phase)) return false;
+      if (!validTime(message.startUs) || !validTime(message.stopUs)) return fail("INVALID_TIMESTAMPS");
+      const start = BigInt(message.startUs), stop = BigInt(message.stopUs);
+      if ((stop > 0n && (start <= 0n || stop <= start || stop - start > 86400000000n)) ||
+          (["finished", "complete"].includes(message.phase) && stop <= 0n) ||
+          (message.phase === "running" && start <= 0n)) return fail("INVALID_EVENT_ORDER");
+      if (attempt.boot && attempt.boot !== message.boot && (start > 0n || !closed)) return fail("DEVICE_RESTARTED");
+      if (!attempt.boot) attempt.boot = message.boot;
+      if (start > 0n) {
+        if (attempt.startUs && attempt.startUs !== start.toString()) return fail("CONFLICTING_START");
+        attempt.startUs = start.toString();
+      }
+      if (stop > 0n) {
+        if (attempt.stopUs && attempt.stopUs !== stop.toString()) return fail("CONFLICTING_STOP");
+        if (!validTime(message.elapsedUs) || BigInt(message.elapsedUs) !== stop - start) return fail("INVALID_DURATION");
+        attempt.stopUs = stop.toString();
+        attempt.elapsedUs = (stop - start).toString();
+        attempt.elapsedMs = Number((stop - start + 500n) / 1000n);
+      }
+      if (message.inputFault) return fail("INPUT_OVERFLOW");
+      if (action && ((action.operation === "CANCEL" && message.phase === "cancelled") ||
+          (action.operation === "COMPLETE" && message.phase === "complete"))) action.stage = "archive";
+      if (!closed && attempt.phase !== "recovery") {
+        attempt.phase = attempt.stopUs ? "finished" : attempt.startUs ? "running" : "armed";
+        if (message.phase === "cancelled") attempt.phase = "cancelled";
+      }
+      if (closed || ["cancelled", "saved"].includes(attempt.phase)) this.retain(attempt);
+      return true;
+    }
+  }
+
+  const api = { IndependentRuns };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.CasomieraIndependent = api;
+})(typeof globalThis !== "undefined" ? globalThis : this);
+
+// CASOMIERA_INDEPENDENT_CORE_END
+
 // CASOMIERA_AUTOMATIC_CORE_BEGIN
 (function (root) {
   "use strict";
@@ -2240,6 +2511,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   let automaticRetryAt = 0;
   let automaticPulseAt = 0;
   let automaticUiReady = false;
+  let measurementSettingsExpanded = false;
   let automaticDiscoveryTask = null;
   let automaticDiscoveryAt = 0;
   let automaticConnectionNotice = "";
@@ -2251,6 +2523,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function automaticUsbStation() {
+    if (isIndependentMode()) return null;
     return automaticTransport === "wireless" ? "B" :
       automaticTransport === "wireless_a_usb" ? "A" : null;
   }
@@ -2261,6 +2534,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function automaticConnectedStations() {
+    if (isIndependentMode()) return independentStations();
     const usb = automaticUsbStation();
     return usb ? [usb] : ["A", "B"];
   }
@@ -2270,14 +2544,20 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function automaticCommandStations() {
+    if (isIndependentMode()) return independentStations();
     // Establish the radio coordinator's attempt/airtime requirement before local ARM.
     const remote = automaticRemoteStation();
     return remote ? [remote, automaticUsbStation()] : ["A", "B"];
   }
 
   function isAutomaticMode() { return automaticMode === "combined"; }
-  function automaticPending() { return automaticRun.busy; }
+  function isElectronicMode() { return isAutomaticMode() || isIndependentMode(); }
+  function automaticPending() { return automaticRun.busy || independentPending(); }
+  function isElectronicRecord(record) {
+    return ["automatic_combined", "automatic_independent"].includes(record.measurementMode);
+  }
   function measurementRuleDescription(record) {
+    if (record.measurementMode === "automatic_independent") return "Nezávislá stanica " + (record.electronic?.station || "");
     return record.measurementMode === "automatic_combined" ? "Automatické A+B" :
       `${normalizeJudgeCount(record.judgeCount ?? 3)} rozhodcovia; výpočet: ${RULE_LABELS[normalizeTimeRule(record.timeRule ?? "median")]}`;
   }
@@ -2395,7 +2675,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       connection.reader = port.readable.getReader();
       const identified = await identifyAutomaticPort(connection);
       const station = identified.status.station;
-      if (!isAutomaticMode() || !automaticConnectedStations().includes(station)) return;
+      if (!isElectronicMode() || !automaticConnectedStations().includes(station)) return;
       if (automaticPorts[station]) throw new Error("Viac USB zariadení sa hlási ako stanica " + station + ".");
       connection.status = identified.status;
       connection.seenAt = Date.now();
@@ -2406,7 +2686,9 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
         updateAutomaticUI();
       });
       if (station === automaticUsbStation()) await sendAutomatic(automaticRemoteStation(), "AUTO_STATUS");
+      await synchronizeAutomaticModes();
       if (automaticRun.busy) await recoverAutomaticAttempt();
+      await serviceIndependent(true);
       updateAutomaticUI();
     } finally {
       if (!attached) await closeAutomaticCandidate(connection);
@@ -2415,7 +2697,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
 
   function discoverAutomaticPorts(force = false) {
     if (automaticDiscoveryTask) return automaticDiscoveryTask;
-    if (!isAutomaticMode() || IS_DISPLAY_MODE) return Promise.resolve();
+    if (!isElectronicMode() || IS_DISPLAY_MODE) return Promise.resolve();
     if (!navigator.serial) {
       automaticConnectionNotice = "USB meranie vyžaduje Chrome alebo Edge na PC.";
       updateAutomaticUI();
@@ -2431,7 +2713,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           return info.usbVendorId === 0x303a && info.usbProductId === 0x1001;
         });
         for (const port of candidates) {
-          if (!isAutomaticMode()) break;
+          if (!isElectronicMode()) break;
           if (automaticConnectedStations().every(station => automaticPorts[station])) break;
           if (!force && Date.now() - (automaticPortFailures.get(port) || 0) < 5000) continue;
           try {
@@ -2546,6 +2828,10 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           if (message.type === "status") {
             if (forwarded) automaticRemoteStatus = message;
             else connection.status = message;
+          } else if (message.type === "mode_error") {
+            automaticConnectionNotice = "Stanica " + station + " zatiaľ nepotvrdila prepnutie režimu; dokonči alebo zruš jej pokus.";
+          } else if (handleIndependentMessage(message)) {
+            // Independent messages cannot enter the combined GNSS state machine.
           } else if (automaticRun.accept(message)) {
             persistAutomatic();
             applyAutomaticProgress();
@@ -2568,7 +2854,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     const stations = automaticConnectedStations();
     return !!automaticValidation() && stations.every(station => {
       const connection = automaticPorts[station];
-      return connection?.status?.tracking === true && Date.now() - connection.seenAt < 5000 &&
+      return connection?.status?.tracking === true && (connection.status.mode || "combined") === "combined" && Date.now() - connection.seenAt < 5000 &&
         (!automaticUsbStation() || connection.status.radioCanPrepare === true);
     });
   }
@@ -2581,7 +2867,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       const status = station === automaticRemoteStation()
         ? automaticRemoteStatus : automaticPorts[station]?.status;
       const tested = report.stations?.[station];
-      if (!tested || !status || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
+      if (!tested || !status || (status.mode || "combined") !== "combined" || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
     }
     return report;
   }
@@ -2737,39 +3023,80 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       attempt.competitionId === automaticCompetitionId ? attempt.elapsedMs : null;
   }
 
+  const automaticModeRequests = { A: 0, B: 0 };
+  async function synchronizeAutomaticModes() {
+    if (!isElectronicMode()) return;
+    const desired = isIndependentMode() ? "independent" : "combined";
+    for (const station of automaticCommandStations()) {
+      const connection = automaticConnection(station);
+      const status = station === automaticRemoteStation() ? automaticRemoteStatus : connection?.status;
+      if (!connection || !status || (status.mode || "combined") === desired) continue;
+      if (status.independentProtocol !== 1) {
+        automaticConnectionNotice = "Stanica " + station + " potrebuje spoločný firmvér s podporou nezávislého režimu.";
+        continue;
+      }
+      if (Date.now() - automaticModeRequests[station] < 1500) continue;
+      automaticModeRequests[station] = Date.now();
+      await sendAutomatic(station, "AUTO_MODE " + desired);
+    }
+  }
+
   function updateAutomaticUI() {
     if (!automaticUiReady) return;
     const enabled = isAutomaticMode();
+    const settingsVisible = isElectronicMode() && measurementSettingsExpanded;
+    $("measurementSettings").hidden = !settingsVisible;
+    const settingsToggle = $("measurementSettingsToggle");
+    settingsToggle.hidden = !isElectronicMode();
+    settingsToggle.setAttribute("aria-expanded", String(settingsVisible));
+    settingsToggle.setAttribute("aria-label", settingsVisible ? "Zbaliť nastavenia merania" : "Rozbaliť nastavenia merania");
+    settingsToggle.textContent = settingsVisible ? "▴" : "▾";
     $("automaticMode").value = automaticMode;
-    $("automaticMode").disabled = automaticRun.busy || running || rec.some(value => value !== null);
-    $("automaticTransport").value = automaticTransport;
+    $("automaticMode").disabled = automaticPending() || running || rec.some(value => value !== null);
+    $("automaticTransport").value = isIndependentMode() ? "dual_usb" : automaticTransport;
+    $("automaticTransport").querySelector('[value="dual_usb"]').textContent =
+      isIndependentMode() && independentStations().length === 1
+        ? "Stanica " + independentStations()[0] + " cez USB" : "Obe stanice cez USB";
     // Permission renewal must remain available while recovering an active attempt.
     $("automaticTransport").disabled = false;
-    const transportLocked = automaticRun.busy || running || rec.some(value => value !== null);
+    const transportLocked = isIndependentMode() || automaticPending() || running || rec.some(value => value !== null);
     for (const option of $("automaticTransport").options) {
       option.disabled = option.value !== "authorize_usb" && transportLocked;
     }
-    $("automaticControls").hidden = !enabled;
-    $("automaticNotice").textContent = automaticNotice;
-    const verified = automaticValidation();
-    $("automaticAccuracy").textContent = verified
+    $("automaticControls").hidden = !isElectronicMode();
+    $("automaticNotice").textContent = isIndependentMode()
+      ? "Nezávislé meranie cez USB: " + independentStations().join(", ") + "." : automaticNotice;
+    const verified = isIndependentMode() ? null : automaticValidation();
+    $("automaticAccuracy").textContent = isIndependentMode()
+      ? "Každá stanica používa vlastné miestne hodiny bez GPS a LoRa. Presnosť nezávislého režimu ešte nie je fyzicky overená."
+      : verified
       ? `Na tejto dvojici a verzii firmvéru bola overená vzájomná zhoda do 1 ms (${verified.sampleCount} impulzov, najväčší rozdiel ${verified.maximumAbsoluteDifferenceUs} µs). Optické brány týmto testom overené neboli.`
       : "Pre túto dvojicu a verziu firmvéru zatiaľ nie je platný protokol overenia do 1 ms. Automatický pokus sa nedá pripraviť.";
     for (const station of ["A", "B"]) {
+      $("automaticStation" + station).hidden = isIndependentMode() && !independentStations().includes(station);
       const connection = automaticPorts[station];
       $("automaticStation" + station).textContent = !connection ? `${station}: odpojená` :
         `${station}: ${connection.status?.tracking ? "časová základňa pripravená" : "čakám na GNSS/PPS"}`;
     }
+    $("automaticStationSeparator").hidden = isIndependentMode() && independentStations().length === 1;
     const remote = automaticRemoteStation();
     if (remote) {
       $("automaticStation" + remote).textContent = `${remote} cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
     }
+    if (isIndependentMode()) {
+      for (const station of ["A", "B"]) {
+        if (automaticPorts[station]) $("automaticStation" + station).textContent = station + ": " +
+          (independentStatus(station)?.mode === "independent" ? "nezávislý režim potvrdený" : "čakám na potvrdenie režimu");
+      }
+    }
     $("automaticConnectionNotice").textContent = automaticConnectionNotice;
-    $("automaticConnectionInfo").dataset.tone = automaticStationsReady() ? "ok" :
+    $("automaticConnectionInfo").dataset.tone = (isIndependentMode()
+      ? independentStations().every(station => independentStationReady(station)) : automaticStationsReady()) ? "ok" :
       (automaticDiscoveryTask ? "busy" : "warning");
     $("automaticRecover").disabled = !automaticRun.busy;
+    $("automaticRecover").hidden = isIndependentMode();
     for (const control of [el.tabIndividual, el.tabTeam, el.tabGirls, el.tabBoys, el.tabMix]) {
-      if (control) control.disabled = automaticRun.busy;
+      if (control) control.disabled = automaticPending();
     }
     if (enabled) {
       for (let index = 0; index < 3; ++index) {
@@ -2792,6 +3119,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     } else {
       el.start.innerHTML = 'Štart <span class="kbdHint">(medzerník)</span>';
     }
+    updateIndependentUI();
     const title = el.t[0]?.closest(".judge")?.querySelector("h3");
     if (title) title.textContent = enabled ? "Automatické A+B" : "Rozhodca 1";
   }
@@ -2800,6 +3128,10 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     if (IS_DISPLAY_MODE) return;
     automaticUiReady = true;
     initializeMeasurementInformation();
+    $("measurementSettingsToggle").addEventListener("click", () => {
+      measurementSettingsExpanded = !measurementSettingsExpanded;
+      updateAutomaticUI();
+    });
     $("automaticTransport").addEventListener("change", () => {
       if ($("automaticTransport").value === "authorize_usb") {
         $("automaticTransport").value = automaticTransport;
@@ -2809,7 +3141,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
         });
         return;
       }
-      if (automaticRun.busy || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
+      if (isIndependentMode() || automaticPending() || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
       automaticTransport = normalizeAutomaticTransport($("automaticTransport").value);
       automaticRemoteStatus = null;
       const usb = automaticUsbStation();
@@ -2819,12 +3151,13 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       discoverAutomaticPorts(true);
     });
     $("automaticMode").addEventListener("change", () => {
-      if (automaticRun.busy || running || rec.some(value => value !== null)) {
+      if (automaticPending() || running || rec.some(value => value !== null)) {
         showAutomaticError("Najprv ulož alebo zruš rozpracované meranie.");
         updateAutomaticUI();
         return;
       }
-      automaticMode = $("automaticMode").value === "combined" ? "combined" : "manual";
+      automaticMode = ["combined", "independent"].includes($("automaticMode").value) ? $("automaticMode").value : "manual";
+      automaticModeRequests.A = automaticModeRequests.B = 0;
       tStart = 0;
       setUI();
       autoPersistToFile();
@@ -2832,6 +3165,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     });
     navigator.serial?.addEventListener("connect", () => discoverAutomaticPorts(true));
     $("automaticRecover").addEventListener("click", () => recoverAutomaticAttempt().catch(showAutomaticError));
+    if (independentPending() && !automaticRun.busy) automaticMode = "independent";
     if (automaticRun.busy) {
       automaticMode = "combined";
       automaticTransport = normalizeAutomaticTransport(automaticRun.current.transport);
@@ -2854,7 +3188,9 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           if (automaticPorts[station]) sendAutomatic(station, "AUTO_STATUS").catch(showAutomaticError);
         }
         serviceAutomaticCancellations();
+        synchronizeAutomaticModes().catch(showAutomaticError);
       }
+      serviceIndependent();
       const attempt = automaticRun.current;
       if (attempt?.phase === "cancelling" && attempt.cancelled.A && attempt.cancelled.B) {
         automaticRun.confirmCancellation();
@@ -2888,6 +3224,530 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   // CASOMIERA_AUTOMATIC_UI_END
+
+  // CASOMIERA_INDEPENDENT_UI_BEGIN
+  // Embedded in the application closure; shares USB discovery, never GPS attempts.
+  const INDEPENDENT_STORAGE_KEY = "casomiera_v11_independent";
+  let independentRuns = new CasomieraIndependent.IndependentRuns();
+  let independentDraft = { A: { participant: "", penalty: "" }, B: { participant: "", penalty: "" } };
+  let independentLayout = { count: 1, singleStation: "A" };
+  let independentStorageError = false;
+  let independentUiReady = false;
+  let independentServiceAt = 0;
+  let independentServiceBusy = false;
+  const independentNotices = { A: "", B: "" };
+  const independentLiveStarted = { A: null, B: null };
+  const independentCallAssignments = { A: "", B: "" };
+  let independentProjection = null;
+  try {
+    const retained = JSON.parse(localStorage.getItem(INDEPENDENT_STORAGE_KEY) || "null");
+    if (retained) {
+      independentRuns = new CasomieraIndependent.IndependentRuns(retained.runs);
+      if (retained.draft) independentDraft = retained.draft;
+      independentLayout = normalizeIndependentLayout(retained.layout, independentRuns);
+    }
+  } catch {
+    independentStorageError = true;
+    if (independentRuns.busyAt("B")) independentLayout = { count: 2, singleStation: "A" };
+  }
+
+  function isIndependentMode() { return automaticMode === "independent"; }
+  function independentPending() { return independentStorageError || independentRuns.busy; }
+  function independentStations(layout = independentLayout) {
+    return layout.count === 2 ? ["A", "B"] : [layout.singleStation];
+  }
+
+  function normalizeIndependentLayout(value, runs) {
+    // Legacy backups with a pending B attempt must keep both panels visible.
+    const layout = value == null ? { count: runs.busyAt("B") ? 2 : 1, singleStation: "A" } :
+      { count: value.count, singleStation: value.singleStation };
+    if (![1, 2].includes(layout.count) || !["A", "B"].includes(layout.singleStation)) {
+      throw new Error("Neplatný počet súťažiacich alebo výber stanice v zálohe.");
+    }
+    for (const station of ["A", "B"]) {
+      if (runs.busyAt(station) && !independentStations(layout).includes(station)) {
+        throw new Error("Najprv ulož alebo zruš pokus stanice " + station + "; zmena by ho skryla.");
+      }
+    }
+    return layout;
+  }
+
+  function setIndependentLayout(count, singleStation) {
+    if (independentPending()) throw new Error("Najprv ulož alebo zruš rozpracované nezávislé pokusy.");
+    const next = normalizeIndependentLayout({ count, singleStation }, independentRuns);
+    const previous = independentLayout;
+    independentLayout = next;
+    try { persistIndependent(); } catch (error) { independentLayout = previous; throw error; }
+    automaticModeRequests.A = automaticModeRequests.B = 0;
+    automaticDiscoveryAt = 0;
+    updateAutomaticUI();
+    autoPersistToFile();
+    discoverAutomaticPorts(true);
+    synchronizeAutomaticModes().catch(showAutomaticError);
+  }
+
+  function independentSnapshot() {
+    if (independentStorageError) throw new Error("Poškodená záloha nezávislého merania; najprv obnov pôvodný JSON.");
+    return { runs: independentRuns.snapshot(), draft: JSON.parse(JSON.stringify(independentDraft)),
+      layout: { ...independentLayout } };
+  }
+  function persistIndependent() {
+    localStorage.setItem(INDEPENDENT_STORAGE_KEY, JSON.stringify(independentSnapshot()));
+  }
+
+  function validateIndependentRestore(value, competitionId) {
+    const recovered = new CasomieraIndependent.IndependentRuns(value?.runs || null);
+    // Device acknowledgement queues are independent of the chosen JSON's age.
+    for (const action of independentRuns.actions) {
+      const incomingAction = recovered.actions.find(item => item.station === action.station && item.id === action.id);
+      if (incomingAction && incomingAction.operation !== action.operation) {
+        throw new Error("Záloha obsahuje konfliktné potvrdenie pokusu " + action.id + ".");
+      }
+      if (!incomingAction) recovered.actions.push({ ...action });
+      else if (action.stage === "archive") incomingAction.stage = "archive";
+      const retained = independentRuns.current[action.station]?.id === action.id ? independentRuns.current[action.station] :
+        independentRuns.history.find(item => item.station === action.station && item.id === action.id);
+      if (retained && !recovered.history.some(item => item.station === action.station && item.id === action.id)) {
+        recovered.retain(retained);
+      }
+    }
+    for (const station of ["A", "B"]) {
+      const existing = independentRuns.current[station];
+      const incoming = recovered.current[station];
+      if (independentRuns.busyAt(station) &&
+          (incoming?.id !== existing.id || competitionId !== existing.competitionId)) {
+        throw new Error("Najprv ulož alebo zruš nezávislý pokus stanice " + station + ".");
+      }
+      if (independentRuns.busyAt(station)) {
+        if (["saved", "cancelled"].includes(incoming.phase) ||
+            incoming.participant.key !== existing.participant.key ||
+            incoming.participant.mode !== existing.participant.mode ||
+            incoming.participant.category !== existing.participant.category ||
+            incoming.attemptNo !== existing.attemptNo ||
+            (incoming.boot && existing.boot && incoming.boot !== existing.boot)) {
+          throw new Error("Záloha mení kontext aktívneho pokusu stanice " + station + ".");
+        }
+        // Restoring an older JSON must not erase timestamps already received.
+        for (const field of ["startUs", "stopUs"]) {
+          if (incoming[field] && existing[field] && incoming[field] !== existing[field]) {
+            throw new Error("Záloha obsahuje konfliktný čas stanice " + station + ".");
+          }
+          if (!incoming[field]) incoming[field] = existing[field];
+        }
+        incoming.boot ||= existing.boot;
+        incoming.participant = JSON.parse(JSON.stringify(existing.participant));
+        if (incoming.stopUs) {
+          const elapsed = BigInt(incoming.stopUs) - BigInt(incoming.startUs);
+          incoming.elapsedUs = elapsed.toString();
+          incoming.elapsedMs = Number((elapsed + 500n) / 1000n);
+        }
+        incoming.phase = existing.phase === "recovery" ? "recovery" :
+          incoming.stopUs ? "finished" : incoming.startUs ? "running" : incoming.phase;
+      }
+    }
+    normalizeIndependentLayout(value?.layout, recovered);
+    return recovered;
+  }
+
+  function restoreIndependentSnapshot(value, recovered) {
+    // Old JSON files contain no independent state; pending device cleanup survives.
+    if (!value) {
+      recovered.history = JSON.parse(JSON.stringify(independentRuns.history));
+      recovered.actions = JSON.parse(JSON.stringify(independentRuns.actions));
+    }
+    independentRuns = recovered;
+    independentLayout = normalizeIndependentLayout(value?.layout, recovered);
+    independentDraft = value?.draft || { A: { participant: "", penalty: "" }, B: { participant: "", penalty: "" } };
+    for (const station of ["A", "B"]) {
+      const draft = independentDraft[station];
+      independentDraft[station] = {
+        participant: String(draft?.participant || ""),
+        penalty: String(draft?.penalty ?? "")
+      };
+      if (independentLiveStarted[station]?.id !== recovered.current[station]?.id) independentLiveStarted[station] = null;
+    }
+    independentStorageError = false;
+    persistIndependent();
+  }
+
+  function independentStatus(station) {
+    return automaticPorts[station]?.status;
+  }
+
+  function independentStationReady(station) {
+    const connection = automaticPorts[station];
+    const status = connection?.status;
+    const expected = globalThis.CasomieraTimingValidation?.stations?.[station];
+    return independentStations().includes(station) && !independentStorageError && status?.independentProtocol === 1 &&
+      status.mode === "independent" && status.inputsReady === true &&
+      status.boardId === expected?.boardId && typeof status.firmwareHash === "string" &&
+      Date.now() - connection.seenAt < 5000;
+  }
+
+  async function sendIndependent(station, command) {
+    // Independent operation is always direct USB, irrespective of the GPS transport.
+    const connection = automaticPorts[station];
+    if (!connection?.port?.writable) throw new Error("Stanica " + station + " nie je pripojená cez USB.");
+    const next = connection.writes.catch(() => {}).then(async () => {
+      const writer = connection.port.writable.getWriter();
+      try { await writer.write(new TextEncoder().encode(command + "\n")); }
+      finally { writer.releaseLock(); }
+    });
+    connection.writes = next;
+    return next;
+  }
+
+  function independentParticipant(station) {
+    const key = independentDraft[station].participant;
+    return getParticipantsForAllViews().find(participant => participant.key === key && participant.timeEnabled !== false);
+  }
+
+  async function prepareIndependent(station) {
+    if (!isIndependentMode() || independentStorageError) throw new Error("Nezávislé meranie nie je pripravené.");
+    updateCallPanel();
+    if (!independentStations().includes(station)) throw new Error("Stanica nie je vybraná pre aktuálne meranie.");
+    if (!independentStationReady(station)) throw new Error("Počkaj na potvrdenie režimu a uvoľni oba vstupy stanice " + station + ".");
+    const participant = independentParticipant(station);
+    if (!participant) throw new Error("Vyber súťažiaceho pre stanicu " + station + ".");
+    const attemptNo = getUsedAttemptsForKey(participant.key, participant.mode, participant.category) + 1;
+    if (attemptNo > getConfiguredAttemptsLimit()) throw new Error("Súťažiaci už má všetky pokusy.");
+    const attempt = independentRuns.prepare(station, participant, attemptNo, automaticCompetitionId,
+      crypto.randomUUID(), independentStatus(station));
+    independentLiveStarted[station] = null;
+    independentDraft[station].penalty = "";
+    independentNotices[station] = "Pripravujem pokus.";
+    persistIndependent();
+    autoPersistToFile();
+    updateIndependentUI();
+    await sendIndependent(station, "INDEP_ARM " + attempt.id);
+  }
+
+  async function cancelIndependent(station) {
+    independentRuns.cancel(station);
+    persistIndependent();
+    autoPersistToFile();
+    independentNotices[station] = "Pokus zrušený; zachytené údaje zostávajú v histórii.";
+    updateCallPanel();
+    updateIndependentUI();
+    await serviceIndependent(true);
+  }
+
+  async function recoverIndependent(station) {
+    const attempt = independentRuns.current[station];
+    if (attempt && independentRuns.busyAt(station)) await sendIndependent(station, "INDEP_GET " + attempt.id);
+    await serviceIndependent(true);
+  }
+
+  async function configureIndependent(station) {
+    if (independentRuns.busyAt(station)) throw new Error("Najprv ulož alebo zruš pokus.");
+    const low = Number($("independentLow" + station).value);
+    const release = Number($("independentRelease" + station).value);
+    if (!Number.isInteger(low) || low < 0 || low > 30000 ||
+        !Number.isInteger(release) || release < 1000 || release > 1000000) {
+      throw new Error("Potvrdenie LOW: 0–30000 µs; stabilné uvoľnenie: 1000–1000000 µs.");
+    }
+    await sendIndependent(station, "INDEP_CONFIG " + low + " " + release);
+  }
+
+  function handleIndependentMessage(message) {
+    if (message.kind !== "independent") return false;
+    if (independentStorageError) return true;
+    if (!independentRuns.accept(message)) return true;
+    const current = independentRuns.current[message.station];
+    if (current?.id === message.id && message.type !== "independent_error") independentNotices[message.station] = "";
+    if (current?.id === message.id && current.startUs && independentLiveStarted[message.station]?.id !== current.id) {
+      independentLiveStarted[message.station] = { id: current.id, at: Date.now() };
+    }
+    persistIndependent();
+    autoPersistToFile();
+    updateIndependentUI();
+    return true;
+  }
+
+  async function serviceIndependent(force = false) {
+    if (independentStorageError || independentServiceBusy || (!force && Date.now() - independentServiceAt < 2000)) return;
+    independentServiceAt = Date.now();
+    independentServiceBusy = true;
+    try {
+      for (const action of [...independentRuns.actions]) {
+        if (!automaticPorts[action.station]) continue;
+        const operation = action.stage === "archive" ? "ARCHIVE" : action.operation;
+        await sendIndependent(action.station, "INDEP_" + operation + " " + action.id);
+      }
+      if (!isIndependentMode()) return;
+      for (const station of independentStations()) {
+        const attempt = independentRuns.current[station];
+        if (!automaticPorts[station] || !attempt || !independentRuns.busyAt(station) ||
+            independentStatus(station)?.mode !== "independent") continue;
+        const operation = attempt.phase === "preparing" ? "ARM" : "GET";
+        await sendIndependent(station, "INDEP_" + operation + " " + attempt.id);
+      }
+    } catch (error) {
+      // Delivery failure retains the original attempt and raw timestamps.
+      automaticConnectionNotice = String(error?.message || error);
+    } finally { independentServiceBusy = false; }
+  }
+
+  function saveIndependentResult(station) {
+    if (independentStorageError) throw new Error("Najprv obnov zálohu nezávislého merania.");
+    const attempt = independentRuns.current[station];
+    if (attempt?.phase !== "finished" || attempt.competitionId !== automaticCompetitionId) throw new Error("Chýba dokončený pokus tejto súťaže.");
+    const list = loadAll();
+    const existing = list.find(record => record.electronic?.attemptId === attempt.id);
+    if (existing) {
+      independentRuns.markSaved(station, existing.id);
+    } else {
+      const rawPenalty = independentDraft[station].penalty.trim();
+      const penaltyMs = parsePenaltySecondsToMs(rawPenalty);
+      if (!rawPenalty || penaltyMs === null) throw new Error("Zadaj trestné sekundy vrátane nuly.");
+      const participant = attempt.participant;
+      const present = getParticipantsForAllViews().some(item => item.key === participant.key &&
+        item.mode === participant.mode && item.category === participant.category);
+      if (!present || getUsedAttemptsForKey(participant.key, participant.mode, participant.category) + 1 !== attempt.attemptNo ||
+          attempt.attemptNo > getConfiguredAttemptsLimit()) throw new Error("Zmenil sa súťažiaci alebo počet pokusov; zachytený čas zostal uložený.");
+      const advantageSeconds = participant.mode === "team" ? getAdvantageSeconds(participant) : 0;
+      const advantageMs = Math.round(advantageSeconds * 1000);
+      const record = {
+        id: crypto.randomUUID(), mode: participant.mode, category: participant.category,
+        participantKey: participant.key, displayName: participant.displayName, subLine: participant.subLine,
+        teamOrder: Number(participant.teamOrder) || null, attemptNo: attempt.attemptNo,
+        t1: null, t2: null, t3: null, judgeCount: null, timeRule: null,
+        rawMeasuredMs: attempt.elapsedMs, measurementMode: "automatic_independent",
+        electronic: { station, attemptId: attempt.id, competitionId: attempt.competitionId,
+          start: { localUs: attempt.startUs, boot: attempt.boot }, stop: { localUs: attempt.stopUs, boot: attempt.boot },
+          elapsedUs: attempt.elapsedUs, boardId: attempt.boardId, firmwareHash: attempt.firmwareHash,
+          inputLowUs: attempt.inputLowUs, inputReleaseUs: attempt.inputReleaseUs,
+          clock: "local_esp_timer", accuracy: "unverified_local_clock" },
+        advantageSeconds, advantageMs, penaltySeconds: penaltyMs / 1000, penaltyMs,
+        valid: Math.max(0, attempt.elapsedMs - advantageMs + penaltyMs),
+        stamp: nowStamp(), createdAt: new Date().toISOString()
+      };
+      list.push(record);
+      saveAll(list);
+      independentRuns.markSaved(station, record.id);
+    }
+    persistIndependent();
+    autoPersistToFile();
+    renderTable();
+    updateCallPanel();
+    updateIndependentUI();
+    serviceIndependent(true);
+  }
+
+  function independentDisplayMs(station) {
+    if (!independentRuns.busyAt(station)) return 0;
+    const attempt = independentRuns.current[station];
+    if (attempt?.elapsedMs != null) return attempt.elapsedMs;
+    const animation = independentLiveStarted[station];
+    return attempt?.startUs && animation?.id === attempt.id ? Math.max(0, Date.now() - animation.at) : 0;
+  }
+
+  function buildIndependentLiveState() {
+    return {
+      measurementMode: "automatic_independent",
+      competitionText: el.compTitle?.textContent || "Časomiera",
+      participantCount: independentLayout.count,
+      independent: independentStations().map(station => {
+        const attempt = independentRuns.busyAt(station) ? independentRuns.current[station] : null;
+        return { station, name: (attempt?.participant || independentParticipant(station))?.displayName || "—", phase: attempt?.phase || "idle",
+          elapsedMs: attempt?.elapsedMs ?? null,
+          startedAt: attempt && independentLiveStarted[station]?.id === attempt.id ? independentLiveStarted[station].at : null };
+      }),
+      updatedAt: Date.now()
+    };
+  }
+
+  function updateIndependentLiveProjection(state) {
+    if (!IS_TIMER_DISPLAY_MODE) return;
+    const clocks = $("timerLiveClocks");
+    const participants = Array.isArray(state.independent) ? state.independent.slice(0, 2) : [];
+    const count = participants.length === 1 ? 1 : 2;
+    clocks.dataset.judges = String(count);
+    $("timerLiveCompetitor").textContent = count === 1
+      ? participants[0].name : "Nezávislé meranie A/B";
+    $("timerLiveCompetition").textContent = String(state.competitionText || "Časomiera");
+    $("timerLiveStatus").textContent = count === 1
+      ? "Nezávislá stanica " + participants[0].station : "Dve nezávislé stanice";
+    for (let index = 0; index < 3; ++index) {
+      const card = clocks.querySelector('[data-judge="' + (index + 1) + '"]');
+      card.hidden = index >= count;
+      const station = participants[index];
+      if (!station) continue;
+      card.querySelector(".timerLiveJudgeLabel").textContent = station.station + " · " + station.name;
+      card.classList.toggle("is-stopped", Number.isFinite(station.elapsedMs));
+    }
+    renderIndependentLiveClocks();
+  }
+
+  function renderIndependentLiveClocks() {
+    if (!independentProjection) return;
+    const participants = independentProjection.independent?.slice(0, 2) || [];
+    for (let index = 0; index < participants.length; ++index) {
+      const station = participants[index];
+      if (!station) continue;
+      const elapsed = Number.isFinite(station.elapsedMs) ? station.elapsedMs :
+        station.startedAt ? Math.max(0, Date.now() - station.startedAt) : 0;
+      $("timerLiveClock" + (index + 1)).textContent = formatMs(elapsed) + " s";
+    }
+  }
+
+  function independentCallCandidates() {
+    const candidates = getCallCandidatesCurrentView();
+    return candidates.slice(getCallIndex(candidates));
+  }
+
+  function synchronizeIndependentParticipants(shown = independentCallCandidates()) {
+    if (!independentUiReady || !isIndependentMode() || independentStorageError) return;
+    const reserved = new Set(["A", "B"].filter(station => independentRuns.busyAt(station))
+      .map(station => independentRuns.current[station].participant.key));
+    let changed = false;
+    independentStations().forEach((station, index) => {
+      if (independentRuns.busyAt(station)) {
+        const attempt = independentRuns.current[station];
+        independentCallAssignments[station] = attempt.participant.key + ":" + attempt.attemptNo;
+        return;
+      }
+      // Keep the microphone slots authoritative; never substitute another queued person.
+      const candidate = shown[index];
+      const key = candidate && !reserved.has(candidate.key) ? candidate.key : "";
+      const assignment = key ? key + ":" + candidate.nextAttempt : "";
+      if (independentDraft[station].participant === key && independentCallAssignments[station] === assignment) return;
+      independentCallAssignments[station] = assignment;
+      independentDraft[station] = { participant: key, penalty: "" };
+      independentLiveStarted[station] = null;
+      independentNotices[station] = "";
+      changed = true;
+    });
+    if (changed) { persistIndependent(); autoPersistToFile(); }
+  }
+
+  function getNextIndependentCandidate() {
+    const occupied = new Set(independentStations().map(station => independentRuns.busyAt(station)
+      ? independentRuns.current[station].participant.key : independentDraft[station].participant).filter(Boolean));
+    return independentCallCandidates().slice(independentLayout.count)
+      .find(candidate => !occupied.has(candidate.key)) || null;
+  }
+
+  function updateIndependentParticipants() {
+    const limit = getConfiguredAttemptsLimit();
+    el.activeCompetitorName.textContent = independentStations().map(station => {
+      const busy = independentRuns.busyAt(station);
+      const attempt = independentRuns.current[station];
+      const participant = busy ? attempt.participant : independentParticipant(station);
+      if (!participant) return station + ": —";
+      const number = busy ? attempt.attemptNo :
+        getUsedAttemptsForKey(participant.key, participant.mode, participant.category) + 1;
+      const prefix = independentLayout.count === 2 ? station + ": " : "";
+      return prefix + participant.displayName + " (pokus " + Math.min(number, limit) + "/" + limit + ")";
+    }).join(" · ");
+    el.liveNextCompetitorName.textContent = formatCallCandidate(getNextIndependentCandidate());
+  }
+
+  function updateIndependentUI() {
+    if (!independentUiReady) return;
+    const enabled = isIndependentMode();
+    synchronizeIndependentParticipants();
+    document.body.classList.toggle("measurement-independent", enabled);
+    $("independentPanels").hidden = !enabled;
+    $("independentPanels").dataset.count = String(independentLayout.count);
+    $("independentLayoutControls").hidden = !enabled;
+    $("independentCount").value = String(independentLayout.count);
+    $("independentSingleStation").value = independentLayout.singleStation;
+    $("independentSingleStationField").hidden = independentLayout.count !== 1;
+    $("independentCount").disabled = independentPending();
+    $("independentSingleStation").disabled = independentPending();
+    for (const station of ["A", "B"]) {
+      const selectedStation = independentStations().includes(station);
+      $("independentStation" + station).hidden = !enabled || !selectedStation;
+      const attempt = independentRuns.current[station];
+      const busy = independentRuns.busyAt(station);
+      const select = $("independentParticipant" + station);
+      const participants = getParticipantsForAllViews().filter(item => item.timeEnabled !== false);
+      const options = [{ key: "", displayName: "Vyber súťažiaceho" }, ...participants];
+      const signature = JSON.stringify(options.map(item => [item.key, item.displayName, item.mode, item.subLine]));
+      if (select.dataset.options !== signature) {
+        select.replaceChildren(...options.map(item => {
+          const option = document.createElement("option");
+          option.value = item.key;
+          const team = item.mode === "individual" ? parseTeamNameFromIndividualSubLine(item.subLine) : "";
+          option.textContent = item.displayName + (team ? " · " + team : "");
+          return option;
+        }));
+        select.dataset.options = signature;
+      }
+      select.value = busy ? attempt.participant.key : independentDraft[station].participant;
+      select.disabled = enabled || busy || independentStorageError;
+      $("independentClock" + station).textContent = formatMs(independentDisplayMs(station));
+      $("independentPenalty" + station).value = independentDraft[station].penalty;
+      $("independentPrepare" + station).disabled = !selectedStation || busy || !independentStationReady(station) || !independentParticipant(station);
+      $("independentCancel" + station).disabled = !busy;
+      const rawPenalty = independentDraft[station].penalty.trim();
+      $("independentSave" + station).disabled = attempt?.phase !== "finished" ||
+        !rawPenalty || parsePenaltySecondsToMs(rawPenalty) === null;
+      $("independentRecover" + station).disabled = !attempt || !automaticPorts[station];
+      $("independentConfigure" + station).disabled = busy || independentStatus(station)?.mode !== "independent";
+      const error = attempt?.errors.at(-1)?.reason;
+      const labels = { preparing: "Pripravujem pokus", armed: "Čakám na ŠTART", running: "Čakám na STOP",
+        finished: "Čas zachytený; doplň trest a ulož výsledok", recovery: "Údaje vyžadujú kontrolu",
+        cancelled: "Pokus zrušený", saved: "Výsledok uložený" };
+      $("independentNotice" + station).textContent = independentStorageError ? "Poškodená lokálna záloha. Obnov JSON." :
+        (independentNotices[station] || labels[attempt?.phase] || "Vyber súťažiaceho a priprav pokus.") +
+        (error ? " · " + error : "") +
+        " · ŠTART GPIO6; STOP GPIO17. Čas pochádza z miestnych hodín; presnosť ešte nie je fyzicky overená." +
+        (independentStatus(station)?.mode === "independent"
+          ? " Aktívna kvalifikácia: LOW " + independentStatus(station).inputLowUs +
+            " µs, uvoľnenie " + independentStatus(station).inputReleaseUs + " µs." : "");
+      $("independentInfo" + station).dataset.tone = error || independentStorageError ? "warning" :
+        attempt?.phase === "finished" ? "ok" : "busy";
+    }
+    if (enabled) {
+      updateIndependentParticipants();
+      publishTimerLiveState();
+    }
+  }
+
+  function initializeIndependentUI() {
+    if (IS_DISPLAY_MODE) return;
+    independentUiReady = true;
+    const updateLayout = () => {
+      try { setIndependentLayout(Number($("independentCount").value), $("independentSingleStation").value); }
+      catch (error) { showAutomaticError(error); updateIndependentUI(); }
+    };
+    $("independentCount").addEventListener("change", updateLayout);
+    $("independentSingleStation").addEventListener("change", updateLayout);
+    for (const station of ["A", "B"]) {
+      const guard = action => () => Promise.resolve().then(action).catch(error => {
+        independentNotices[station] = String(error?.message || error);
+        // Operator errors remain in the adjacent information tooltip.
+        $("independentNotice" + station).textContent = independentNotices[station];
+        $("independentInfo" + station).dataset.tone = "warning";
+      });
+      $("independentParticipant" + station).addEventListener("change", () => {
+        independentDraft[station].participant = $("independentParticipant" + station).value;
+        persistIndependent(); autoPersistToFile(); updateIndependentUI();
+      });
+      $("independentPenalty" + station).addEventListener("input", () => {
+        independentDraft[station].penalty = $("independentPenalty" + station).value;
+        persistIndependent(); autoPersistToFile(); updateIndependentUI();
+      });
+      $("independentPrepare" + station).addEventListener("click", guard(() => prepareIndependent(station)));
+      $("independentCancel" + station).addEventListener("click", guard(() => cancelIndependent(station)));
+      $("independentRecover" + station).addEventListener("click", guard(() => recoverIndependent(station)));
+      $("independentSave" + station).addEventListener("click", guard(() => saveIndependentResult(station)));
+      $("independentConfigure" + station).addEventListener("click", guard(() => configureIndependent(station)));
+      const attempt = independentRuns.current[station];
+      const saved = attempt && loadAll().find(record => record.electronic?.attemptId === attempt.id);
+      if (attempt?.phase === "finished" && saved) independentRuns.markSaved(station, saved.id);
+    }
+    if (!independentStorageError) persistIndependent();
+    setInterval(() => {
+      if (!isIndependentMode()) return;
+      for (const station of ["A", "B"]) $("independentClock" + station).textContent = formatMs(independentDisplayMs(station));
+    }, 100);
+    updateIndependentUI();
+  }
+
+  // CASOMIERA_INDEPENDENT_UI_END
 
   function formatMs(ms){
     const n = Number(ms);
@@ -3597,6 +4457,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function getNextLiveCandidate(){
+    if (isIndependentMode()) return getNextIndependentCandidate();
     const candidates = getCallCandidatesCurrentView();
     if (!candidates.length) return null;
     const currentIndex = candidates.findIndex(c => c.key === selectedParticipantKey);
@@ -3612,6 +4473,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     const candidates = getCallCandidatesCurrentView();
     const idx = getCallIndex(candidates);
     const shown = [candidates[idx] || null, candidates[idx + 1] || null, candidates[idx + 2] || null];
+    synchronizeIndependentParticipants(shown);
     el.callNow.textContent = formatCallCandidate(shown[0]);
     el.callNext1.textContent = formatCallCandidate(shown[1]);
     el.callNext2.textContent = formatCallCandidate(shown[2]);
@@ -3641,6 +4503,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     });
     el.callPrev.disabled = !candidates.length || idx <= 0;
     el.callNext.disabled = !candidates.length || idx >= Math.max(0, candidates.length - 3);
+    if (isIndependentMode()) updateIndependentUI();
   }
 
   function reorderSuggestedCall(fromSlot,toSlot){
@@ -3666,7 +4529,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     // Víťazom preplánovania je prvá navrhovaná osoba: nastav ju aj ako aktívnu.
     updateCallPanel();
     const now=reordered[offset];
-    if(now && selectedParticipantKey!==now.key)activateCallParticipantByKey(now.key);
+    if(!isIndependentMode() && now && selectedParticipantKey!==now.key)activateCallParticipantByKey(now.key);
     else refreshProjection();
     return true;
   }
@@ -3698,7 +4561,10 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     const nextIndex=Math.min(offset,reordered.length-1);
     setCallIndex(nextIndex,reordered);
     const next=reordered[nextIndex];
-    if(selectedParticipantKey===candidate.key || pendingParticipantKey===candidate.key){
+    if(isIndependentMode()){
+      updateCallPanel();
+      refreshProjection();
+    }else if(selectedParticipantKey===candidate.key || pendingParticipantKey===candidate.key){
       selectedParticipantKey=null;
       pendingParticipantKey=null;
       if(next && next.key!==candidate.key){
@@ -3716,6 +4582,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       notice.hidden=false;
       notice.textContent=`Odložený: #${getOrderHintForParticipant(candidate)} ${candidate.displayName} — pokus ${candidate.nextAttempt}/${getConfiguredAttemptsLimit()}. Príde na rad po ostatných čakajúcich v tomto pokuse.`;
     }
+    updateCallPanel();
     autoPersistToFile();
     return true;
   }
@@ -3804,6 +4671,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       attemptsLimit: getConfiguredAttemptsLimit(),
       judgeCount: normalizeJudgeCount(el.judgeCount.value),
       timeRule: getConfiguredTimeRule(),
+      independent: independentSnapshot(),
       automatic: { competitionId: automaticCompetitionId, mode: automaticMode, transport: automaticTransport, cancellations: JSON.parse(JSON.stringify(automaticCancellations)), pending: automaticRun.current ? JSON.parse(JSON.stringify(automaticRun.current)) : null, history: JSON.parse(localStorage.getItem(AUTO_HISTORY_KEY) || "[]") },
       flowMode,
       registrationDeadline: String(el.registrationDeadline?.value || "").trim(),
@@ -3877,6 +4745,8 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
 
   function applySnapshot(snapshot){
     const incomingAutomatic = snapshot?.automatic;
+    const independentRecovered = validateIndependentRestore(snapshot?.independent,
+      incomingAutomatic?.competitionId || automaticCompetitionId);
     if (automaticRun.busy && incomingAutomatic?.pending?.id !== automaticRun.current.id) {
       throw new Error("Najprv dokonči alebo zruš rozpracovaný automatický pokus.");
     }
@@ -3888,7 +4758,9 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     persistAutomaticCancellations();
     automaticStorageError = false;
     automaticTransport = normalizeAutomaticTransport(incomingAutomatic?.transport);
-    automaticMode = incomingAutomatic?.mode === "combined" || recovered.busy ? "combined" : "manual";
+    restoreIndependentSnapshot(snapshot?.independent, independentRecovered);
+    automaticMode = independentRecovered.busy || incomingAutomatic?.mode === "independent" ? "independent" :
+      incomingAutomatic?.mode === "combined" || recovered.busy ? "combined" : "manual";
     persistAutomatic();
     localStorage.setItem(AUTO_HISTORY_KEY, JSON.stringify(Array.isArray(incomingAutomatic?.history) ? incomingAutomatic.history : []));
     const title = String(snapshot?.competitionName || "").trim();
@@ -4260,6 +5132,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function buildTimerLiveState(){
+    if (isIndependentMode()) return buildIndependentLiveState();
     return {
       measurementMode:isAutomaticMode() ? "automatic_combined" : "manual",
       running: !!running,
@@ -4290,6 +5163,12 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
 
   function applyTimerLiveState(state){
     if (!state) return;
+    independentProjection = state.measurementMode === "automatic_independent" ? state : null;
+    if (independentProjection) {
+      automaticMode = "independent";
+      updateIndependentLiveProjection(state);
+      return;
+    }
     automaticMode = state.measurementMode === "automatic_combined" ? "combined" : "manual";
     if(el.judgeCount)el.judgeCount.value=String(normalizeJudgeCount(state.judgeCount??loadJudgeCount()));
     if(el.timeRule)el.timeRule.value=normalizeTimeRule(state.timeRule??loadTimeRule());
@@ -4347,6 +5226,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
 
   function renderTimerLiveClocks(){
     if (!IS_TIMER_DISPLAY_MODE) return;
+    if (independentProjection) { renderIndependentLiveClocks(); return; }
     const elapsed = running && tStart > 0 ? Math.max(0, Date.now() - tStart) : 0;
     const count = getConfiguredJudgeCount();
     for(let i=0;i<count;i++){
@@ -4478,6 +5358,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function startAll(){
+    if (isIndependentMode()) return;
     if (isAutomaticMode()) { prepareAutomaticAttempt().catch(showAutomaticError); return; }
     const selected = getSelectedParticipantInfo();
     if (!selected){
@@ -4508,6 +5389,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function stopJudge(i){
+    if (isIndependentMode()) return;
     if (isAutomaticMode()) return;
     if (i>=getConfiguredJudgeCount() || !running || rec[i] !== null) return;
     rec[i] = Date.now() - tStart;
@@ -4517,6 +5399,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function resetJudge(i){
+    if (isIndependentMode()) return;
     if (isAutomaticMode()) return;
     if(i>=getConfiguredJudgeCount())return;
     rec[i] = null;
@@ -4528,6 +5411,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function setManualJudge(i){
+    if (isIndependentMode()) return;
     if (isAutomaticMode()) return;
     if(i>=getConfiguredJudgeCount())return;
     const ms = parseTimeToMs(el.manual[i].value);
@@ -4544,6 +5428,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function abortRun(){
+    if (isIndependentMode()) return;
     if (isAutomaticMode()) { cancelAutomaticAttempt().catch(showAutomaticError); return; }
     running = false;
     if (raf) cancelAnimationFrame(raf);
@@ -5209,6 +6094,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
   }
 
   function saveResult(){
+    if (isIndependentMode()) return;
     const automatic = isAutomaticMode();
     const automaticAttempt = automatic ? automaticRun.current : null;
     if (automatic && automaticRawMs() === null) {
@@ -5361,7 +6247,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
           t1: a.t1, t2: a.t2, t3: a.t3,
           measurementMode: a.measurementMode || "manual",
           elapsedUs: a.electronic?.elapsedUs || "",
-          judgeCount: a.measurementMode === "automatic_combined" ? 0 : normalizeJudgeCount(a.judgeCount??3),
+          judgeCount: isElectronicRecord(a) ? 0 : normalizeJudgeCount(a.judgeCount??3),
           timeRule: normalizeTimeRule(a.timeRule??"median"),
           advantageSeconds: getAdvantageSeconds(a),
           penaltySeconds: getPenaltySecondsForRecord(a),
@@ -5406,7 +6292,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     }
 
     el.tbody.innerHTML = groups.map((g, idx) => {
-      const pokusLines = g.attempts.map(a => `<div class="line"><span class="attemptTag mono" title="${escapeHtml(measurementRuleDescription(a))}">Pokus ${getAttemptNo(a)}</span><span style="font-size:10px;color:#526781;margin-left:4px;white-space:nowrap">${a.measurementMode === "automatic_combined" ? "Automatické A+B" : `${normalizeJudgeCount(a.judgeCount??3)}× ${RULE_LABELS[normalizeTimeRule(a.timeRule??'median')]}`}</span></div>`).join("");
+      const pokusLines = g.attempts.map(a => `<div class="line"><span class="attemptTag mono" title="${escapeHtml(measurementRuleDescription(a))}">Pokus ${getAttemptNo(a)}</span><span style="font-size:10px;color:#526781;margin-left:4px;white-space:nowrap">${isElectronicRecord(a) ? escapeHtml(measurementRuleDescription(a)) : `${normalizeJudgeCount(a.judgeCount??3)}× ${RULE_LABELS[normalizeTimeRule(a.timeRule??'median')]}`}</span></div>`).join("");
       const r1Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t1)}</div>`).join("");
       const r2Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t2)}</div>`).join("");
       const r3Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t3)}</div>`).join("");
@@ -5493,7 +6379,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
         formatOptionalMs(r.t2),
         formatOptionalMs(r.t3),
         r.judgeCount,
-        r.measurementMode === "automatic_combined" ? "Automatické A+B" : RULE_LABELS[r.timeRule],
+        isElectronicRecord(r) ? measurementRuleDescription(r) : RULE_LABELS[r.timeRule],
         formatAdvantageSecondsSigned(r.advantageSeconds),
         formatPenaltySeconds(r.penaltySeconds),
         r.stamp || "",
@@ -5532,7 +6418,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
     const stamp = new Date().toLocaleString("sk-SK");
 
     const tableRows = groups.map((g, idx) => {
-      const pokusLines = g.attempts.map(a => `<div class="line"><span class="attemptTag mono" title="${escapeHtml(measurementRuleDescription(a))}">Pokus ${getAttemptNo(a)}</span><span style="font-size:10px;color:#526781;margin-left:4px;white-space:nowrap">${a.measurementMode === "automatic_combined" ? "Automatické A+B" : `${normalizeJudgeCount(a.judgeCount??3)}× ${RULE_LABELS[normalizeTimeRule(a.timeRule??'median')]}`}</span></div>`).join("");
+      const pokusLines = g.attempts.map(a => `<div class="line"><span class="attemptTag mono" title="${escapeHtml(measurementRuleDescription(a))}">Pokus ${getAttemptNo(a)}</span><span style="font-size:10px;color:#526781;margin-left:4px;white-space:nowrap">${isElectronicRecord(a) ? escapeHtml(measurementRuleDescription(a)) : `${normalizeJudgeCount(a.judgeCount??3)}× ${RULE_LABELS[normalizeTimeRule(a.timeRule??'median')]}`}</span></div>`).join("");
       const r1Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t1)}</div>`).join("");
       const r2Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t2)}</div>`).join("");
       const r3Lines = g.attempts.map(a => `<div class="line mono right">${formatOptionalMs(a.t3)}</div>`).join("");
@@ -7288,6 +8174,7 @@ globalThis.CasomieraTimingValidation = {"createdAt": "2026-11-01T13:28:24.976636
       showGate();
     }
   }
+  initializeIndependentUI();
   initializeAutomaticUI();
 })();
 </script>

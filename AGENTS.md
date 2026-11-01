@@ -238,3 +238,55 @@
 - Deterministic self-tests run via CLOCK_TEST. Node/browser tests use the real
   application modules, isolated browser storage and recorded hardware fixtures.
   Manual judge settings/calculations and saved records must remain independent.
+
+## Independent timing and optical inputs — 2026-11-01
+
+- Develop independent A/B timing first; each board needs separate START
+  and STOP events using its local clock, without requiring GNSS or LoRa.
+- Both inputs on both boards must support buttons and optical gates.
+  This supersedes earlier button-only independent STOP requirements.
+- Source selection is through the owner's external hardware selector,
+  superseding mandatory application-based source selection.
+- Retain GPIO6 for independent START. GPIO17 is the implemented independent
+  STOP input; final physical verification of the board wiring remains pending.
+- Agree a common 3.3 V-compatible, idle-HIGH, active-LOW input contract.
+  Do not assume any optical sensor can connect directly to GPIO.
+- Current combined GNSS input handling requires approximately 30 ms
+  stable LOW after edge capture. Optical pulse compatibility, conditioning
+  and sensor delay remain unverified; track these as deferred GPS work.
+- Do not change combined GNSS input behavior while adding independent mode.
+  Preserve all existing connection options and rerun regression checks.
+- Do not claim optical-gate support or accuracy from button/bench tests.
+
+## Independent implementation and input-overflow recovery — 2026-11-01
+
+- Independent mode is implemented in the shared A/B firmware and standalone HTML:
+  GPIO6 START, GPIO17 STOP, local clocks, one selected USB station or two concurrent
+  stations. Both inputs retain the button/conditioned-optical interface contract;
+  optical operation and accuracy are not verified.
+- Keep participant assignment tied to the microphone calling slots. Queue changes
+  may update idle stations only. Preserve active attempt identity, timestamps,
+  cancellation/history and explicit penalty entry, including zero.
+- Never enqueue every raw contact transition. The earlier B test produced
+  264/2072 raw interrupts and lost 58 changes. independent_capture.h qualifies in
+  ISR/task context under ppsLock, queues only qualified first-edge events and
+  performs no printing or allocation in the ISR. The queue remains bounded;
+  overflow must fault active measurements and preserve retained data. Automatic
+  recovery is allowed only while idle after stable release.
+- Both builds/uploads and on-device INDEP_TEST/CLOCK_TEST passed, including
+  synthetic chatter and A/B completion orders. Node and isolated Chrome checks
+  passed. Post-fix physical button and application testing remain pending; earlier
+  monitoring recorded no A input transitions, so verify A wiring separately.
+- Preserve the original GPS capture functions and firmware-hash verification
+  guard. Revalidate combined GPS timing physically after firmware changes; do not
+  rewrite the old report to bypass the guard. The 100 m A-USB/B-LoRa test remains
+  deferred.
+- INDEP_DIAG reports raw levels, release flags, raw interrupt counts,
+  qualified/delivered/accepted events, dropped qualified events and current
+  attempt data. Diagnostic counters survive input reconfiguration until reboot.
+  Closing/reopening the browser and changing diagnostic ownership coincided with
+  new boot IDs; the reset trigger is unconfirmed. Compare boot IDs and do not
+  assume RAM events survived. Direct diagnostic checks used DTR=true and RTS=false
+  with stable IDs across three reopens.
+- Do not describe successful internal tests as proof of physical input accuracy
+  or completed optical/GPS validation.

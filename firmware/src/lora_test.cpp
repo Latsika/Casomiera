@@ -10,6 +10,9 @@
 #include "gnss_clock.h"
 #include "gnss_clock_tests.h"
 #include "station_attempt.h"
+#include "independent_attempt.h"
+#include "independent_input.h"
+#include "independent_capture.h"
 
 #if !LORA_TEST_SENDER
 #include <Adafruit_ST7735.h>
@@ -81,6 +84,18 @@ const uint32_t timingBootId = esp_random();
 char timingBoardId[13] = {};
 char timingFirmwareHash[65] = {};
 timing::StationLedger automaticLedger;
+timing::IndependentLedger independentLedger;
+bool independentMode = false;
+constexpr uint8_t INDEPENDENT_STOP_PIN = 17;
+timing::IndependentCapture independentCapture;
+uint32_t independentLowUs = 1000;
+uint32_t independentReleaseUs = 30000;
+uint32_t independentDeliveredCounts[2] = {};
+uint32_t independentAcceptedCounts[2] = {};
+bool independentInputFault = false;
+bool setMeasurementMode(const String& mode);
+void pollIndependentInputs();
+
 int64_t automaticArmedAtUs = 0;
 int64_t testPulseStartedUs = 0;
 
@@ -92,6 +107,13 @@ extern uint32_t radioCreditUs;
 extern bool radioNeedsCredit;
 bool radioCanPrepare();
 bool armRequiresRadioCredit(const String& id, bool remoteRequest);
+
+timing::IndependentCaptureDiagnostics readIndependentCaptureDiagnostics() {
+    portENTER_CRITICAL(&ppsLock);
+    const auto snapshot = independentCapture.diagnostics();
+    portEXIT_CRITICAL(&ppsLock);
+    return snapshot;
+}
 
 void printAutomaticRecord(const timing::StationRecord& record) {
     Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"%s\","
@@ -106,14 +128,51 @@ void printAutomaticRecord(const timing::StationRecord& record) {
 
 void printAutomaticStatus() {
     const int64_t nowUs = esp_timer_get_time();
+    const auto inputs = readIndependentCaptureDiagnostics();
     Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"status\","
                   "\"tracking\":%s,\"clock\":\"%s\",\"generation\":%lu,"
                   "\"accuracy\":\"unverified\",\"radioCreditUs\":%lu,"
-                  "\"boardId\":\"%s\",\"firmwareHash\":\"%s\",\"radioCanPrepare\":%s}\n",
+                  "\"boardId\":\"%s\",\"firmwareHash\":\"%s\",\"radioCanPrepare\":%s,\"mode\":\"%s\",\"independentProtocol\":1,\"inputLowUs\":%lu,\"inputReleaseUs\":%lu,\"inputsReady\":%s,"
+                  "\"startLevel\":%d,\"stopLevel\":%d,\"startReleased\":%s,\"stopReleased\":%s,\"inputFault\":%s,\"inputOverflows\":%lu}\n",
         LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId),
         timingClock.tracking(nowUs) ? "true" : "false", timingClock.state(nowUs),
         static_cast<unsigned long>(timingClock.generation()), static_cast<unsigned long>(radioCreditUs),
-        timingBoardId, timingFirmwareHash, radioCanPrepare() ? "true" : "false");
+        timingBoardId, timingFirmwareHash, radioCanPrepare() ? "true" : "false",
+        independentMode ? "independent" : "combined",
+        static_cast<unsigned long>(independentLowUs), static_cast<unsigned long>(independentReleaseUs),
+        independentMode && inputs.released[0] && inputs.released[1] &&
+            !independentInputFault ? "true" : "false",
+        digitalRead(BUTTON_PIN), digitalRead(INDEPENDENT_STOP_PIN),
+        inputs.released[0] ? "true" : "false", inputs.released[1] ? "true" : "false",
+        independentInputFault ? "true" : "false", static_cast<unsigned long>(inputs.overflows));
+}
+
+void printIndependentDiagnostics() {
+    const auto inputs = readIndependentCaptureDiagnostics();
+    const auto* active = independentLedger.active();
+    const auto* combined = automaticLedger.active();
+    // Read-only snapshots; counters survive input reconfiguration until reboot.
+    Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"independent_diagnostics\","
+                  "\"mode\":\"%s\",\"startLevel\":%d,\"stopLevel\":%d,\"startReleased\":%s,\"stopReleased\":%s,"
+                  "\"inputFault\":%s,\"overflowPending\":%s,\"overflows\":%lu,\"droppedEvents\":%lu,\"queuedEvents\":%u,"
+                  "\"edges\":[%lu,%lu],\"fallingEdges\":[%lu,%lu],\"lastEdgeUs\":[\"%lld\",\"%lld\"],"
+                  "\"deliveredEvents\":[%lu,%lu],\"qualifiedEvents\":[%lu,%lu],\"acceptedEvents\":[%lu,%lu],"
+                  "\"activeId\":\"%s\",\"phase\":\"%s\",\"startUs\":\"%lld\",\"stopUs\":\"%lld\","
+                  "\"attemptInputFault\":%s,\"combinedActiveId\":\"%s\"}\n",
+        LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId),
+        independentMode ? "independent" : "combined", digitalRead(BUTTON_PIN), digitalRead(INDEPENDENT_STOP_PIN),
+        inputs.released[0] ? "true" : "false", inputs.released[1] ? "true" : "false",
+        independentInputFault ? "true" : "false", inputs.overflowPending ? "true" : "false",
+        static_cast<unsigned long>(inputs.overflows), static_cast<unsigned long>(inputs.droppedEvents), static_cast<unsigned>(inputs.queuedEvents),
+        static_cast<unsigned long>(inputs.edges[0]), static_cast<unsigned long>(inputs.edges[1]),
+        static_cast<unsigned long>(inputs.falling[0]), static_cast<unsigned long>(inputs.falling[1]),
+        static_cast<long long>(inputs.lastEdgeUs[0]), static_cast<long long>(inputs.lastEdgeUs[1]),
+        static_cast<unsigned long>(independentDeliveredCounts[0]), static_cast<unsigned long>(independentDeliveredCounts[1]),
+        static_cast<unsigned long>(inputs.qualified[0]), static_cast<unsigned long>(inputs.qualified[1]),
+        static_cast<unsigned long>(independentAcceptedCounts[0]), static_cast<unsigned long>(independentAcceptedCounts[1]),
+        active ? active->id : "-", active ? timing::independentPhaseName(active->phase) : "idle",
+        static_cast<long long>(active ? active->startUs : 0), static_cast<long long>(active ? active->stopUs : 0),
+        active && active->inputFault ? "true" : "false", combined ? combined->id : "-");
 }
 
 void printAutomaticError(const String& id, const char* reason) {
@@ -123,6 +182,117 @@ void printAutomaticError(const String& id, const char* reason) {
         LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId),
         timing::validAttemptId(id.c_str()) ? id.c_str() : "-", reason);
     forwardAutomaticError(id, reason);
+}
+
+void printIndependentError(const String& id, const char* reason) {
+    Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"independent_error\","
+                  "\"kind\":\"independent\",\"id\":\"%s\",\"reason\":\"%s\"}\n",
+        LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId),
+        timing::validAttemptId(id.c_str()) ? id.c_str() : "-", reason);
+}
+
+void printIndependentRecord(const timing::IndependentRecord& record) {
+    Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"independent\","
+                  "\"kind\":\"independent\",\"id\":\"%s\",\"phase\":\"%s\","
+                  "\"startUs\":\"%lld\",\"stopUs\":\"%lld\",\"elapsedUs\":\"%lld\",\"inputFault\":%s}\n",
+        LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId), record.id,
+        timing::independentPhaseName(record.phase), static_cast<long long>(record.startUs),
+        static_cast<long long>(record.stopUs), static_cast<long long>(record.stopUs > 0 ? record.stopUs - record.startUs : 0),
+        record.inputFault ? "true" : "false");
+}
+
+void onIndependentEdge(void* argument) {
+    // Arduino dispatches a null argument as a no-argument callback.
+    const uint8_t input = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(argument) - 1);
+    if (input > 1) return;
+    const int64_t atUs = esp_timer_get_time();
+    const bool low = gpio_get_level(static_cast<gpio_num_t>(input == 0 ? BUTTON_PIN : INDEPENDENT_STOP_PIN)) == 0;
+    portENTER_CRITICAL_ISR(&ppsLock);
+    independentCapture.observe(input, low, atUs);
+    portEXIT_CRITICAL_ISR(&ppsLock);
+}
+
+void resetIndependentInputs() {
+    portENTER_CRITICAL(&ppsLock);
+    independentCapture.reset(gpio_get_level(static_cast<gpio_num_t>(BUTTON_PIN)) == 0,
+        gpio_get_level(static_cast<gpio_num_t>(INDEPENDENT_STOP_PIN)) == 0,
+        esp_timer_get_time(), independentLowUs, independentReleaseUs);
+    portEXIT_CRITICAL(&ppsLock);
+    independentInputFault = false;
+}
+
+void captureIndependentInput(uint8_t input, int64_t atUs) {
+    if (atUs <= 0) return;
+    if (independentInputFault) return;
+    const bool changed = input == 0 ? independentLedger.captureStart(atUs) : independentLedger.captureStop(atUs);
+    if (changed) {
+        ++independentAcceptedCounts[input];
+        printIndependentRecord(*independentLedger.active());
+    }
+}
+
+void pollIndependentInputs() {
+    timing::IndependentQualifiedEvent events[timing::IndependentCapture::CAPACITY];
+    size_t count = 0;
+    portENTER_CRITICAL(&ppsLock);
+    independentCapture.poll(esp_timer_get_time());
+    const bool overflow = independentCapture.takeOverflow();
+    while (count < timing::IndependentCapture::CAPACITY && independentCapture.take(events[count])) ++count;
+    portEXIT_CRITICAL(&ppsLock);
+    if (overflow) {
+        independentInputFault = true;
+        independentLedger.invalidateInput();
+        const auto* record = independentLedger.active();
+        printIndependentError(record && record->inputFault ? record->id : "-", "INPUT_OVERFLOW");
+    }
+    for (size_t index = 0; index < count; ++index) {
+        const auto& event = events[index];
+        ++independentDeliveredCounts[event.input];
+        captureIndependentInput(event.input, event.atUs);
+    }
+    if (independentInputFault && independentLedger.active() == nullptr) {
+        const auto inputs = readIndependentCaptureDiagnostics();
+        // Stable release can recover an idle station, never an uncertain active time.
+        if (!inputs.overflowPending && inputs.released[0] && inputs.released[1] &&
+            digitalRead(BUTTON_PIN) == HIGH && digitalRead(INDEPENDENT_STOP_PIN) == HIGH) {
+            independentInputFault = false;
+        }
+    }
+}
+
+void handleIndependentCommand(const String& operation, const String& id) {
+    if (!timing::validAttemptId(id.c_str())) { printIndependentError(id, "INVALID_ID"); return; }
+    // Recovery and cancellation remain available after a mode change.
+    if (operation == "ARM" && !independentMode) { printIndependentError(id, "MODE_MISMATCH"); return; }
+    const char* error = nullptr;
+    if (operation == "ARM") {
+        portENTER_CRITICAL(&ppsLock);
+        const auto inputs = independentCapture.diagnostics();
+        if (!independentLedger.find(id.c_str()) &&
+            (independentInputFault || inputs.overflowPending || !inputs.released[0] || !inputs.released[1] ||
+             digitalRead(BUTTON_PIN) != HIGH || digitalRead(INDEPENDENT_STOP_PIN) != HIGH)) error = "RELEASE_INPUTS";
+        else error = independentLedger.arm(id.c_str(), esp_timer_get_time());
+        portEXIT_CRITICAL(&ppsLock);
+    } else if (operation == "CANCEL" || operation == "COMPLETE") {
+        error = independentLedger.finish(id.c_str(), operation == "CANCEL");
+    } else if (operation == "ARCHIVE") {
+        error = independentLedger.archive(id.c_str());
+        if (!error) {
+            Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"independent_ack\","
+                          "\"kind\":\"independent\",\"id\":\"%s\",\"operation\":\"ARCHIVE\"}\n",
+                LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId), id.c_str());
+            return;
+        }
+    } else if (operation != "GET") error = "INVALID_COMMAND";
+    if (error) { printIndependentError(id, error); return; }
+    auto* record = independentLedger.find(id.c_str());
+    if (record) printIndependentRecord(*record);
+    else if (operation == "CANCEL") {
+        timing::IndependentRecord acknowledgement = {};
+        strcpy(acknowledgement.id, id.c_str());
+        acknowledgement.phase = timing::IndependentPhase::Cancelled;
+        printIndependentRecord(acknowledgement);
+    } else printIndependentError(id, "ATTEMPT_MISMATCH");
 }
 
 struct CapturedEvent {
@@ -510,6 +680,7 @@ void printInputDiagnostics() {
     Serial.printf(" GPIO6_LEVEL=%d BUTTON_RELEASED=%d CAPTURE_ENABLED=%d EDGE_PENDING_US=%lld\n",
         digitalRead(BUTTON_PIN), buttonReleased ? 1 : 0, captureEnabled ? 1 : 0,
         static_cast<long long>(pendingEdge));
+    if (independentMode) printIndependentDiagnostics();
 }
 
 #if !LORA_TEST_SENDER
@@ -660,6 +831,10 @@ void sendTestPacket() {
 }
 
 void handleAutomaticOperation(const String& operation, const String& id, bool remoteRequest = false) {
+    if (independentMode && operation == "AUTO_ARM") {
+        printAutomaticError(id, "MODE_MISMATCH");
+        return;
+    }
     if (!timing::validAttemptId(id.c_str())) {
         printAutomaticError(id, "INVALID_ID");
         return;
@@ -772,6 +947,7 @@ void initializeRadioBudget() {
 }
 
 void reserveRadioBudget() {
+    if (independentMode || independentLedger.active() != nullptr) return;
     // A reservation has a bounded lifetime. An hour reset is then measured
     // after its latest possible transmission, rather than its allocation time.
     if (radioCreditUs != 0 && esp_timer_get_time() - radioCreditGrantedAtUs > 60000000) {
@@ -869,6 +1045,35 @@ void forwardAutomaticError(const String& id, const char* reason) {
     queueRadioJob(packet);
 }
 
+bool setMeasurementMode(const String& mode) {
+    if (mode != "combined" && mode != "independent") return false;
+    const bool next = mode == "independent";
+    if (next == independentMode) return true;
+    if (automaticLedger.active() || independentLedger.active() || radioTransmitting ||
+        (next && radioJobCount != 0)) return false;
+    detachInterrupt(digitalPinToInterrupt(BUTTON_PIN));
+    detachInterrupt(digitalPinToInterrupt(INDEPENDENT_STOP_PIN));
+    independentMode = next;
+    if (next) {
+        pinMode(BUTTON_PIN, INPUT_PULLUP);
+        pinMode(INDEPENDENT_STOP_PIN, INPUT_PULLUP);
+        resetIndependentInputs();
+        attachInterruptArg(digitalPinToInterrupt(BUTTON_PIN), onIndependentEdge, reinterpret_cast<void*>(1), CHANGE);
+        attachInterruptArg(digitalPinToInterrupt(INDEPENDENT_STOP_PIN), onIndependentEdge, reinterpret_cast<void*>(2), CHANGE);
+    } else {
+        pinMode(INDEPENDENT_STOP_PIN, INPUT);
+        buttonRawLevel = digitalRead(BUTTON_PIN);
+        buttonChangedAtMs = millis();
+        buttonReleased = false;
+        portENTER_CRITICAL(&ppsLock);
+        pendingButtonAtUs = 0;
+        buttonCaptureEnabled = false;
+        portEXIT_CRITICAL(&ppsLock);
+        attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonEdge, FALLING);
+    }
+    return true;
+}
+
 void handleRemoteCommand(const String& operation, const String& id) {
     if (operation != "STATUS" && !timing::validAttemptId(id.c_str())) {
         printAutomaticError(id, "INVALID_REMOTE_COMMAND");
@@ -878,7 +1083,7 @@ void handleRemoteCommand(const String& operation, const String& id) {
         coordinatorAttemptId = id;
         ++coordinatorSequence;
     }
-    if (operation != "STATUS" && id != coordinatorAttemptId) {
+    if (operation != "STATUS" && operation != "MODE" && id != coordinatorAttemptId) {
         printAutomaticError(id, "REMOTE_ATTEMPT_MISMATCH");
         return;
     }
@@ -897,12 +1102,14 @@ void receiveTimingPacket(const String& packet) {
     if (sscanf(packet.c_str(), "CT2 C %8lx %8lx %23s %40s%n",
         &coordinator, &sequence, operation, id, &consumed) == 4 &&
         consumed == static_cast<int>(packet.length()) && coordinator != timingBootId) {
-        if (strcmp(operation, "STATUS") == 0) {
+        if (strcmp(operation, "STATUS") == 0 || strcmp(operation, "MODE") == 0) {
+            if (strcmp(operation, "MODE") == 0 && !setMeasurementMode(id)) return;
             char response[220];
-            snprintf(response, sizeof(response), "CT2 S %08lx %08lx %08lx %d %lu %s %s",
+            snprintf(response, sizeof(response), "CT2 S %08lx %08lx %08lx %d %lu %s %s %s",
                 coordinator, sequence, static_cast<unsigned long>(timingBootId),
                 timingClock.tracking(esp_timer_get_time()) ? 1 : 0,
-                static_cast<unsigned long>(timingClock.generation()), timingBoardId, timingFirmwareHash);
+                static_cast<unsigned long>(timingClock.generation()), timingBoardId, timingFirmwareHash,
+                independentMode ? "independent" : "combined");
             queueRadioJob(response);
             return;
         }
@@ -945,18 +1152,25 @@ void receiveTimingPacket(const String& packet) {
         return;
     }
     const char peerStation = LORA_TEST_SENDER ? 'B' : 'A';
-    char peerBoard[13] = {}, peerFirmware[65] = {};
+    char peerBoard[13] = {}, peerFirmware[65] = {}, peerMode[16] = {};
     consumed = 0;
-    if (sscanf(packet.c_str(), "CT2 S %8lx %8lx %8lx %d %lu %12s %64s%n",
-        &coordinator, &sequence, &peerBoot, &valid, &generation, peerBoard, peerFirmware, &consumed) == 7 &&
+    const int statusFields = sscanf(packet.c_str(), "CT2 S %8lx %8lx %8lx %d %lu %12s %64s %15s%n",
+        &coordinator, &sequence, &peerBoot, &valid, &generation, peerBoard, peerFirmware, peerMode, &consumed);
+    if (statusFields == 7) {
+        sscanf(packet.c_str(), "CT2 S %8lx %8lx %8lx %d %lu %12s %64s%n",
+            &coordinator, &sequence, &peerBoot, &valid, &generation, peerBoard, peerFirmware, &consumed);
+        strcpy(peerMode, "combined");
+    }
+    if ((statusFields == 7 || statusFields == 8) &&
+        (strcmp(peerMode, "combined") == 0 || strcmp(peerMode, "independent") == 0) &&
         consumed == static_cast<int>(packet.length()) && coordinator == timingBootId &&
         sequence == coordinatorSequence && (valid == 0 || valid == 1) &&
         strlen(peerBoard) == 12 && strspn(peerBoard, "0123456789abcdef") == 12 &&
         strlen(peerFirmware) == 64 && strspn(peerFirmware, "0123456789abcdef") == 64) {
         Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"status\","
                       "\"tracking\":%s,\"generation\":%lu,\"accuracy\":\"unverified\","
-                      "\"boardId\":\"%s\",\"firmwareHash\":\"%s\"}\n",
-            peerStation, peerBoot, valid ? "true" : "false", generation, peerBoard, peerFirmware);
+                      "\"boardId\":\"%s\",\"firmwareHash\":\"%s\",\"mode\":\"%s\",\"independentProtocol\":%d}\n",
+            peerStation, peerBoot, valid ? "true" : "false", generation, peerBoard, peerFirmware, peerMode, statusFields == 8 ? 1 : 0);
         return;
     }
     consumed = 0;
@@ -1057,6 +1271,37 @@ void processUsbCommand() {
 
     if (commandLine == "STATUS") {
         printStatus();
+    } else if (commandLine.startsWith("AUTO_MODE ")) {
+        const String requested = commandLine.substring(10);
+        if (!setMeasurementMode(requested)) {
+            Serial.printf("AUTO {\"station\":\"%c\",\"boot\":\"%08lx\",\"type\":\"mode_error\",\"reason\":\"MODE_BUSY_OR_INVALID\"}\n",
+                LORA_TEST_SENDER ? 'A' : 'B', static_cast<unsigned long>(timingBootId));
+        }
+        printAutomaticStatus();
+    } else if (commandLine == "INDEP_DIAG") {
+        printIndependentDiagnostics();
+    } else if (commandLine == "INDEP_TEST") {
+        Serial.println(timing::independentLedgerSelfTest() && timing::independentInputSelfTest() &&
+            timing::independentCaptureSelfTest() ? "INDEP_TEST PASS" : "INDEP_TEST FAIL");
+    } else if (commandLine.startsWith("INDEP_CONFIG ")) {
+        unsigned long lowUs = 0, releaseUs = 0;
+        int consumed = 0;
+        const String arguments = commandLine.substring(13);
+        if (!independentMode || independentLedger.active() ||
+            sscanf(arguments.c_str(), "%lu %lu%n", &lowUs, &releaseUs, &consumed) != 2 ||
+            consumed != static_cast<int>(arguments.length()) || lowUs > 30000 || releaseUs < 1000 || releaseUs > 1000000) {
+            printIndependentError("-", "INVALID_INPUT_CONFIG");
+        } else {
+            independentLowUs = lowUs;
+            independentReleaseUs = releaseUs;
+            resetIndependentInputs();
+            printAutomaticStatus();
+        }
+    } else if (commandLine.startsWith("INDEP_")) {
+        const int separator = commandLine.indexOf(' ');
+        const String operation = commandLine.substring(6, separator < 0 ? commandLine.length() : separator);
+        const String id = separator < 0 ? "" : commandLine.substring(separator + 1);
+        handleIndependentCommand(operation, id);
     } else if (commandLine == "AUTO_STATUS") {
         printAutomaticStatus();
     } else if (commandLine.startsWith("REMOTE_")) {
@@ -1069,7 +1314,7 @@ void processUsbCommand() {
             static_cast<unsigned long>(radioCreditUs), static_cast<unsigned long>(radioBudget.chargedUs),
             radioBudgetAvailable ? 1 : 0, static_cast<unsigned>(radioJobCount));
     } else if (commandLine == "RADIO_RELEASE_BUDGET") {
-        if (automaticLedger.active() != nullptr || radioTransmitting || radioJobCount != 0 || !radioBudgetAvailable) {
+        if (automaticLedger.active() != nullptr || independentLedger.active() != nullptr || radioTransmitting || radioJobCount != 0 || !radioBudgetAvailable) {
             Serial.println("RADIO_BUDGET ERROR BUSY_OR_UNAVAILABLE");
         } else {
             RadioBudget updated = radioBudget;
@@ -1088,7 +1333,7 @@ void processUsbCommand() {
             }
         }
     } else if (commandLine == "TEST_PULSE") {
-        if (!buttonReleased || testPulseStartedUs != 0 ||
+        if (independentMode || !buttonReleased || testPulseStartedUs != 0 ||
             (automaticLedger.active() != nullptr && automaticLedger.active()->phase == timing::StationPhase::Armed) ||
             digitalRead(BUTTON_PIN) != HIGH) {
             Serial.println("TEST_PULSE ERROR NOT_READY");
@@ -1214,11 +1459,12 @@ void setup() {
 
 void loop() {
     pollGnss();
-    pollDiagnosticButton();
+    if (independentMode) pollIndependentInputs();
+    else pollDiagnosticButton();
     pollTimingRadio();
     pollUsb();
 #if !LORA_TEST_SENDER
-    if (receiverDisplayDirty && automaticLedger.active() == nullptr && !radioTransmitting) {
+    if (!independentMode && receiverDisplayDirty && automaticLedger.active() == nullptr && !radioTransmitting) {
         // Refresh the standalone-test display outside automatic measurements.
         timingClock.invalidate("DISPLAY_REFRESH");
         updateReceiverDisplay();

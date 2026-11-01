@@ -29,6 +29,7 @@
   let automaticRetryAt = 0;
   let automaticPulseAt = 0;
   let automaticUiReady = false;
+  let measurementSettingsExpanded = false;
   let automaticDiscoveryTask = null;
   let automaticDiscoveryAt = 0;
   let automaticConnectionNotice = "";
@@ -40,6 +41,7 @@
   }
 
   function automaticUsbStation() {
+    if (isIndependentMode()) return null;
     return automaticTransport === "wireless" ? "B" :
       automaticTransport === "wireless_a_usb" ? "A" : null;
   }
@@ -50,6 +52,7 @@
   }
 
   function automaticConnectedStations() {
+    if (isIndependentMode()) return independentStations();
     const usb = automaticUsbStation();
     return usb ? [usb] : ["A", "B"];
   }
@@ -59,14 +62,20 @@
   }
 
   function automaticCommandStations() {
+    if (isIndependentMode()) return independentStations();
     // Establish the radio coordinator's attempt/airtime requirement before local ARM.
     const remote = automaticRemoteStation();
     return remote ? [remote, automaticUsbStation()] : ["A", "B"];
   }
 
   function isAutomaticMode() { return automaticMode === "combined"; }
-  function automaticPending() { return automaticRun.busy; }
+  function isElectronicMode() { return isAutomaticMode() || isIndependentMode(); }
+  function automaticPending() { return automaticRun.busy || independentPending(); }
+  function isElectronicRecord(record) {
+    return ["automatic_combined", "automatic_independent"].includes(record.measurementMode);
+  }
   function measurementRuleDescription(record) {
+    if (record.measurementMode === "automatic_independent") return "Nezávislá stanica " + (record.electronic?.station || "");
     return record.measurementMode === "automatic_combined" ? "Automatické A+B" :
       `${normalizeJudgeCount(record.judgeCount ?? 3)} rozhodcovia; výpočet: ${RULE_LABELS[normalizeTimeRule(record.timeRule ?? "median")]}`;
   }
@@ -184,7 +193,7 @@
       connection.reader = port.readable.getReader();
       const identified = await identifyAutomaticPort(connection);
       const station = identified.status.station;
-      if (!isAutomaticMode() || !automaticConnectedStations().includes(station)) return;
+      if (!isElectronicMode() || !automaticConnectedStations().includes(station)) return;
       if (automaticPorts[station]) throw new Error("Viac USB zariadení sa hlási ako stanica " + station + ".");
       connection.status = identified.status;
       connection.seenAt = Date.now();
@@ -195,7 +204,9 @@
         updateAutomaticUI();
       });
       if (station === automaticUsbStation()) await sendAutomatic(automaticRemoteStation(), "AUTO_STATUS");
+      await synchronizeAutomaticModes();
       if (automaticRun.busy) await recoverAutomaticAttempt();
+      await serviceIndependent(true);
       updateAutomaticUI();
     } finally {
       if (!attached) await closeAutomaticCandidate(connection);
@@ -204,7 +215,7 @@
 
   function discoverAutomaticPorts(force = false) {
     if (automaticDiscoveryTask) return automaticDiscoveryTask;
-    if (!isAutomaticMode() || IS_DISPLAY_MODE) return Promise.resolve();
+    if (!isElectronicMode() || IS_DISPLAY_MODE) return Promise.resolve();
     if (!navigator.serial) {
       automaticConnectionNotice = "USB meranie vyžaduje Chrome alebo Edge na PC.";
       updateAutomaticUI();
@@ -220,7 +231,7 @@
           return info.usbVendorId === 0x303a && info.usbProductId === 0x1001;
         });
         for (const port of candidates) {
-          if (!isAutomaticMode()) break;
+          if (!isElectronicMode()) break;
           if (automaticConnectedStations().every(station => automaticPorts[station])) break;
           if (!force && Date.now() - (automaticPortFailures.get(port) || 0) < 5000) continue;
           try {
@@ -335,6 +346,10 @@
           if (message.type === "status") {
             if (forwarded) automaticRemoteStatus = message;
             else connection.status = message;
+          } else if (message.type === "mode_error") {
+            automaticConnectionNotice = "Stanica " + station + " zatiaľ nepotvrdila prepnutie režimu; dokonči alebo zruš jej pokus.";
+          } else if (handleIndependentMessage(message)) {
+            // Independent messages cannot enter the combined GNSS state machine.
           } else if (automaticRun.accept(message)) {
             persistAutomatic();
             applyAutomaticProgress();
@@ -357,7 +372,7 @@
     const stations = automaticConnectedStations();
     return !!automaticValidation() && stations.every(station => {
       const connection = automaticPorts[station];
-      return connection?.status?.tracking === true && Date.now() - connection.seenAt < 5000 &&
+      return connection?.status?.tracking === true && (connection.status.mode || "combined") === "combined" && Date.now() - connection.seenAt < 5000 &&
         (!automaticUsbStation() || connection.status.radioCanPrepare === true);
     });
   }
@@ -370,7 +385,7 @@
       const status = station === automaticRemoteStation()
         ? automaticRemoteStatus : automaticPorts[station]?.status;
       const tested = report.stations?.[station];
-      if (!tested || !status || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
+      if (!tested || !status || (status.mode || "combined") !== "combined" || status.boardId !== tested.boardId || status.firmwareHash !== tested.firmwareHash) return null;
     }
     return report;
   }
@@ -526,39 +541,80 @@
       attempt.competitionId === automaticCompetitionId ? attempt.elapsedMs : null;
   }
 
+  const automaticModeRequests = { A: 0, B: 0 };
+  async function synchronizeAutomaticModes() {
+    if (!isElectronicMode()) return;
+    const desired = isIndependentMode() ? "independent" : "combined";
+    for (const station of automaticCommandStations()) {
+      const connection = automaticConnection(station);
+      const status = station === automaticRemoteStation() ? automaticRemoteStatus : connection?.status;
+      if (!connection || !status || (status.mode || "combined") === desired) continue;
+      if (status.independentProtocol !== 1) {
+        automaticConnectionNotice = "Stanica " + station + " potrebuje spoločný firmvér s podporou nezávislého režimu.";
+        continue;
+      }
+      if (Date.now() - automaticModeRequests[station] < 1500) continue;
+      automaticModeRequests[station] = Date.now();
+      await sendAutomatic(station, "AUTO_MODE " + desired);
+    }
+  }
+
   function updateAutomaticUI() {
     if (!automaticUiReady) return;
     const enabled = isAutomaticMode();
+    const settingsVisible = isElectronicMode() && measurementSettingsExpanded;
+    $("measurementSettings").hidden = !settingsVisible;
+    const settingsToggle = $("measurementSettingsToggle");
+    settingsToggle.hidden = !isElectronicMode();
+    settingsToggle.setAttribute("aria-expanded", String(settingsVisible));
+    settingsToggle.setAttribute("aria-label", settingsVisible ? "Zbaliť nastavenia merania" : "Rozbaliť nastavenia merania");
+    settingsToggle.textContent = settingsVisible ? "▴" : "▾";
     $("automaticMode").value = automaticMode;
-    $("automaticMode").disabled = automaticRun.busy || running || rec.some(value => value !== null);
-    $("automaticTransport").value = automaticTransport;
+    $("automaticMode").disabled = automaticPending() || running || rec.some(value => value !== null);
+    $("automaticTransport").value = isIndependentMode() ? "dual_usb" : automaticTransport;
+    $("automaticTransport").querySelector('[value="dual_usb"]').textContent =
+      isIndependentMode() && independentStations().length === 1
+        ? "Stanica " + independentStations()[0] + " cez USB" : "Obe stanice cez USB";
     // Permission renewal must remain available while recovering an active attempt.
     $("automaticTransport").disabled = false;
-    const transportLocked = automaticRun.busy || running || rec.some(value => value !== null);
+    const transportLocked = isIndependentMode() || automaticPending() || running || rec.some(value => value !== null);
     for (const option of $("automaticTransport").options) {
       option.disabled = option.value !== "authorize_usb" && transportLocked;
     }
-    $("automaticControls").hidden = !enabled;
-    $("automaticNotice").textContent = automaticNotice;
-    const verified = automaticValidation();
-    $("automaticAccuracy").textContent = verified
+    $("automaticControls").hidden = !isElectronicMode();
+    $("automaticNotice").textContent = isIndependentMode()
+      ? "Nezávislé meranie cez USB: " + independentStations().join(", ") + "." : automaticNotice;
+    const verified = isIndependentMode() ? null : automaticValidation();
+    $("automaticAccuracy").textContent = isIndependentMode()
+      ? "Každá stanica používa vlastné miestne hodiny bez GPS a LoRa. Presnosť nezávislého režimu ešte nie je fyzicky overená."
+      : verified
       ? `Na tejto dvojici a verzii firmvéru bola overená vzájomná zhoda do 1 ms (${verified.sampleCount} impulzov, najväčší rozdiel ${verified.maximumAbsoluteDifferenceUs} µs). Optické brány týmto testom overené neboli.`
       : "Pre túto dvojicu a verziu firmvéru zatiaľ nie je platný protokol overenia do 1 ms. Automatický pokus sa nedá pripraviť.";
     for (const station of ["A", "B"]) {
+      $("automaticStation" + station).hidden = isIndependentMode() && !independentStations().includes(station);
       const connection = automaticPorts[station];
       $("automaticStation" + station).textContent = !connection ? `${station}: odpojená` :
         `${station}: ${connection.status?.tracking ? "časová základňa pripravená" : "čakám na GNSS/PPS"}`;
     }
+    $("automaticStationSeparator").hidden = isIndependentMode() && independentStations().length === 1;
     const remote = automaticRemoteStation();
     if (remote) {
       $("automaticStation" + remote).textContent = `${remote} cez LoRa: ${automaticRemoteStatus?.tracking ? "časová základňa pripravená" : "overí sa pri príprave pokusu"}`;
     }
+    if (isIndependentMode()) {
+      for (const station of ["A", "B"]) {
+        if (automaticPorts[station]) $("automaticStation" + station).textContent = station + ": " +
+          (independentStatus(station)?.mode === "independent" ? "nezávislý režim potvrdený" : "čakám na potvrdenie režimu");
+      }
+    }
     $("automaticConnectionNotice").textContent = automaticConnectionNotice;
-    $("automaticConnectionInfo").dataset.tone = automaticStationsReady() ? "ok" :
+    $("automaticConnectionInfo").dataset.tone = (isIndependentMode()
+      ? independentStations().every(station => independentStationReady(station)) : automaticStationsReady()) ? "ok" :
       (automaticDiscoveryTask ? "busy" : "warning");
     $("automaticRecover").disabled = !automaticRun.busy;
+    $("automaticRecover").hidden = isIndependentMode();
     for (const control of [el.tabIndividual, el.tabTeam, el.tabGirls, el.tabBoys, el.tabMix]) {
-      if (control) control.disabled = automaticRun.busy;
+      if (control) control.disabled = automaticPending();
     }
     if (enabled) {
       for (let index = 0; index < 3; ++index) {
@@ -581,6 +637,7 @@
     } else {
       el.start.innerHTML = 'Štart <span class="kbdHint">(medzerník)</span>';
     }
+    updateIndependentUI();
     const title = el.t[0]?.closest(".judge")?.querySelector("h3");
     if (title) title.textContent = enabled ? "Automatické A+B" : "Rozhodca 1";
   }
@@ -589,6 +646,10 @@
     if (IS_DISPLAY_MODE) return;
     automaticUiReady = true;
     initializeMeasurementInformation();
+    $("measurementSettingsToggle").addEventListener("click", () => {
+      measurementSettingsExpanded = !measurementSettingsExpanded;
+      updateAutomaticUI();
+    });
     $("automaticTransport").addEventListener("change", () => {
       if ($("automaticTransport").value === "authorize_usb") {
         $("automaticTransport").value = automaticTransport;
@@ -598,7 +659,7 @@
         });
         return;
       }
-      if (automaticRun.busy || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
+      if (isIndependentMode() || automaticPending() || running || rec.some(value => value !== null)) { updateAutomaticUI(); return; }
       automaticTransport = normalizeAutomaticTransport($("automaticTransport").value);
       automaticRemoteStatus = null;
       const usb = automaticUsbStation();
@@ -608,12 +669,13 @@
       discoverAutomaticPorts(true);
     });
     $("automaticMode").addEventListener("change", () => {
-      if (automaticRun.busy || running || rec.some(value => value !== null)) {
+      if (automaticPending() || running || rec.some(value => value !== null)) {
         showAutomaticError("Najprv ulož alebo zruš rozpracované meranie.");
         updateAutomaticUI();
         return;
       }
-      automaticMode = $("automaticMode").value === "combined" ? "combined" : "manual";
+      automaticMode = ["combined", "independent"].includes($("automaticMode").value) ? $("automaticMode").value : "manual";
+      automaticModeRequests.A = automaticModeRequests.B = 0;
       tStart = 0;
       setUI();
       autoPersistToFile();
@@ -621,6 +683,7 @@
     });
     navigator.serial?.addEventListener("connect", () => discoverAutomaticPorts(true));
     $("automaticRecover").addEventListener("click", () => recoverAutomaticAttempt().catch(showAutomaticError));
+    if (independentPending() && !automaticRun.busy) automaticMode = "independent";
     if (automaticRun.busy) {
       automaticMode = "combined";
       automaticTransport = normalizeAutomaticTransport(automaticRun.current.transport);
@@ -643,7 +706,9 @@
           if (automaticPorts[station]) sendAutomatic(station, "AUTO_STATUS").catch(showAutomaticError);
         }
         serviceAutomaticCancellations();
+        synchronizeAutomaticModes().catch(showAutomaticError);
       }
+      serviceIndependent();
       const attempt = automaticRun.current;
       if (attempt?.phase === "cancelling" && attempt.cancelled.A && attempt.cancelled.B) {
         automaticRun.confirmCancellation();

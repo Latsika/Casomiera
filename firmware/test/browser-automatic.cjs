@@ -10,8 +10,9 @@ const { pathToFileURL } = require("node:url");
 
 const workspace = path.resolve(__dirname, "..");
 const original = fs.readFileSync(path.join(workspace, "..", "Casomiera_v11_OSTRA.html"), "utf8").replaceAll("\r\n", "\n");
-for (const [name, filename] of [["CORE", "automatic-timing.js"], ["UI", "automatic-ui.js"]]) {
-  const embedded = original.split(`// CASOMIERA_AUTOMATIC_${name}_BEGIN`)[1]?.split(`// CASOMIERA_AUTOMATIC_${name}_END`)[0]?.trim();
+for (const [family, name, filename] of [["AUTOMATIC", "CORE", "automatic-timing.js"], ["AUTOMATIC", "UI", "automatic-ui.js"],
+  ["INDEPENDENT", "CORE", "independent-timing.js"], ["INDEPENDENT", "UI", "independent-ui.js"]]) {
+  const embedded = original.split("// CASOMIERA_" + family + "_" + name + "_BEGIN")[1]?.split("// CASOMIERA_" + family + "_" + name + "_END")[0]?.trim();
   assert.equal(embedded, fs.readFileSync(path.join(workspace, "web", filename), "utf8").replaceAll("\r\n", "\n").trim(), "Embedded modules must match the tested sources.");
 }
 for (const [index, match] of [...original.matchAll(/<script>([\s\S]*?)<\/script>/g)].entries()) {
@@ -64,6 +65,63 @@ const hooks = `
       automaticRemoteStatus = null;
       automaticPortFailures.clear();
     },
+    get independent() { return independentRuns; },
+    prepareIndependent, cancelIndependent, saveIndependentResult, serviceIndependent,
+    synchronizeAutomaticModes, independentStationReady, buildIndependentLiveState,
+    setIndependentLayout, independentStations, applyTimerLiveState,
+    updateCallPanel, postponeSuggestedCall, reorderSuggestedCall, getCallCandidatesCurrentView, setCallIndex,
+    get independentDraft() { return JSON.parse(JSON.stringify(independentDraft)); },
+    selectIndependent(station, key, penalty = "") {
+      const candidates = getCallCandidatesCurrentView();
+      const slot = independentStations().indexOf(station);
+      setCallIndex(Math.max(0, candidates.findIndex(candidate => candidate.key === key) - slot), candidates);
+      updateCallPanel();
+      independentDraft[station].penalty = penalty;
+      updateIndependentUI();
+    },
+    penaltyIndependent(station, value) { independentDraft[station].penalty = value; },
+    ackMode(mode) {
+      for (const station of ["A", "B"]) if (automaticPorts[station]) {
+        automaticPorts[station].status.mode = mode;
+        automaticPorts[station].seenAt = Date.now();
+      }
+      setUI();
+    },
+    mockIndependentStations() {
+      globalThis.__timingTest.mockStations();
+      for (const station of ["A", "B"]) {
+        Object.assign(automaticPorts[station].status, {
+          boot: station === "A" ? "11111111" : "22222222", mode: "combined", independentProtocol: 1,
+          tracking: false, radioCanPrepare: false, inputsReady: true, inputLowUs: 1000, inputReleaseUs: 30000
+        });
+        automaticModeRequests[station] = 0;
+      }
+      globalThis.__independentConnections = { ...automaticPorts };
+      setUI();
+    },
+    independentEvent(station, phase, startUs = "0", stopUs = "0", id = null) {
+      const current = independentRuns.current[station];
+      handleIndependentMessage({ kind: "independent", type: "independent", station,
+        boot: station === "A" ? "11111111" : "22222222", id: id || current.id, phase, startUs, stopUs,
+        elapsedUs: stopUs !== "0" ? (BigInt(stopUs) - BigInt(startUs)).toString() : "0", inputFault: false });
+    },
+    async settleIndependent() {
+      await new Promise(resolve => setTimeout(resolve, 0));
+      await serviceIndependent(true);
+      for (const action of [...independentRuns.actions]) {
+        const attempt = independentRuns.current[action.station]?.id === action.id ? independentRuns.current[action.station] :
+          independentRuns.history.find(item => item.station === action.station && item.id === action.id);
+        globalThis.__timingTest.independentEvent(action.station, action.operation === "CANCEL" ? "cancelled" : "complete",
+          attempt.startUs || "0", attempt.stopUs || "0", action.id);
+      }
+      await serviceIndependent(true);
+      for (const action of [...independentRuns.actions]) handleIndependentMessage({
+        kind: "independent", type: "independent_ack", station: action.station, id: action.id, operation: "ARCHIVE" });
+    },
+    reconnectIndependent(station) {
+      automaticPorts[station] = globalThis.__independentConnections[station];
+      automaticPorts[station].seenAt = Date.now();
+    },
     ready() { return automaticStationsReady(); },
     setFakeBuild(station, hash) { automaticPorts[station].status.firmwareHash = hash; },
     sendAutomatic, acceptAutomaticCancellation,
@@ -97,14 +155,14 @@ const watchdog = setTimeout(() => {
   process.exit(1);
 }, 45000);
 
-async function call(method, params = {}) {
+async function call(method, params = {}, sessionId) {
   const id = ++nextId;
   const response = new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
-  socket.send(JSON.stringify({ id, method, params }));
+  socket.send(JSON.stringify({ id, method, params, sessionId }));
   return response;
 }
-async function evaluate(expression) {
-  const result = await call("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
+async function evaluate(expression, sessionId) {
+  const result = await call("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true }, sessionId);
   if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
   return result.result.value;
 }
@@ -141,6 +199,7 @@ async function main() {
   }
   assert.equal(await evaluate("!!window.__timingTest"), true, JSON.stringify(errors));
   assert.equal(await evaluate("__timingTest.getConfiguredJudgeCount()"), 3);
+  assert.equal(await evaluate("document.getElementById('measurementSettings').hidden"), true);
   const result = await evaluate(`(async () => {
     const t = __timingTest;
     const participant = { key: "test-p1", mode: "individual", category: "girls", displayName: "Test Participant", subLine: "", timeEnabled: true, startNumber: 1 };
@@ -295,6 +354,308 @@ async function main() {
     assert.equal(cancellation.snapshot.automatic.cancellations.length, 1);
     assert.ok(cancellation.snapshot.automatic.pending.cancelledEvents.B.utcUs);
   }
+  const independentResult = await evaluate("(" + (async function () {
+    const t = __timingTest;
+    const participants = [
+      { key: "independent-a", displayName: "Independent Alice", mode: "individual", category: "girls", timeEnabled: true, startNumber: 1 },
+      { key: "independent-b", displayName: "Independent Bob", mode: "individual", category: "boys", timeEnabled: true, startNumber: 2 },
+      { key: "independent-c", displayName: "Independent Claire", mode: "individual", category: "girls", timeEnabled: true, startNumber: 3 }
+    ];
+    t.applySnapshot({ competitionName: "Independent integration", attemptsLimit: 3, judgeCount: 3, timeRule: "median",
+      participants, results: [], mode: "individual", viewCat: "girls",
+      automatic: { competitionId: "independent-integration", mode: "independent", transport: "wireless",
+        pending: null, cancellations: [], history: [] } });
+    t.setIndependentLayout(2, "A");
+    t.mockIndependentStations();
+    const blockedUntilConfirmed = !t.independentStationReady("A");
+    await t.synchronizeAutomaticModes();
+    const modesRequested = globalThis.__testWrites.slice(-2).every(item => item.command === "AUTO_MODE independent" + String.fromCharCode(10));
+    const stillBlockedWithoutAck = !t.independentStationReady("A");
+    t.ackMode("independent");
+    const readyWithoutGnss = t.independentStationReady("A") && t.independentStationReady("B");
+    t.selectIndependent("A", participants[0].key);
+    t.selectIndependent("B", participants[1].key);
+    await t.prepareIndependent("A");
+    await t.prepareIndependent("B");
+    const transportIsUsb = document.getElementById("automaticTransport").value === "dual_usb";
+    t.independentEvent("A", "running", "1000000");
+    t.independentEvent("B", "running", "2000000");
+    const check = (condition, message) => { if (!condition) throw new Error(message); };
+    const toggle = document.getElementById("measurementSettingsToggle");
+    const settings = document.getElementById("measurementSettings");
+    const retainedBeforeToggle = JSON.stringify(t.buildSnapshot().independent);
+    check(settings.hidden && toggle.getAttribute("aria-expanded") === "false", "Measurement settings must start collapsed.");
+    toggle.click();
+    check(!settings.hidden && toggle.getAttribute("aria-expanded") === "true", "Arrow must expand measurement settings.");
+    check(document.getElementById("independentCount").closest("#measurementSettings") &&
+      document.getElementById("automaticTransport").closest("#measurementSettings"), "All station settings must be inside the collapsible area.");
+    toggle.click();
+    check(settings.hidden && toggle.getAttribute("aria-expanded") === "false", "Arrow must collapse measurement settings.");
+    check(retainedBeforeToggle === JSON.stringify(t.buildSnapshot().independent) &&
+      t.independent.current.A.phase === "running" && t.independent.current.B.phase === "running",
+      "Collapsing settings must retain station selections, penalties and running attempts.");
+    check(!document.getElementById("automaticMode").closest("#measurementSettings"), "Mode selection must remain outside the collapsed area.");
+    const activeInfo = document.getElementById("activeCompetitorName");
+    const nextInfo = document.getElementById("liveNextCompetitorName");
+    check(getComputedStyle(activeInfo.closest(".activeCompetitor")).display !== "none" &&
+      getComputedStyle(nextInfo.closest(".liveNextBox")).display !== "none", "Participant information must remain visible in independent mode.");
+    check(activeInfo.textContent.includes("A: Independent Alice (pokus 1/3)") &&
+      activeInfo.textContent.includes("B: Independent Bob (pokus 1/3)"), "Active information must describe both independent attempts.");
+    check(nextInfo.textContent.includes("Independent Claire"), "Next participant must exclude both selected competitors.");
+    const setPenalty = (station, value) => {
+      const input = document.getElementById("independentPenalty" + station);
+      input.value = value;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    const saveA = document.getElementById("independentSaveA");
+    setPenalty("A", "0");
+    check(saveA.disabled, "A penalty must not enable saving a running measurement.");
+    t.independentEvent("A", "finished", "1000000", "3234567");
+    for (const value of ["", " ", "invalid", "-1"]) {
+      setPenalty("A", value);
+      check(saveA.disabled, "Missing or invalid penalty must disable saving: " + value);
+    }
+    let blankRejected = false;
+    setPenalty("A", "");
+    try { t.saveIndependentResult("A"); } catch { blankRejected = true; }
+    check(blankRejected && t.results.length === 0, "Direct saving must reject an empty penalty without losing the time.");
+    for (const value of ["0", "1.5", "1,5"]) {
+      setPenalty("A", value);
+      check(!saveA.disabled, "Valid explicit penalty must enable saving: " + value);
+    }
+    setPenalty("A", "");
+    check(saveA.disabled, "Clearing an entered penalty must immediately disable saving.");
+    setPenalty("A", "0");
+    check(document.getElementById("independentSaveB").disabled, "A's penalty must not enable saving B.");
+    t.saveIndependentResult("A");
+    const otherStillRunning = t.independent.current.B.phase === "running";
+    const snapshot = t.buildSnapshot();
+    snapshot.independent.runs.current.B.startUs = null;
+    snapshot.independent.runs.current.B.phase = "armed";
+    snapshot.independent.runs.actions = [];
+    snapshot.independent.runs.history = [];
+    t.applySnapshot(snapshot);
+    const restoredStart = t.independent.current.B.startUs;
+    t.independentEvent("B", "finished", "2000000", "4000500");
+    t.penaltyIndependent("B", "1.5");
+    t.saveIndependentResult("B");
+    await t.settleIndependent();
+    const saved = JSON.parse(JSON.stringify(t.results));
+    const exportRows = t.getFlatRowsForExport();
+    const actionsSettled = t.independent.actions.length === 0;
+    const live = t.buildIndependentLiveState();
+    const selector = document.getElementById("automaticMode");
+    selector.value = "combined";
+    selector.dispatchEvent(new Event("change"));
+    await t.synchronizeAutomaticModes();
+    t.ackMode("combined");
+    const returnedToGps = t.currentMode === "combined";
+    const gpsStillRequiresGnss = !t.ready();
+    selector.value = "independent";
+    selector.dispatchEvent(new Event("change"));
+    t.ackMode("independent");
+    t.selectIndependent("A", participants[0].key);
+    await t.prepareIndependent("A");
+    const cancelledId = t.independent.current.A.id;
+    t.independentEvent("A", "running", "6000000");
+    t.disconnectStation("A");
+    await t.cancelIndependent("A");
+    const offlineCopy = t.independent.current.A.startUs;
+    t.reconnectIndependent("A");
+    t.independentEvent("A", "cancelled", "6000000", "7000000", cancelledId);
+    await t.settleIndependent();
+    const recoveredCancellation = t.independent.history.find(item => item.id === cancelledId);
+    t.mode("manual");
+    return { blockedUntilConfirmed, modesRequested, stillBlockedWithoutAck, readyWithoutGnss, transportIsUsb,
+      otherStillRunning, restoredStart, saved, exportRows, actionsSettled, returnedToGps, gpsStillRequiresGnss,
+      offlineCopy, recoveredCancellation, live };
+  }).toString() + ")()");
+  assert.equal(independentResult.blockedUntilConfirmed, true);
+  assert.equal(independentResult.modesRequested, true);
+  assert.equal(independentResult.stillBlockedWithoutAck, true);
+  assert.equal(independentResult.readyWithoutGnss, true);
+  assert.equal(independentResult.transportIsUsb, true);
+  assert.equal(independentResult.otherStillRunning, true);
+  assert.equal(independentResult.restoredStart, "2000000");
+  assert.equal(independentResult.saved.length, 2);
+  assert.equal(independentResult.saved[0].measurementMode, "automatic_independent");
+  assert.equal(independentResult.saved[0].valid, 2235);
+  assert.equal(independentResult.saved[0].electronic.station, "A");
+  assert.equal(independentResult.saved[0].t1, null);
+  assert.equal(independentResult.saved[1].valid, 3501);
+  assert.equal(independentResult.saved[1].electronic.station, "B");
+  assert.equal(independentResult.exportRows[0].judgeCount, 0);
+  assert.equal(independentResult.actionsSettled, true);
+  assert.equal(independentResult.returnedToGps, true);
+  assert.equal(independentResult.gpsStillRequiresGnss, true);
+  assert.equal(independentResult.offlineCopy, "6000000");
+  assert.equal(independentResult.recoveredCancellation.stopUs, "7000000");
+  assert.equal(independentResult.recoveredCancellation.phase, "cancelled");
+  assert.equal(independentResult.live.independent.length, 2);
+  console.log("Independent UI passed: runtime mode confirmation, concurrent participants without GNSS, separate save/penalties, JSON restore, exports, offline recovery and return to GPS.");
+  const singleResults = await evaluate("(" + (async function () {
+    const t = __timingTest;
+    const checks = [];
+    const check = (condition, message) => { if (!condition) throw new Error(message); };
+    t.mode("independent");
+    for (const station of ["A", "B"]) {
+      const other = station === "A" ? "B" : "A";
+      t.setIndependentLayout(1, station);
+      t.mockIndependentStations();
+      t.disconnectStation(other);
+      globalThis.__testWrites = [];
+      await t.synchronizeAutomaticModes();
+      check(globalThis.__testWrites.length > 0 && globalThis.__testWrites.every(item => item.station === station), "Mode confirmation required the absent station.");
+      t.ackMode("independent");
+      check(t.independentStationReady(station) && !t.independentStationReady(other), "Single station must be ready without its peer or GNSS.");
+      check(!document.getElementById("independentStation" + station).hidden && document.getElementById("independentStation" + other).hidden, "Wrong measurement panel visible.");
+      check(document.getElementById("automaticConnectionInfo").dataset.tone === "ok", "Absent peer incorrectly blocks readiness.");
+      t.selectIndependent(station, station === "A" ? "independent-a" : "independent-b");
+      await t.prepareIndependent(station);
+      const activeName = document.getElementById("activeCompetitorName").textContent;
+      check(activeName.includes(station === "A" ? "Independent Alice" : "Independent Bob") && activeName.includes("pokus 2/3"),
+        "Single-station information must show the selected participant and the correct attempt.");
+      check(document.getElementById("independentCount").disabled && document.getElementById("independentSingleStation").disabled, "Active attempt must lock layout.");
+      const selector = document.getElementById("independentSingleStation");
+      selector.value = other;
+      selector.dispatchEvent(new Event("change"));
+      check(selector.value === station && t.independentStations()[0] === station, "Layout change hid an active attempt.");
+      const invalid = t.buildSnapshot();
+      invalid.independent.layout.singleStation = other;
+      let rejected = false;
+      try { t.applySnapshot(invalid); } catch { rejected = true; }
+      check(rejected, "JSON restore hid an active attempt.");
+      t.independentEvent(station, "running", "10000000");
+      check(t.buildIndependentLiveState().independent[0].startedAt > 0, "New attempt LIVE clock did not restart.");
+      t.independentEvent(station, "finished", "10000000", "11234567");
+      const snapshot = t.buildSnapshot();
+      t.applySnapshot(snapshot);
+      check(t.buildSnapshot().independent.layout.singleStation === station, "Selected station was not restored.");
+      const live = t.buildIndependentLiveState();
+      check(live.participantCount === 1 && live.independent.length === 1 && live.independent[0].station === station, "LIVE must contain only the selected station.");
+      t.penaltyIndependent(station, "0");
+      t.saveIndependentResult(station);
+      await t.settleIndependent();
+      check(globalThis.__testWrites.every(item => item.station === station), "Single measurement sent a command to the absent station.");
+      check(!document.getElementById("independentCount").disabled, "Saved attempt left layout locked.");
+      checks.push(live);
+    }
+    t.setIndependentLayout(2, "A");
+    check(!document.getElementById("independentStationA").hidden && !document.getElementById("independentStationB").hidden, "Two-participant layout did not restore both panels.");
+    check(t.results.length === 4, "Changing layout lost saved results.");
+    checks.push(t.buildIndependentLiveState());
+    t.mode("manual");
+    return checks;
+  }).toString() + ")()");
+  const target = await call("Target.createTarget", { url: "about:blank" });
+  const { sessionId } = await call("Target.attachToTarget", { targetId: target.targetId, flatten: true });
+  await call("Page.enable", {}, sessionId);
+  await call("Page.navigate", { url: pathToFileURL(fixturePath).href + "?view=timer" }, sessionId);
+  for (let retry = 0; retry < 100; retry++) {
+    if (await evaluate("!!window.__timingTest", sessionId)) break;
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  for (const state of singleResults) {
+    const projected = await evaluate("(() => { __timingTest.applyTimerLiveState(" + JSON.stringify(state) + "); return { count: document.getElementById('timerLiveClocks').dataset.judges, cards: [...document.querySelectorAll('#timerLiveClocks .timerLiveCard')].map(card => ({ hidden: card.hidden, label: card.querySelector('.timerLiveJudgeLabel').textContent })), time: document.getElementById('timerLiveClock1').textContent }; })()", sessionId);
+    assert.equal(projected.count, String(state.independent.length));
+    assert.equal(projected.cards.filter(card => !card.hidden).length, state.independent.length);
+    for (const [index, participant] of state.independent.entries()) {
+      assert.ok(projected.cards[index].label.startsWith(participant.station + " "));
+    }
+    assert.equal(projected.time, ((state.independent[0].elapsedMs || 0) / 1000).toFixed(3) + " s");
+  }
+  await call("Target.closeTarget", { targetId: target.targetId });
+  console.log("Single-station UI and actual LIVE window passed: A alone, B alone, two clocks, retained results and locked active layouts.");
+  await evaluate("(" + (async function () {
+    const t = __timingTest;
+    const check = (condition, message) => { if (!condition) throw new Error(message); };
+    const participants = ["Alice", "Bob", "Claire", "David"].map((name, index) => ({
+      key: "queue-" + index, displayName: name, mode: "individual", category: "girls", timeEnabled: true, startNumber: index + 1
+    }));
+    t.applySnapshot({ competitionName: "Independent microphone queue", attemptsLimit: 2, judgeCount: 3,
+      timeRule: "median", participants, results: [], mode: "individual", viewCat: "girls",
+      callIndexMap: {}, callManualOrder: {},
+      automatic: { competitionId: "queue-integration", mode: "independent", transport: "dual_usb", pending: null, cancellations: [], history: [] } });
+    t.setIndependentLayout(2, "A");
+    t.mockIndependentStations();
+    t.ackMode("independent");
+    const called = () => ["callNowItem", "callNext1Item"].map(id => document.getElementById(id).dataset.candidateKey);
+    const selected = () => t.independentStations().map(station => document.getElementById("independentParticipant" + station).value);
+    const checkPair = message => check(JSON.stringify(selected()) === JSON.stringify(called()), message);
+    checkPair("Initial independent selections must follow the two visible microphone slots.");
+    check(selected()[0] === "queue-0" && selected()[1] === "queue-1", "Initial pair must use consecutive calling slots.");
+    check(t.postponeSuggestedCall(0), "Postponing the first participant must work.");
+    checkPair("Postponing the first participant did not update both measurement selections.");
+    check(selected()[0] === "queue-1" && selected()[1] === "queue-2", "Wrong pair after first postponement.");
+    check(t.postponeSuggestedCall(1), "Postponing the second participant must work.");
+    checkPair("Postponing the second participant did not update the second measurement selection.");
+    check(selected()[1] === "queue-3", "Second postponement must promote the next queued participant.");
+    check(t.reorderSuggestedCall(1, 0), "Calling order swap must work.");
+    checkPair("Reordering the microphone slots did not update both measurement selections.");
+    check(selected()[0] === "queue-3" && selected()[1] === "queue-1", "Wrong pair after reordering.");
+    const penalty = document.getElementById("independentPenaltyA");
+    penalty.value = "5";
+    penalty.dispatchEvent(new Event("input"));
+    t.postponeSuggestedCall(0);
+    checkPair("Postponing a participant with a draft penalty did not update the pair.");
+    check(document.getElementById("independentPenaltyA").value === "", "New participant inherited another person's penalty.");
+    const live = t.buildIndependentLiveState();
+    check(live.independent[0].name === "Bob" && live.independent[0].elapsedMs === null,
+      "LIVE must show the newly assigned participant without a previous result.");
+    await t.prepareIndependent("A");
+    const prepared = JSON.stringify(t.independent.current.A);
+    t.postponeSuggestedCall(0);
+    check(JSON.stringify(t.independent.current.A) === prepared && selected()[0] === "queue-1",
+      "Queue change replaced a prepared attempt's participant.");
+    t.independentEvent("A", "running", "1000000");
+    const running = JSON.stringify(t.independent.current.A);
+    const alertsBefore = (window.__alerts || []).length;
+    t.reorderSuggestedCall(1, 0);
+    check(JSON.stringify(t.independent.current.A) === running, "Reordering replaced a running attempt.");
+    check((window.__alerts || []).length === alertsBefore, "Independent queue reordering incorrectly triggered legacy activation errors.");
+    check(selected()[1] === called()[1], "Idle station must still follow its microphone slot while the peer runs.");
+    // Move the running participant into B's microphone slot: keep B empty instead of duplicating A.
+    const queue = t.getCallCandidatesCurrentView();
+    const runningIndex = queue.findIndex(candidate => candidate.key === "queue-1");
+    t.setCallIndex(Math.max(0, runningIndex - 1), queue);
+    t.updateCallPanel();
+    check(called()[1] === "queue-1" && selected()[1] === "" && document.getElementById("independentPrepareB").disabled,
+      "A running participant must not be assigned to the idle peer.");
+    t.independentEvent("A", "finished", "1000000", "2500000");
+    const finished = JSON.stringify(t.independent.current.A);
+    t.postponeSuggestedCall(0);
+    check(JSON.stringify(t.independent.current.A) === finished, "Postponement replaced an unsaved measured result.");
+    t.penaltyIndependent("A", "0");
+    t.saveIndependentResult("A");
+    await t.settleIndependent();
+    checkPair("Saving a result must refresh selections from the currently displayed calling slots.");
+    check(t.results[0].participantKey === "queue-1" && t.results[0].valid === 1500,
+      "Queue changes must never reassign a recorded result.");
+    check(document.getElementById("independentClockA").textContent === "0.000", "New participant must not inherit the prior time.");
+    await t.prepareIndependent("B");
+    t.independentEvent("B", "running", "3000000");
+    const cancelledId = t.independent.current.B.id;
+    t.postponeSuggestedCall(1);
+    await t.cancelIndependent("B");
+    await t.settleIndependent();
+    checkPair("Cancelling a result must refresh the current calling slots.");
+    check(t.independent.history.some(attempt => attempt.id === cancelledId && attempt.startUs === "3000000"),
+      "Cancellation must retain original timestamps after queue replacement.");
+    for (const station of ["A", "B"]) {
+      t.setIndependentLayout(1, station);
+      check(selected()[0] === called()[0], "Single station must follow Teraz na rade.");
+      t.postponeSuggestedCall(0);
+      check(selected()[0] === called()[0], "Single station must update immediately after postponement.");
+    }
+    t.setIndependentLayout(2, "A");
+    const last = t.getCallCandidatesCurrentView();
+    t.setCallIndex(last.length - 1, last);
+    t.updateCallPanel();
+    check(selected()[0] === called()[0] && selected()[1] === "" && document.getElementById("independentPrepareB").disabled,
+      "An absent second calling slot must clear B without inventing a participant.");
+    t.mode("manual");
+  }).toString() + ")()");
+  console.log("Microphone queue passed: initial pair, first/second postponement, reordering, single A/B, live labels, busy attempt protection, duplicate prevention, save/cancel refresh and an empty second slot.");
   const usbChecks = await evaluate("(" + (async function () {
     const t = __timingTest;
     const checks = [];
@@ -423,6 +784,30 @@ async function main() {
       await reset("wireless_a_usb", [silent]);
       check(!t.connections.A && silent.closes === 1 && t.connectionNotice.includes("neodpovedalo"), "An unresponsive candidate must time out and release its port.");
       checks.push("bounded identity timeout");
+      for (const station of ["A", "B"]) {
+        t.mode("manual");
+        await t.closeUsbFixtures();
+        t.setIndependentLayout(1, station);
+        const other = station === "A" ? "B" : "A";
+        const properties = { mode: "independent", independentProtocol: 1, inputsReady: true, tracking: false };
+        const selected = makePort(station, properties);
+        const unselected = makePort(other, properties);
+        serial.ports = [unselected, selected];
+        t.mode("independent");
+        await t.discoverAutomaticPorts(true);
+        check(t.independentStationReady(station) && !t.connections[other] && unselected.closes === 1,
+          "Single-station discovery must skip the unselected board and connect the selected identity without GNSS.");
+        selected.unplug();
+        await waitFor(() => !t.connections[station]);
+        serial.ports = [selected];
+        await t.discoverAutomaticPorts(true);
+        check(t.independentStationReady(station) && !t.connectionNotice.includes("Chýba"),
+          "A single physical USB station must reconnect without requiring its absent peer.");
+      }
+      t.mode("manual");
+      await t.closeUsbFixtures();
+      t.setIndependentLayout(2, "A");
+      checks.push("single A or B identity discovery and reconnect");
       await reset("dual_usb", [a, b]);
       t.select("usb-p1");
       await t.prepareAutomaticAttempt();
@@ -453,9 +838,14 @@ async function main() {
     }
     return checks;
   }).toString() + ")()");
-  assert.equal(usbChecks.length, 7, JSON.stringify(usbChecks));
+  assert.equal(usbChecks.length, 8, JSON.stringify(usbChecks));
   console.log("USB discovery passed: " + usbChecks.join(", ") + ".");
-  await evaluate("(" + function () { document.getElementById("competitionGate").classList.remove("visible"); document.querySelector('[data-work-target="time"]').click(); __timingTest.mode("combined"); }.toString() + ")()");
+  await evaluate("(" + function () {
+    document.getElementById("competitionGate").classList.remove("visible");
+    document.querySelector('[data-work-target="time"]').click();
+    __timingTest.mode("combined");
+    if (document.getElementById("measurementSettings").hidden) document.getElementById("measurementSettingsToggle").click();
+  }.toString() + ")()");
   for (const width of [1100, 390]) {
     await call("Emulation.setDeviceMetricsOverride", { width, height: 844, deviceScaleFactor: 1, mobile: false });
     for (const tooltipId of ["measurementStatusInfo", "measurementModeInfo", "automaticConnectionDetails"]) {
@@ -488,6 +878,14 @@ async function main() {
   }
   assert.equal(await evaluate("(" + function () { return !!document.getElementById("status").closest('[role="tooltip"]') && !document.getElementById("automaticConnectA") && !document.getElementById("automaticConnectB"); }.toString() + ")()"), true);
   console.log("Measurement panel passed: adjacent information icons, hover/focus/Escape behavior, desktop/mobile bounds and consolidated USB dropdown.");
+  for (const measurementMode of ["combined", "independent", "manual"]) {
+    await evaluate("__timingTest.mode(" + JSON.stringify(measurementMode) + ")");
+    const state = await evaluate("(() => { const toggle = document.getElementById('measurementSettingsToggle'); if (toggle.getAttribute('aria-expanded') === 'true') toggle.click(); return { hidden: document.getElementById('measurementSettings').hidden, modeVisible: document.getElementById('automaticMode').getBoundingClientRect().height > 0, toggleHidden: toggle.hidden }; })()");
+    assert.equal(state.hidden, true);
+    assert.equal(state.modeVisible, true);
+    assert.equal(state.toggleHidden, measurementMode === "manual");
+  }
+  console.log("Collapsible settings passed: default collapsed, visible mode selector, accessible toggle and unchanged running attempts/settings.");
   assert.equal(errors.length, 0, JSON.stringify(errors));
   console.log("Browser integration passed: automatic and recorded hardware results, firmware verification guard, both LoRa directions and forwarded identity checks, snapshot recovery, exports, and preserved manual median/settings.");
 }

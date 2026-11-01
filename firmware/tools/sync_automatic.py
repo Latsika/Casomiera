@@ -7,9 +7,14 @@ import re
 firmware = Path(__file__).resolve().parents[1]
 page = firmware.parent / "Casomiera_v11_OSTRA.html"
 source = page.read_text(encoding="utf-8")
-for name, filename, indent in (("CORE", "automatic-timing.js", ""), ("UI", "automatic-ui.js", "  ")):
-    begin = indent + "// CASOMIERA_AUTOMATIC_" + name + "_BEGIN\n"
-    end = indent + "// CASOMIERA_AUTOMATIC_" + name + "_END"
+for family, name, filename, indent in (
+    ("AUTOMATIC", "CORE", "automatic-timing.js", ""),
+    ("AUTOMATIC", "UI", "automatic-ui.js", "  "),
+    ("INDEPENDENT", "CORE", "independent-timing.js", ""),
+    ("INDEPENDENT", "UI", "independent-ui.js", "  "),
+):
+    begin = indent + "// CASOMIERA_" + family + "_" + name + "_BEGIN\n"
+    end = indent + "// CASOMIERA_" + family + "_" + name + "_END"
     if source.count(begin) != 1 or source.count(end) != 1:
         raise RuntimeError("Expected unique automatic module markers.")
     prefix, remainder = source.split(begin, 1)
